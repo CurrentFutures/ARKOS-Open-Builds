@@ -1,6 +1,6 @@
 # ARKOS Open Builds
 
-Open source builds from the ARKOS Lab, the hardware division of Current Futures Group. They're free to use, and we welcome your feedback.
+Open source builds from the ARKOS Lab, the hardware division of Current Futures Group, Victoria McClune as Founder and Creator. They're free to use, and we welcome your feedback.
 
 ARKOS asks one question: **how do we live and work with technology when it's everywhere?** Each build is an experiment that tries an answer in a physical object.
 
