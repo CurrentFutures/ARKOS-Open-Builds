@@ -2,7 +2,7 @@
 
 A home media server you'd want in the living room: a silent, fanless computer and two drives inside a block of tinted acrylic panes on a cast concrete base. It doubles as a lamp beside the TV.
 
-![The Lantern in evening mode: tinted panes glowing around the computer, on a cast concrete base. Concept render.](images/hero.png)
+![The Lantern: tinted acrylic panes glowing around the computer, on a cast concrete base with a brass knob. Concept render.](images/hero.png)
 
 **Status:** Designed; build guide complete; not yet built.
 **Principles applied:**
@@ -13,9 +13,9 @@ A home media server you'd want in the living room: a silent, fanless computer an
 
 Concept renders from the interactive model, not photos.
 
-| Lamp, from the front | Colour mode | Drives pulled | The back |
+| From the front | Colour mode | Drives pulled | The back |
 |---|---|---|---|
-| ![Front view in lamp mode](images/lamp.png) | ![Three-quarter view in colour mode](images/color.png) | ![The drive sled pulled out of the concrete vault](images/drives.png) | ![The back plate and cables](images/back.png) |
+| ![Front view: the window glowing through the darker centre panes](images/front.png) | ![Three-quarter view in colour mode](images/color.png) | ![The drive sled pulled out of the concrete vault](images/drives.png) | ![The back plate and cables](images/back.png) |
 
 ## Files
 

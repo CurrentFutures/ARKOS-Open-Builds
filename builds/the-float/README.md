@@ -16,8 +16,8 @@ Concept renders from the 3D model, not photos.
 | The gap | Inside | The back |
 |---|---|---|
 | ![The gap under the case, the brass posts and the toggle with its rays](images/the-gap.png) | ![Inside: Dark Wood board, amber cables, gold-ringed fans](images/inside.png) | ![The back: stock and industrial, the orange cord dropping to a brass clip](images/back.png) |
-| **Asleep** | **Glass clear, to inspect** | |
-| ![Asleep: the fans dark, the seam breathing](images/asleep.png) | ![The glass shown clear: the whole build visible](images/clear.png) | |
+| **The reeded wrap** | **Asleep** | **Glass clear, to inspect** |
+| ![The reeded wrap from the corner: the build reads as soft vertical bands](images/reeded.png) | ![Asleep: the fans dark, the seam breathing](images/asleep.png) | ![The glass shown clear: the whole build visible](images/clear.png) |
 
 ## Files
 
