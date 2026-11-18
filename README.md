@@ -20,7 +20,6 @@ ARKOS asks one question: **how do we live and work with technology when it's eve
 | <img src="builds/the-lantern/images/hero.png" width="160" alt="The Lantern, concept render"> | [The Lantern](builds/the-lantern/) | A silent media player and lamp for beside the TV: tinted acrylic panes on a concrete base | `the-lantern-model.html`, then the build guide |
 | <img src="builds/the-sand-table/images/hero.png" width="160" alt="The Sand Table, concept render"> | [The Sand Table](builds/the-sand-table/) | Shows in sand how settled an AI agent was on its last task: crisp means settled, smeared means unsettled | `the-sand-table-desk-test.pdf`, then the build guide |
 | <img src="builds/living-light-wall/images/hero.png" width="160" alt="The Living Light Wall, concept render"> | [Living Light Wall](builds/living-light-wall/) | Wall tiles that grow food from waste heat and show the health of the system that heats them | `SPEC.md` |
-| <img src="builds/living-indicator-tiles/images/hero.png" width="160" alt="Living Indicator Tiles study"> | [Living Indicator Tiles](builds/living-indicator-tiles/) | Backlit algae tiles that light a corridor and report on a habitat's thermal loop | `living-indicator-tiles.html` |
 
 Every page is a single HTML file that works offline: download it and open it in a browser. The Lantern and Sand Table models are also tools: choose your options, then use the buttons under the model to download the cut files, print files and software for your version.
 
