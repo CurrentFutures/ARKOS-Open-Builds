@@ -1,5 +1,7 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>House PC Build Book</title>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>C8 Float Study</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -38,42 +40,16 @@ input[type=range]{accent-color:var(--brass);width:100%;min-width:100px}
 .note{background:var(--wall);border:1px solid var(--line);border-radius:6px;padding:14px 18px;display:flex;flex-direction:column;gap:4px}
 .note b{font-family:var(--display);font-weight:500;font-size:1.05rem}
 .fine{font-family:var(--mono);font-size:.72rem;color:var(--dim)}
-.toc{border:1px solid var(--line);border-radius:6px;padding:16px 20px;display:flex;flex-direction:column;gap:8px;background:var(--wall)}
-.toc ol{margin:0;padding-left:20px;columns:2;column-gap:32px;font-size:.92rem}
-.toc a{color:#e9cf98;text-underline-offset:3px}
-.doc{display:flex;flex-direction:column;gap:44px;margin-top:12px}
-.doc section{display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--line);padding-top:28px;scroll-margin-top:16px}
-.doc h2{font-family:var(--display);font-weight:600;font-size:clamp(1.5rem,3vw,2rem);margin:0;line-height:1.15;text-wrap:balance}
-.doc h3{font-family:var(--display);font-weight:500;font-size:1.15rem;margin:6px 0 0}
-.doc p,.doc li{max-width:72ch}
-.doc ul,.doc ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
-.doc a{color:#e9cf98;text-underline-offset:3px}
-.lede2{font-size:1.05rem}
-.small{font-size:.88rem;color:var(--dim)}
-.mono{font-family:var(--mono);font-size:.85em}
-.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 28px}
-.facts div{display:flex;flex-direction:column;gap:2px;border-left:2px solid var(--brass);padding-left:12px;min-width:0}
-.facts b{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:400}
-.tw{overflow-x:auto;border:1px solid var(--line);border-radius:6px}
-.t{border-collapse:collapse;width:100%;min-width:680px;font-size:.9rem}
-.t th,.t td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
-.t th{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:400;background:var(--wall)}
-section > .t{min-width:0}
-td.ok{color:#9fd39a;white-space:nowrap} td.open{color:#f2c14a;white-space:nowrap}
-.rules > li{padding-left:4px}
-.make{border:1px solid var(--line);border-radius:6px;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
-@media (max-width:700px){.toc ol{columns:1}.facts{grid-template-columns:1fr}}
-.howto{background:var(--wall);border:1px solid var(--line);border-left:3px solid var(--brass);border-radius:0 6px 6px 0;padding:14px 18px;font-size:.95rem}
 @media (max-width:900px){ .opts{grid-template-columns:1fr 1fr} .stage{aspect-ratio:4/5} }
 @media (max-width:560px){ .opts{grid-template-columns:1fr} }
 </style>
 <div class="wrap">
   <header>
     <div style="display:flex;flex-direction:column;gap:8px">
-      <span class="eyebrow">Build book · Nov 2026 · a free, for-fun project</span>
-      <h1>The Float: house PC build book</h1>
+      <span class="eyebrow">House build · Antec C8 Curve Wood version</span>
+      <h1>The float</h1>
     </div>
-    <p style="color:var(--dim);max-width:54ch">Everything needed to build, source and improvise this computer: the concept, the rules behind every choice, parts with links, and how to make what can't be bought. The model below is to scale; use the switches to see the options.</p>
+    <p style="color:var(--dim);max-width:54ch">The C8's curved glass wrapped in one reeded panel, floating 4 cm above a solid walnut block on four brass posts. Bottom fans breathe through the gap and light it. One post is a hollow tube carrying the switch wires up into the case.</p>
   </header>
   <div class="stage" id="stage">
     <canvas id="c" aria-label="3D model of the C8 Curve Wood floating on brass posts over a walnut base. Drag to orbit, scroll or pinch to zoom."></canvas>
@@ -99,280 +75,8 @@ td.ok{color:#9fd39a;white-space:nowrap} td.open{color:#f2c14a;white-space:nowrap
       <label class="slider" for="load"><span>Power draw</span><input type="range" id="load" min="40" max="600" step="10" value="380"><output id="loadOut">380 W</output></label>
     </div>
   </div>
-  <div class="note"><b>What's lighting it</b><p>The light now comes mostly from ten programmable fans (three under the card, three on the side, three on the radiator, one at the back). Their color is yours to set; gold is the default. Edge strips stay as warm fill. The base no longer breathes, so it has no holes: the gap does the airflow. The walnut is the C8's own side panel plus the base.</p></div>
+  <div class="note"><b>What changed from the North XL version</b><p>The light now comes mostly from ten programmable fans (three under the card, three on the side, three on the radiator, one at the back). Their color is yours to set; gold is the default. Edge strips stay as warm fill. The base no longer breathes, so it has no holes: the gap does the airflow. The walnut is the C8's own side panel plus the base.</p></div>
   <p class="fine">Antec C8 Curve Wood: 303 × 464 × 476 mm (W × D × H), from Antec's listing. Brass posts 4 cm. Parts are generic shapes at real sizes. Top radiator support on the Curve version should be confirmed before buying a 360 mm cooler.</p>
-  <nav class="toc" aria-label="Contents">
-    <span class="eyebrow">In this book</span>
-    <ol>
-      <li><a href="#concept">The concept in one page</a></li>
-      <li><a href="#principles">Design principles (use these to swap parts)</a></li>
-      <li><a href="#parts">Parts list and status</a></li>
-      <li><a href="#swap">Swap checklist by component</a></li>
-      <li><a href="#make">Things we can't buy, and how to make them</a></li>
-      <li><a href="#safety">Safety and serviceability rules</a></li>
-      <li><a href="#sequence">Build order and timeline</a></li>
-      <li><a href="#helpers">Who helps with what</a></li>
-      <li><a href="#open">Open decisions</a></li>
-      <li><a href="#planb">Appendix: plan B in the Fractal North XL</a></li>
-    </ol>
-  </nav>
-
-  <article class="doc">
-
-  <section id="concept">
-    <div class="howto"><b>How to use this book.</b> It's written for the friends and makers helping with this build, and for anyone who finds it online and wants to make their own. Start with the concept and principles; jump to your piece in section 5. The 3D model at the top is to scale and needs an internet connection; use its switches to see options and views. Prices were checked in mid-November 2026 and change daily; anything marked "est." is an estimate. Where this book is silent, the principles in section 2 decide.</div>
-    <span class="eyebrow">1 · Concept</span>
-    <h2>The Float: a lit cabinet hovering over a walnut block</h2>
-    <p>A gaming and modding PC (heavily modded Skyrim SE, the Creation Kit, new games as they come out, 3D-printer slicing) built as a piece of furniture for a living room. The case sits 4 cm above a solid walnut block on four brass posts. Its curved glass corner is wrapped in one reeded panel, so you <b>see without quite seeing</b>: glowing fan rings and dark shapes, broken into vertical bands. The gap under the case does the breathing and catches the light.</p>
-    <div class="facts">
-      <div><b>Where it sits</b><span>On the right-hand wing of a fixed L-desk, to the user's right, reeded corner facing the chair, back toward the wall (≥10 cm gap)</span></div>
-      <div><b>Size</b><span>Antec C8 Curve Wood, 303 × 464 × 476 mm, on 4 cm posts and a 9 cm walnut base: about 61 cm tall overall</span></div>
-      <div><b>Build path</b><span>Full DIY (choosing the graphics card and fans ourselves makes buying a prebuilt pointless)</span></div>
-      <div><b>Builder</b><span>A first-time builder, with helpers for woodwork and electronics</span></div>
-    </div>
-    <h3>What you see</h3>
-    <ul>
-      <li><b>The reeded wrap:</b> reeded film over the C8's single curved glass panel, front and left side, reeds vertical. Everything inside becomes soft vertical bands of light and shape.</li>
-      <li><b>The light:</b> ten programmable fans (three under the graphics card, three on the side, three on the top radiator, one at the back). Gold is the home color; it can be changed any evening. Warm white edge strips add fill.</li>
-      <li><b>The walnut:</b> the C8's own walnut side panel, and the walnut base.</li>
-      <li><b>The float:</b> four brass posts lift the case 4 cm. The bottom fans pull air through that gap, and their light spills out of it onto the walnut. The back-right post is a hollow brass tube carrying the switch and lighting wires up into the case, so nothing dangles.</li>
-      <li><b>The base:</b> a solid walnut block. No holes (it has no airflow job). It holds a brass toggle switch, a hidden "dead-front" power indicator, a brass inlay line with a lit seam beneath it, the controller and the wiring.</li>
-      <li><b>The back:</b> stock, industrial. The power cord drops straight down from the power supply's socket, past the gap, into a brass clip where the brass line ends.</li>
-      <li><b>Inside:</b> the Gigabyte Dark Wood motherboard (wood strips, champagne-bronze heatsink), gold memory with a color-adjustable light bar, amber power cables, gold mirror strips on the divider.</li>
-      <li><b>Power:</b> an orange Conway Extō power box on the floor. Orange marks power outside the case only.</li>
-    </ul>
-    <h3>How it behaves</h3>
-    <table class="t"><thead><tr><th>State</th><th>Brass toggle</th><th>Seam under the brass line</th><th>Rays around the toggle</th><th>Fans and gap</th></tr></thead>
-      <tbody>
-        <tr><td>On</td><td>up</td><td>faint steady gold</td><td>12 rays, each = 50 W of power draw</td><td>chosen color (default gold), steady or slow breathe</td></tr>
-        <tr><td>Asleep</td><td>down</td><td>breathing gold, ~6 s per breath, ~5% peak</td><td>dark</td><td>off (PC lighting sleeps with the PC)</td></tr>
-        <tr><td>Off</td><td>down</td><td>dark</td><td>dark (invisible)</td><td>off; the reeded glass reflects the room</td></tr>
-      </tbody></table>
-  </section>
-
-  <section id="principles">
-    <span class="eyebrow">2 · Principles</span>
-    <h2>Design principles</h2>
-    <p class="lede2">The rule is <b>"every choice deliberate."</b> Every element must be justified by <b>airflow</b>, <b>touch</b>, or a <b>named reference</b>. Use these when swapping a part or improvising, but don't treat them as a cage: if something looks better and still has a reason, it's in.</p>
-    <ol class="rules">
-      <li><b>See without quite seeing.</b> The reeded wrap is the main effect. It turns hardware into light and shape, so parts don't have to be beautiful up close; they have to glow or catch light.</li>
-      <li><b>Light first, parts second.</b> Spend on programmable fans and lighting control before decorative parts. Gold is the home color; the ability to change it is a feature.</li>
-      <li><b>Hide the light source when you can.</b> Fans glow behind the reeds; strips sit in channels; indicators shine through tiny holes in wood. No bare LEDs on the outside.</li>
-      <li><b>Light reports the machine.</b> The seam shows state (on, asleep, off). The rays show effort (watts). Breathing is a nice extra, not a requirement.</li>
-      <li><b>Material meanings.</b> Walnut: furniture surfaces. Brass, unlacquered: what your hand and eye follow (toggle, inlay, posts, clip); it darkens with age and the lever stays bright where touched. Gold: a few accents inside. Orange: power outside the case. Amber: power cables inside. Dark metal: everything else.</li>
-      <li><b>Airflow is honest.</b> Holes only where air goes. The C8 breathes in through its bottom fans, so the gap does that job and the walnut base stays solid.</li>
-      <li><b>Every part earns its brass.</b> The posts carry weight; one carries wires; the clip holds the cord; the toggle switches. No brass for decoration alone.</li>
-      <li><b>Industrial where it works.</b> The back is the working face and stays stock. No veneers or skins without a job.</li>
-      <li><b>Reversible and serviceable.</b> Films peel, posts unbolt, the base's bottom panel comes off for the electronics, the case's bottom filter slides out. Mains cords are never modified.</li>
-      <li><b>It's a fun computer.</b> Performance first where it matters (graphics card, CPU, 64 GB of memory, 4 TB of storage) so new games and side projects just work.</li>
-    </ol>
-  </section>
-
-  <section id="parts">
-    <span class="eyebrow">3 · Parts</span>
-    <h2>Parts list and status</h2>
-    <p class="small">Prices seen online between August and November 2026, during a memory and flash shortage; they change daily. "Est." means our estimate, not a listing. Fan models are examples: confirm the exact product before buying.</p>
-    <div class="tw"><table class="t">
-      <thead><tr><th>Part</th><th>Choice</th><th>Status</th><th>Price</th><th>Link</th></tr></thead>
-      <tbody>
-        <tr><td>Case</td><td><b>Antec C8 Curve Wood</b>: dual chamber, single curved glass, walnut side panel, no fans included</td><td class="ok">decided</td><td>$149.99</td><td><a href="https://www.antec.com/product/case/c8-curve-wood" target="_blank" rel="noopener">Antec</a></td></tr>
-        <tr><td>Fans</td><td>10 × 120 mm programmable (5 V addressable) fans that daisy-chain to cut cables; one brand throughout</td><td class="ok">spec</td><td>est. $150–300</td><td>choose a well-reviewed ARGB fan line</td></tr>
-        <tr><td>Lighting control</td><td>Motherboard ARGB headers, plus a SATA-powered hub if the fan count exceeds them; software: SignalRGB or OpenRGB</td><td class="ok">spec</td><td>est. $0–40</td><td>—</td></tr>
-        <tr><td>CPU</td><td>AMD Ryzen 7 9800X3D</td><td class="ok">decided</td><td>~$399</td><td><a href="https://www.newegg.com/p/pl?d=Ryzen+7+9800X3D" target="_blank" rel="noopener">deal report</a></td></tr>
-        <tr><td>Motherboard</td><td>Gigabyte X870E AERO X3D Dark Wood</td><td class="ok">decided</td><td>~$450–540</td><td><a href="https://www.gigabyte.com/Motherboard/X870E-AERO-X3D-DARK-WOOD" target="_blank" rel="noopener">Gigabyte</a> · <a href="https://www.techpowerup.com/review/gigabyte-x870e-aero-x3d-dark-wood/12.html" target="_blank" rel="noopener">review</a></td></tr>
-        <tr><td>Graphics card</td><td>RTX 5080: Aorus Infinity Wood, ASUS ROG Astral Dhahab CORE (gold), or a plain dark 5080 (the reeds hide most of it)</td><td class="open">open</td><td>~$1,870–2,300</td><td><a href="https://www.newegg.com/p/pl?d=RTX+5080+Infinity+Wood" target="_blank" rel="noopener">Infinity Wood</a> · <a href="https://www.microcenter.com/search/search_results.aspx?Ntt=RTX+5080+Dhahab" target="_blank" rel="noopener">Dhahab</a></td></tr>
-        <tr><td>Memory</td><td>64 GB (2 × 32 GB) DDR5-6000, G.Skill Trident Z5 Royal <b>Neo</b> gold (AMD), model F5-6000J2636H32GX2-TR5NG; light bar set to match the fans</td><td class="ok">recommended</td><td>varies widely</td><td><a href="https://www.newegg.com/p/pl?d=F5-6000J2636H32GX2-TR5NG" target="_blank" rel="noopener">Newegg</a></td></tr>
-        <tr><td>Storage</td><td>4 TB PCIe 4.0 or 5.0 NVMe</td><td class="ok">recommended</td><td>est. $350–550</td><td>any reputable brand</td></tr>
-        <tr><td>CPU cooler</td><td>360 mm liquid cooler, dark pump, lighting off or matching the fans. <b>Confirm the C8 Curve's top 360 mm support</b>; otherwise mount it on the side</td><td class="ok">spec</td><td>est. $100–200</td><td>—</td></tr>
-        <tr><td>Power supply</td><td>ATX 3.1, 850–1000 W, Gold+, fully modular, native 12V-2x6, ≤210 mm long (C8 limit)</td><td class="ok">spec</td><td>est. $130–200</td><td>—</td></tr>
-        <tr><td>Power cables inside</td><td>Amber sleeved extensions: 24-pin, CPU 8-pin, 12V-2x6</td><td class="ok">decided</td><td>est. $60–120</td><td><a href="https://usstore.cablemod.com/product/cablemod-pro-modflex-sleeved-12v-2x6-12vhpwr-stealthsense-cable-extension-kit/" target="_blank" rel="noopener">CableMod ModFlex</a> (check colors)</td></tr>
-        <tr><td>Reeded film</td><td>Reeded/fluted window film with a light bronze tint layer, for the curved glass</td><td class="ok">decided</td><td>~$30–50</td><td><a href="https://www.amazon.com/s?k=Velimax+reeded+glass+window+film" target="_blank" rel="noopener">Velimax reeded</a></td></tr>
-        <tr><td>Edge strips</td><td>Warm white (≈2200–2800 K) LED strip in aluminum channels with opal diffusers, ~2 m</td><td class="ok">spec</td><td>est. $40–80</td><td>—</td></tr>
-        <tr><td>Brass posts</td><td>4 × brass round bar or tube, ~2.2 cm (7/8") diameter, 4 cm long; one is tube (hollow) for wires</td><td class="ok">decided</td><td>est. $40–80</td><td>metal supplier, e.g. McMaster-Carr</td></tr>
-        <tr><td>Mirror strips</td><td>Gold/amber mirror vinyl</td><td class="ok">decided</td><td>~$15–25</td><td>any gold mirror vinyl</td></tr>
-        <tr><td>Toggle</td><td>All-brass latching bat toggle (SPST ON-OFF)</td><td class="ok">decided</td><td>est. $10–20</td><td><a href="https://www.delcity.net/store/switches/toggle-switches/die-cast-brass-toggles/all-brass-spst/" target="_blank" rel="noopener">Del City</a></td></tr>
-        <tr><td>Controller parts</td><td>Microcontroller board, 2 × PC817 optocouplers, 12 addressable LEDs, seam LEDs, MOSFET module, connectors, USB-C charger</td><td class="ok">spec</td><td>est. $30–50</td><td>—</td></tr>
-        <tr><td>Power box</td><td>Conway Electric Extō, Pumpkin Orange (12 ft, UL listed)</td><td class="ok">order early (2–3 week lead)</td><td>$70</td><td><a href="https://conwaygoods.com/collections/conway-electric-exto" target="_blank" rel="noopener">listing</a></td></tr>
-        <tr><td>Surge protector</td><td>Compact, hidden (the Extō has none)</td><td class="ok">spec</td><td>est. $20–40</td><td>—</td></tr>
-        <tr><td>Windows</td><td>Retail Windows 11 license</td><td class="ok">needed</td><td>~$139</td><td>Microsoft</td></tr>
-        <tr><td>Monitor</td><td>27" 1440p high-refresh OLED (e.g. ASUS PG27AQDP)</td><td class="ok">planned</td><td>~$799</td><td><a href="https://www.newegg.com/p/pl?d=ASUS+PG27AQDP" target="_blank" rel="noopener">roundup</a></td></tr>
-      </tbody></table></div>
-  </section>
-
-  <section id="swap">
-    <span class="eyebrow">4 · Swapping</span>
-    <h2>Swap checklist by component</h2>
-    <div class="tw"><table class="t">
-      <thead><tr><th>Component</th><th>Must have (function)</th><th>Must look/behave like</th><th>Avoid</th></tr></thead>
-      <tbody>
-        <tr><td>Case</td><td>Bottom-intake layout with a slide-out bottom filter; curved or wraparound glass a reeded film can follow (single-direction curve); room for a 33 cm card and 360 mm radiator</td><td>Glass corner + one wood or dark side</td><td>Glass with compound curves (film won't lay flat); cases that need front intake through a solid panel</td></tr>
-        <tr><td>Fans</td><td>120 mm, PWM, quiet, 5 V addressable lighting, daisy-chain</td><td>Even ring light that reads as a soft circle behind reeds</td><td>Mixed brands with different software; proprietary-only controllers</td></tr>
-        <tr><td>Graphics card</td><td>RTX 5080-class or better, 16 GB+, ≤ case limit (440 mm), 12V-2x6</td><td>Dark, wood or gold; its lighting can match the fans or turn off</td><td>Large lit logos fighting the fan color</td></tr>
-        <tr><td>Motherboard</td><td>AM5, X870/X870E, ATX, DDR5, PCIe 5.0, ≥2 addressable-lighting headers, Wi-Fi</td><td>Dark with warm metal or wood accents</td><td>White boards</td></tr>
-        <tr><td>Memory</td><td>DDR5-6000, AMD EXPO, 2 sticks</td><td>Gold or dark; light bar can match the fans</td><td>Four sticks unless chosen deliberately (slower on AM5)</td></tr>
-        <tr><td>Power supply</td><td>ATX 3.1, 850–1000 W, fully modular, ≤210 mm</td><td>Hidden in the rear chamber</td><td>Non-modular units</td></tr>
-        <tr><td>Posts</td><td>Carry ~15 kg (case + parts) with margin; flat ends; one hollow</td><td>Brass, unlacquered</td><td>Plated steel</td></tr>
-      </tbody></table></div>
-  </section>
-
-  <section id="make">
-    <span class="eyebrow">5 · Make</span>
-    <h2>Things we can't buy, and how to make them</h2>
-    <p>Each item lists what it does, materials, steps, and who should help. SVG cut files, the wiring diagram and the code are prepared separately and shared with whoever makes that piece. All measurements come from the real case once it arrives.</p>
-
-    <div class="make">
-      <h3>5.1 The walnut base</h3>
-      <p><b>Job:</b> carry the case on its posts, hold the toggle, indicator, seam, controller and wiring. <b>Size:</b> the C8's footprint (≈303 × 464 mm), 9 cm tall. <b>No holes:</b> the gap above it handles airflow.</p>
-      <ol>
-        <li><b>Frame:</b> 12 mm birch plywood box (bottom plate, top, four sides) with internal blocking under each post position.</li>
-        <li><b>Walnut skins:</b> 3 mm walnut plywood on the top and four sides. Each side skin is cut as two horizontal bands with a 6 mm gap at 3.6 cm from the bottom, for the brass line.</li>
-        <li><b>Inside:</b> a shelf for the controller, an LED channel behind the seam, a pocket in the front for the ray module, and a wire path from the controller to the back-right post.</li>
-        <li><b>Bottom:</b> removable panel on screws or magnets; felt feet.</li>
-        <li><b>Finish:</b> hardwax oil on the walnut before sanding the brass flush.</li>
-      </ol>
-      <p class="small">Cut at a makerspace laser or via an online service. Test-cut in MDF first. Tools: clamps, wood glue, two-part epoxy, sandpaper. ≈$100–200 in materials and cutting.</p>
-    </div>
-
-    <div class="make">
-      <h3>5.2 Brass posts (the float)</h3>
-      <ol>
-        <li>Four 4 cm lengths of ~2.2 cm (7/8") brass: three solid round bar, one thick-wall tube for the wires. Face both ends square (a metal shop or a lathe at a makerspace).</li>
-        <li>Drill and tap each end: the bottom takes a bolt up through the base's blocking; the top takes a bolt through the case's foot mounting holes (remove the C8's stock feet).</li>
-        <li>The hollow post lines up with a hole in the base top and a grommeted hole in the case floor (rear chamber), so the switch and lighting wires pass straight up.</li>
-        <li>Small brass washers under each post; leave unlacquered.</li>
-        <li><b>Keep the gap clear:</b> nothing on the base top under the case. The bottom filter must still slide out.</li>
-      </ol>
-    </div>
-
-    <div class="make">
-      <h3>5.3 Brass inlay line, lit seam and cord clip</h3>
-      <ol>
-        <li>Flat brass bar ≈1.5 × 6 mm, set with epoxy into the 6 mm gap between skin bands, then sanded flush. Path: from the toggle, around the front-left corner, along the left side, around to the back, ending at the cord clip under the power supply's socket.</li>
-        <li>Directly below the brass, a 1.5 mm reveal is lit from inside by warm LEDs: the seam.</li>
-        <li>The cord clip is a brass half-ring with two small screwed flanges (a bent brass strip or a small brass pipe clamp works). The cord drops straight down from the socket, past the gap, into the clip.</li>
-      </ol>
-    </div>
-
-    <div class="make">
-      <h3>5.4 The brass toggle and the controller</h3>
-      <ul>
-        <li><b>Why a controller:</b> a PC wants a momentary press, but brass toggles latch. A small microcontroller reads the toggle and sends the PC a 0.2 s "press" through an <b>optocoupler</b> (e.g. PC817), keeping the PC electrically separate.</li>
-        <li><b>Wiring:</b>
-          <ul>
-            <li>Toggle → controller input.</li>
-            <li>Controller output → optocoupler → motherboard <b>PWR_SW</b> header, up through the hollow post.</li>
-            <li>Motherboard <b>power-LED header</b> → second optocoupler → controller input, so it knows on / asleep / off.</li>
-            <li>Rays (12 addressable LEDs), seam LEDs and edge strips (via a MOSFET module) → controller.</li>
-          </ul></li>
-        <li><b>Power:</b> a USB-C charger in the Extō keeps the controller alive while the PC sleeps (so the seam can breathe).</li>
-        <li><b>Software:</b> a small PC program reads CPU and graphics card power and sends watts over USB; 1 ray per 50 W. The fans and memory lighting are set from the PC (SignalRGB or OpenRGB), default gold.</li>
-        <li><b>The C8's own power button</b> still works; ignore it or hide it.</li>
-      </ul>
-      <p class="small">Low voltage only. Arduino-level skills.</p>
-    </div>
-
-    <div class="make">
-      <h3>5.5 Dead-front ray indicator</h3>
-      <p>Thin walnut veneer (~0.6 mm) laser-drilled with ~0.3 mm holes along 12 ray lines around the toggle, over 3 mm opal acrylic and a light-blocking grid (one cell per ray), with the 12 LEDs behind. Drops into the pocket in the base front. Test hole size on scrap veneer.</p>
-    </div>
-
-    <div class="make">
-      <h3>5.6 The reeded wrap</h3>
-      <ul>
-        <li>Reeded film on the inside face of the curved glass, reeds running vertically, so the film only bends in one direction around the corner. Apply wet with a felt squeegee, working from the middle of the curve outward.</li>
-        <li>A light bronze tint film under it if you want the warmer veil.</li>
-        <li>Buy extra; the first attempt on a curve may need a redo.</li>
-      </ul>
-    </div>
-
-    <div class="make">
-      <h3>5.7 Fans and lighting setup</h3>
-      <ul>
-        <li>3 × 120 mm bottom (intake through the gap), 3 × side (intake), 3 × top on the radiator (exhaust), 1 × rear (exhaust).</li>
-        <li>Daisy-chain lighting and power where the fans allow; connect to the motherboard's 5 V addressable headers or a SATA-powered hub.</li>
-        <li>Default: steady gold. Slow breathe as an option. Set the memory's light bar the same.</li>
-        <li>Warm edge strips in channels along the top and bottom front edges and the back corner, as fill.</li>
-        <li>Gold mirror strips on the divider in front of the motherboard to bounce light.</li>
-      </ul>
-    </div>
-
-    <div class="make">
-      <h3>5.8 Lit cord</h3>
-      <p>The stock power cord (never cut) inside a translucent orange braided sleeve with a side-glow fiber, lit from a small LED at the clip and set by the controller to match the seam.</p>
-    </div>
-  </section>
-
-  <section id="safety">
-    <span class="eyebrow">6 · Safety</span>
-    <h2>Safety and serviceability rules</h2>
-    <ul>
-      <li><b>Mains:</b> never cut, splice or re-sleeve a mains cord's insulation. Sleeves go over certified cords.</li>
-      <li><b>12V-2x6:</b> push the graphics card's power connector in until it clicks with no gap; check it after the first gaming session.</li>
-      <li><b>The gap is an air intake:</b> keep it clear; clean the bottom filter every few months.</li>
-      <li><b>Posts:</b> bolt them through solid blocking; check the case can't tip (the case is taller than wide).</li>
-      <li><b>Conductive materials:</b> mirror film edges stay off circuit boards and pins.</li>
-      <li><b>LED voltage:</b> 5 V addressable parts only on 5 V headers.</li>
-      <li><b>Static:</b> touch the case frame before handling parts.</li>
-    </ul>
-  </section>
-
-  <section id="sequence">
-    <span class="eyebrow">7 · Sequence</span>
-    <h2>Build order and timeline</h2>
-    <div class="tw"><table class="t">
-      <thead><tr><th>When</th><th>What</th></tr></thead>
-      <tbody>
-        <tr><td>Now</td><td>Order the Extō (2–3 week lead). Confirm the C8 Curve's top radiator support and wood. Buy a roll of reeded film to test.</td></tr>
-        <tr><td>Black Friday</td><td>Buy the parts: case, fans, CPU, board, card, memory, storage, cooler, power supply.</td></tr>
-        <tr><td>When parts arrive</td><td>Test the board, CPU, one memory stick and cooler outside the case; update the BIOS. Measure the case and its foot holes; finalize the base and post drawings; MDF test cut.</td></tr>
-        <tr><td>Build weekend</td><td>Build the PC in the C8, fit fans and amber cables, set lighting. Apply the reeded film. Make the base and posts, set the brass, wire the toggle through the hollow post.</td></tr>
-        <tr><td>Later</td><td>Dead-front rays, lit cord, breathing and power-draw code.</td></tr>
-      </tbody></table></div>
-  </section>
-
-  <section id="helpers">
-    <span class="eyebrow">8 · Helpers</span>
-    <h2>Who helps with what</h2>
-    <ul>
-      <li><b>Woodworker or makerspace:</b> the base, the brass inlay channel, test cuts.</li>
-      <li><b>Metal shop or lathe:</b> facing, drilling and tapping the brass posts.</li>
-      <li><b>Electronics friend:</b> controller, optocouplers, LEDs, the wire run through the hollow post.</li>
-      <li><b>Builder:</b> the PC itself, fans and lighting software, film, finishing.</li>
-    </ul>
-  </section>
-
-  <section id="open">
-    <span class="eyebrow">9 · Open</span>
-    <h2>Open decisions</h2>
-    <ul>
-      <li><b>Graphics card:</b> wood, gold, or plain dark (the reeds hide most of it; a plain card saves nothing much at current prices but widens availability).</li>
-      <li><b>Fan line:</b> pick one programmable 120 mm fan line with good reviews and daisy-chaining.</li>
-      <li><b>C8 Curve top radiator support:</b> confirm before buying the cooler.</li>
-      <li><b>C8 wood:</b> solid walnut or a finish (check in person or ask Antec).</li>
-    </ul>
-  </section>
-
-  <section id="planb">
-    <span class="eyebrow">Appendix</span>
-    <h2>Plan B: the same idea in the Fractal North XL</h2>
-    <p>If the C8 doesn't work out, the build translates to the Fractal Design North XL (walnut slat front, flat glass side, power supply at the bottom). <a href="https://claude.ai/artifact/EfDpe1dekWnbuGb4foMizL" target="_blank" rel="noopener">See the North XL model</a> (a separate page; may require access).</p>
-    <ul>
-      <li><b>Reeded flat side</b> instead of the curved wrap.</li>
-      <li><b>No float:</b> the case sits directly on the base, which breathes for the power supply through vertical slots at the back and the rear half of each side, on the same column grid as the front slats.</li>
-      <li><b>Walnut slat cap</b> over brass mesh on the top; brass mesh behind the front slats.</li>
-      <li><b>Lighting:</b> plain fans, light from warm edge strips (or swap to programmable fans).</li>
-      <li><b>Back:</b> stock or a perforated black steel or brass plate if the stock back is solid.</li>
-      <li>Everything else (toggle, rays, brass line, seam, clip, Extō, board, memory) carries over.</li>
-    </ul>
-  </section>
-
-  <section id="credits">
-    <span class="eyebrow">Notes</span>
-    <h2>About this project</h2>
-    <p class="small">A free, for-fun design shared as-is. Product names belong to their makers; nothing here is sponsored. Prices and availability are from November 2026. If you build one, check every part against your own case and parts, and follow the safety rules above.</p>
-  </section>
-  </article>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>

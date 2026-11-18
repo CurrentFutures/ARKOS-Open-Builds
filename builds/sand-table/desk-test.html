@@ -1,0 +1,173 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Sand Table Desk Test</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{--paper:#f6f2ea;--card:#fffdf8;--ink:#1f1b16;--dim:#5e564c;--line:#d9d1c3;--accent:#8a6a2c;--warn:#9a3b1f;--warnbg:#f8e9df;--tip:#eef1e7;
+ --part:#1f1b16;--fillA:#e6e0d4;--fillB:#cfd8d6;--fillC:#c9bfae;--glass:#bfe3dc;--led:#e7b552;--mains:#b4442a;--earth:#2f7d3b;--dc:#1f1b16;--data:#2d5f9a;
+ --display:Georgia,"Times New Roman",serif;--body:"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#171513;--card:#201d1a;--ink:#ece6dc;--dim:#a99f92;--line:#3a342d;--accent:#d8b36a;--warn:#f0a585;--warnbg:#3a231a;--tip:#232a20;
+ --part:#ece6dc;--fillA:#2f2b26;--fillB:#2b3836;--fillC:#3d362d;--glass:#2c5a52;--led:#c99a3a;--mains:#e0755a;--earth:#69b878;--dc:#ece6dc;--data:#7fa9df;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#171513;--card:#201d1a;--ink:#ece6dc;--dim:#a99f92;--line:#3a342d;--accent:#d8b36a;--warn:#f0a585;--warnbg:#3a231a;--tip:#232a20;
+ --part:#ece6dc;--fillA:#2f2b26;--fillB:#2b3836;--fillC:#3d362d;--glass:#2c5a52;--led:#c99a3a;--mains:#e0755a;--earth:#69b878;--dc:#ece6dc;--data:#7fa9df;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:900px;margin:0 auto;padding:40px max(16px,env(safe-area-inset-left,0px)) 80px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.02;margin:6px 0 14px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:1.75rem;margin:56px 0 6px;padding-top:14px;border-top:2px solid var(--ink);text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:1.2rem;margin:30px 0 6px}
+p,li{max-width:70ch}p{margin:8px 0}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.lede{font-size:1.1rem;color:var(--dim)}
+a{color:var(--accent);text-underline-offset:3px;word-break:break-word}
+code,kbd,.mono{font-family:var(--mono);font-size:.86em}
+pre{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 14px;overflow-x:auto;font-size:.82rem;line-height:1.45;max-width:100%}
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin:20px 0}
+.hero img{width:100%;border-radius:6px;display:block;background:#111}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:18px 0}
+.facts div{background:var(--card);padding:10px 12px}.facts b{display:block;font-family:var(--display);font-size:1.25rem;font-weight:600}.facts span{font-size:.8rem;color:var(--dim)}
+main{counter-reset:st}ol.steps{list-style:none;padding:0;margin:0}
+ol.steps>li{counter-increment:st;position:relative;padding:14px 0 14px 52px;border-top:1px solid var(--line);max-width:none}
+ol.steps>li::before{content:counter(st);position:absolute;left:0;top:14px;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font-family:var(--display);font-weight:600}
+ol.steps>li>b:first-child{font-family:var(--display);font-size:1.08rem}
+ol.sub{margin:6px 0;padding-left:1.2em}ol.sub li{margin:4px 0}
+.timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:14px 0;font-size:.78rem}
+.timeline div{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:6px 8px}.timeline b{display:block;font-size:.85rem}
+.warn,.tip,.check{border-radius:0 6px 6px 0;padding:10px 14px;margin:12px 0;font-size:.94rem;max-width:72ch}
+.warn{background:var(--warnbg);border-left:4px solid var(--warn)}.warn b:first-child{color:var(--warn)}
+.tip{background:var(--tip);border-left:4px solid var(--earth)}
+.check{background:var(--card);border-left:4px solid var(--accent)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px;margin:12px 0;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{text-align:left;vertical-align:top;padding:7px 10px;border-top:1px solid var(--line)}
+thead th{border-top:0;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:500}
+td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+tr.g td{background:var(--paper);font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.ok{color:var(--earth);font-weight:700}
+figure.dg{margin:16px 0;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px}
+figure.dg svg{width:100%;height:auto;display:block;max-height:440px}
+figure.dg.sm svg{max-height:300px}
+figcaption{font-size:.82rem;color:var(--dim);margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.photo{margin:14px 0}.photo img{width:100%;border-radius:6px;display:block;background:#111}
+.toc{columns:2;gap:28px;padding-left:1.2em;font-size:.95rem}
+svg .part,svg .plate{fill:var(--fillA);stroke:var(--part);stroke-width:1}
+svg .conc{fill:var(--fillC);stroke:var(--part);stroke-width:1}
+svg .hole,svg .csk{fill:var(--paper);stroke:var(--part);stroke-width:.8}svg .csk{stroke-dasharray:2 1}
+svg .hole2,svg .win,svg .cut{fill:var(--paper);stroke:var(--part);stroke-width:.9}
+svg .win{fill:var(--glass)}
+svg .slot{fill:var(--paper);stroke:var(--part);stroke-width:.6}
+svg .band{fill:var(--paper);stroke:none;opacity:.85}svg .fade{stroke:var(--dim);stroke-dasharray:3 2;fill:none;stroke-width:.6}
+svg .ps{fill:var(--fillB);stroke:var(--part);stroke-width:.5}svg .pw{fill:var(--glass);stroke:var(--part);stroke-width:.5}
+svg .ring{fill:var(--paper);stroke:var(--part);stroke-width:.5}
+svg .rod{stroke:var(--part);stroke-width:1.6}svg .nut{fill:var(--fillC);stroke:var(--part);stroke-width:.7}
+svg .led{fill:var(--led);opacity:.75;stroke:none}svg .pc{fill:none;stroke:var(--dim);stroke-dasharray:4 3}
+svg .zone{fill:var(--glass);opacity:.35;stroke:none}
+svg .air,svg .vault,svg .void{fill:var(--paper);stroke:var(--part);stroke-width:.8}
+svg .gasket{fill:var(--ink)}svg .lid,svg .bp{fill:var(--fillB);stroke:var(--part);stroke-width:.6}
+svg .psu,svg .ctl,svg .inl{fill:var(--fillB);stroke:var(--part);stroke-width:.8}svg .btn{fill:var(--led);stroke:var(--part);stroke-width:.6}
+svg .sled{fill:none;stroke:var(--part);stroke-width:1;stroke-dasharray:5 3}svg .felt{fill:var(--ink);opacity:.75}
+svg .mold{fill:var(--fillA);stroke:var(--part);stroke-width:1}svg .core,svg .core2{fill:var(--glass);stroke:var(--part);stroke-width:.8}
+svg .insert{fill:var(--ink)}svg .bolt{stroke:var(--part);stroke-width:2}svg .ledge{fill:var(--ink)}
+svg .frame{fill:var(--fillA);stroke:var(--part)}svg .drive{fill:var(--fillB);stroke:var(--part);stroke-width:.8}svg .cord{stroke:var(--ink);stroke-width:.8}svg .run{fill:var(--ink)}
+svg .blk{fill:var(--card);stroke:var(--part);stroke-width:1}svg .mains{fill:var(--warnbg);stroke:var(--mains);stroke-width:1.4}
+svg .acw{stroke:var(--mains);stroke-width:2}svg .earth{stroke:var(--earth);stroke-width:2}svg .dc{stroke:var(--dc);stroke-width:1.6}
+svg .usb{stroke:var(--data);stroke-width:1.6;fill:none}svg .sig{stroke:var(--data);stroke-width:1.2;stroke-dasharray:4 2}
+svg .thin{stroke:var(--part);stroke-width:.6}svg .dim{stroke:var(--dim);stroke-width:.6}svg .arh{fill:var(--dim)}
+svg .ldr{stroke:var(--dim);stroke-width:.5}svg .dot{fill:var(--dim)}
+svg text{fill:var(--ink);font-family:var(--body)}svg .s{font-size:7px;fill:var(--dim)}svg .d{font-size:7.5px;fill:var(--dim);font-family:var(--mono)}svg .m{font-size:8.5px;font-weight:600}
+@media (max-width:700px){.hero,.two{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:1fr 1fr 1fr}.toc{columns:1}}
+@media print{:root{--paper:#fff;--card:#fff}body{font-size:10.5pt}.wrap{max-width:none;padding:0}h2{break-before:page;margin-top:0}figure,table,.warn,.tip,.check,ol.steps>li{break-inside:avoid}a{color:var(--ink)}}
+
+svg .sand{fill:var(--dim)}
+table.rec td{height:2.1em}table.rec td:first-child{white-space:nowrap}
+.decide{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--card)}
+.decide div{padding:9px 12px;border-top:1px solid var(--line)}.decide div:nth-child(-n+2){border-top:0}.decide div:nth-child(odd){color:var(--dim);font-size:.9rem}
+</style>
+<main class="wrap">
+<span class="eyebrow">The Sand Table · before anything is built</span>
+<h1>Sand Table Desk Test</h1>
+<p class="lede">One afternoon at a kitchen table, about $150–300 in parts. It answers the questions the whole design rests on, before any concrete, walnut or brass is ordered.</p>
+<div class="facts"><div><b>3–4 hours</b><span>plus shopping</span></div><div><b>$150–300</b><span>less if you borrow a driver</span></div><div><b>2 plates</b><span>30 and 40 cm</span></div><div><b>5 answers</b><span>to bring back</span></div></div>
+
+<h2>What it decides</h2>
+<div class="decide">
+<div>Plate size</div><div>30 or 40 cm (or between). Bigger plates have more figures, crowded closer together, and are harder to drive cleanly.</div>
+<div>Driver</div><div>Which driver makes clean figures on brass at a sensible volume, and whether it fits under the plate (35 mm in the tray).</div>
+<div>Frequencies and loudness</div><div>Which notes make clean figures, and how loud each is at 1 m. Sets the volume ceiling.</div>
+<div>The blur</div><div>Whether adding noise to the drive visibly smears the figure from across a room. This is the core idea.</div>
+<div>Sand loss</div><div>How much sand leaves the plate per verdict, so the tray's catch dish can be sized and top-ups planned.</div>
+</div>
+
+<h2>What you need</h2>
+<div class="tbl"><table><thead><tr><th>Part</th><th>What to get</th><th>Qty</th><th>Where</th><th>Rough cost</th></tr></thead><tbody><tr><td>Brass sheet</td><td>C260 brass, 1 mm, two squares: 30 and 40 cm, each with a 6.5 mm centre hole, edges deburred.</td><td class="n">2</td><td><a href="https://www.google.com/search?q=C260+brass+sheet+1mm+cut+to+size">search</a></td><td class="n">$50–100</td></tr><tr><td>Wave driver</td><td>A mechanical wave driver with a post (PASCO WA-9855 or similar; schools and physics departments often lend them). The older PASCO SF-9324 is discontinued.</td><td class="n">1</td><td><span class=ok>✓</span> <a href="https://cdn.pasco.com/product_document/Chladni-Plates-Kit-WA-9607-Manual.pdf">PASCO Chladni kit manual (PDF)</a></td><td class="n">$0–250</td></tr><tr><td>Amplifier</td><td>Small class-D board, 2 × 50 W (TPA3116 type), with a 24 V supply.</td><td class="n">1</td><td><a href="https://www.google.com/search?q=TPA3116+amplifier+board+24V">search</a></td><td class="n">$25–45</td></tr><tr><td>Glass microbeads</td><td>Round glass beads about 100–200 micrometres (sold as glass-bead blasting media, around #10–#11; check the supplier&#x27;s sieve range). 1 kg. No silica sand: fine silica dust is harmful to breathe.</td><td class="n">1 kg</td><td><span class=ok>✓</span> <a href="https://www.mcmaster.com/products/blasting-media/">McMaster-Carr blasting media</a></td><td class="n">$15–30</td></tr><tr><td>Odds</td><td>Baking sheet, kitchen scale (0.1 g), ear protection, phone sound-meter app, M6 bolt and washers.</td><td class="n"></td><td>kitchen / hardware store</td><td class="n">$20–40</td></tr>
+<tr><td>Laptop</td><td>With Audacity (free, works offline) to make the test tones, and a 3.5 mm to RCA cable to the amplifier.</td><td class="n">1</td><td><a href="https://www.audacityteam.org/download/">Audacity</a></td><td class="n">$0–10</td></tr>
+<tr><td>Camera</td><td>A phone on a stand or a stack of books, pointing straight down at the plate.</td><td class="n">1</td><td></td><td class="n">$0</td></tr></tbody></table></div>
+<p>A <span class="ok">✓</span> means the link was checked and points at the item or its maker's page. A physics department or a school science teacher may lend you a wave driver.</p>
+<div class="warn"><b>Glass microbeads only.</b> Don't use fine silica sand, even for the test: some carries dust that's harmful to breathe. The beads are too coarse to breathe in, but keep the bag closed and out of reach of small children, and work over the baking sheet.</div>
+<div class="warn"><b>Ears.</b> Brass plates can be piercing at high notes. Wear ear protection while sweeping, start with the amplifier turned all the way down, and take it off only for the loudness readings.</div>
+
+<h2>Make the test sounds</h2>
+<p>All in Audacity, before you start. Export each as a WAV file.</p>
+<ol class="steps">
+<li><b>Sweep:</b> Generate → Chirp. Sine, start 80 Hz, end 1,200 Hz, amplitude 0.8 both ends, interpolation <i>logarithmic</i>, duration 600 s (10 minutes). Save as <code>sweep.wav</code>.</li>
+<li><b>Holding tones:</b> you'll make these during the test, once you know the good frequencies: Generate → Tone, sine, that frequency, amplitude 0.8, 10 s.</li>
+<li><b>Noisy tones:</b> for your favourite frequency, make the tone on one track and pink noise (Generate → Noise, pink) on a second track, then set the noise track's gain so its amplitude is about 0.08, 0.24 and 0.48 (10%, 30% and 60% of the tone). Export each mix: <code>noise-10.wav</code>, <code>noise-30.wav</code>, <code>noise-60.wav</code>. This is close to what the controller does when the agent was unsettled.</li>
+</ol>
+
+<h2>Set up</h2>
+<figure class="dg"><svg viewBox="-10 20 560 165" role="img" aria-label="Desk test setup"><title>Desk test setup</title><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" class="arh"/></marker></defs><rect x="0" y="150" width="300" height="8" class="frame"/><text x="150" y="172" text-anchor="middle" class="s">baking sheet catches the sand</text><rect x="110" y="90" width="80" height="60" class="blk" rx="6"/><text x="150" y="124" text-anchor="middle" class="s">driver</text><rect x="146" y="74" width="8" height="16" class="bp"/><rect x="30" y="70" width="240" height="4" class="plate"/><circle cx="40" cy="67" r="1.25" class="dot"/><circle cx="49" cy="67" r="1.25" class="dot"/><circle cx="58" cy="67" r="1.25" class="dot"/><circle cx="67" cy="67" r="1.25" class="dot"/><circle cx="76" cy="67" r="1.25" class="dot"/><circle cx="85" cy="67" r="1.25" class="dot"/><circle cx="94" cy="67" r="1.25" class="dot"/><circle cx="103" cy="67" r="1.25" class="dot"/><circle cx="112" cy="67" r="1.25" class="dot"/><circle cx="121" cy="67" r="1.25" class="dot"/><circle cx="130" cy="67" r="1.25" class="dot"/><circle cx="139" cy="67" r="1.25" class="dot"/><circle cx="148" cy="67" r="1.25" class="dot"/><circle cx="157" cy="67" r="1.25" class="dot"/><circle cx="166" cy="67" r="1.25" class="dot"/><circle cx="175" cy="67" r="1.25" class="dot"/><circle cx="184" cy="67" r="1.25" class="dot"/><circle cx="193" cy="67" r="1.25" class="dot"/><circle cx="202" cy="67" r="1.25" class="dot"/><circle cx="211" cy="67" r="1.25" class="dot"/><circle cx="220" cy="67" r="1.25" class="dot"/><circle cx="229" cy="67" r="1.25" class="dot"/><circle cx="238" cy="67" r="1.25" class="dot"/><circle cx="247" cy="67" r="1.25" class="dot"/><circle cx="256" cy="67" r="1.25" class="dot"/><rect x="330" y="90" width="90" height="40" class="blk" rx="4"/><text x="375" y="114" text-anchor="middle" class="s">amplifier</text><rect x="450" y="90" width="90" height="40" class="blk" rx="4"/><text x="495" y="108" text-anchor="middle" class="s">laptop:</text><text x="495" y="120" text-anchor="middle" class="s">tone + noise</text><line x1="190" y1="120" x2="330" y2="110" class="dc"/><line x1="420" y1="110" x2="450" y2="110" class="dc"/><line x1="240" y1="66" x2="330" y2="40" class="ldr"/><circle cx="240" cy="66" r="0.8" class="dot"/><text x="332" y="43" text-anchor="start" class="s">glass microbeads, a thin even layer</text><line x1="150" y1="80" x2="330" y2="60" class="ldr"/><circle cx="150" cy="80" r="0.8" class="dot"/><text x="332" y="63" text-anchor="start" class="s">plate bolted at its centre</text></svg><figcaption>Side view. The plate is held only at its centre; its edges are free.</figcaption></figure>
+<ol class="steps">
+<li><b>Mount the 30 cm plate</b> on the driver through its centre hole, using the driver's own attachment (or an M6 bolt with a rubber washer under the plate and a nylon washer over it). The plate should sit level, edges free, over the baking sheet.</li>
+<li><b>Connect:</b> laptop headphone out → amplifier input; amplifier speaker output → driver. Amplifier volume all the way down. Laptop volume about 75%.</li>
+<li><b>Weigh</b> about 20 g of beads and write it down. Sprinkle them evenly through a tea strainer, just enough to grey the brass.</li>
+<li><b>Camera</b> straight above the plate. Note the room's background level on the sound meter.</li>
+</ol>
+
+<h2>The tests</h2>
+<h3>1 · Find the figures</h3>
+<p>Play <code>sweep.wav</code>. Raise the amplifier slowly until the beads begin to dance. Each time a clean figure forms, pause, note the time in the sweep (it maps to a frequency; Audacity shows it if you click the same point in the sweep), take a photo, and resume. Expect 5–15 figures.</p>
+<div class="tbl"><table class="rec"><thead><tr><th>Plate</th><th>Frequency (Hz)</th><th>Photo #</th><th>Clean? (1–5)</th><th>Notes on the shape</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div>
+
+<h3>2 · Loudness at each good figure</h3>
+<p>For each figure you rated 4 or 5: play its holding tone, set the amplifier just high enough that the figure forms in about 3 seconds, and note the amplifier setting. Take your ear protection off, and read the level at 1 m.</p>
+<div class="tbl"><table class="rec"><thead><tr><th>Plate</th><th>Frequency (Hz)</th><th>Amp setting</th><th>Forms in (s)</th><th>dB at 1 m</th><th>Livable?</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table></div>
+<div class="tip">Lower notes are usually quieter and kinder. A figure you'd happily hear several times a day is worth more than a beautiful one that makes you wince.</div>
+
+<h3>3 · The blur</h3>
+<p>On your favourite figure: let it form crisp with the plain tone, photograph it, then play each noisy version from a freshly scattered plate (tap the plate's edge to scatter, or play the 60% noise for a few seconds first). Photograph each. Then stand across the room.</p>
+<div class="tbl"><table class="rec"><thead><tr><th>Drive</th><th>Photo #</th><th>Readable from across the room?</th><th>How it sounds</th></tr></thead><tbody><tr><td>Plain tone</td><td></td><td></td><td></td></tr><tr><td>10% noise</td><td></td><td></td><td></td></tr><tr><td>30% noise</td><td></td><td></td><td></td></tr><tr><td>60% noise</td><td></td><td></td><td></td></tr></tbody></table></div>
+<div class="check"><b>What you're looking for:</b> a clear, continuous change from crisp to smeared that someone who knows nothing about it can see from 3 m. If 10% already looks smeared, the controller can use a gentler scale. If 60% still looks crisp, the noise needs to be stronger (or the drive should also wander off the note).</div>
+
+<h3>4 · Sand loss</h3>
+<p>Weigh the plate's sand (brush it onto paper and weigh it, then sprinkle it back). Play a 3-second holding tone 20 times, letting it settle between each. Weigh again.</p>
+<div class="tbl"><table class="rec"><thead><tr><th>Plate</th><th>Start (g)</th><th>After 20 (g)</th><th>Lost per verdict (g)</th></tr></thead><tbody><tr><td>30 cm</td><td></td><td></td><td></td></tr><tr><td>40 cm</td><td></td><td></td><td></td></tr></tbody></table></div>
+
+<h3>5 · Repeat on the 40 cm plate</h3>
+<p>Tests 1–4 again. If you have a second driver to compare, run test 1 and 2 with it on the plate you prefer.</p>
+<div class="tbl"><table class="rec"><thead><tr><th>Driver</th><th>Height (mm)</th><th>Cleanest figure (Hz)</th><th>dB at 1 m</th><th>Notes</th></tr></thead><tbody><tr><td>Driver 1</td><td></td><td></td><td></td><td></td></tr><tr><td>Driver 2</td><td></td><td></td><td></td><td></td></tr></tbody></table></div>
+
+<h3>6 · Two quick extras</h3>
+<ul>
+<li><b>The ring-down:</b> stop the tone abruptly and listen. The brass should keep ringing for a moment, like a bell. Note how long.</li>
+<li><b>The cover:</b> rest a sheet of glass (or a picture-frame glass) on four felt pads about 10 mm above the plate's edges and play a verdict. Does it buzz? If so, felt and weight fix it in the real tray.</li>
+</ul>
+
+<h2>Bring back</h2>
+<div class="decide">
+<div>Plate size</div><div>&nbsp;</div>
+<div>Driver (and its height)</div><div>&nbsp;</div>
+<div>Good frequencies</div><div>&nbsp;</div>
+<div>Amp setting for a 3 s figure</div><div>&nbsp;</div>
+<div>Loudest acceptable dB at 1 m</div><div>&nbsp;</div>
+<div>Noise level that reads as "unsettled"</div><div>&nbsp;</div>
+<div>Sand lost per verdict</div><div>&nbsp;</div>
+</div>
+<h3>Then</h3>
+<ol>
+<li>Set the plate size in <b>the-sand-table-model.html</b> and press <b>Cut files</b>.</li>
+<li>Copy the amplifier setting into the build notes, and set the firmware's <code>MAX_DRIVE</code> low to start (0.3); raise it to match.</li>
+<li>Keep the photos: they're the first honest pictures of the object, and the best thing to show reviewers.</li>
+<li>Pour the beads back into their bag through a funnel. Wipe the plate with a dry cloth.</li>
+</ol>
+</main>
+</body></html>

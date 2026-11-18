@@ -9,7 +9,10 @@ A thin layer of algae, warmed by a habitat's thermal loop and lit from behind. T
 
 ## Files
 
-- [render/index.html](render/index.html): interactive tile study. Move the loop temperature and days since harvest to see where a tile settles. Download it and open it in a browser.
+- [render/index.html](render/index.html): interactive tile study. Move the loop temperature and days since harvest to see where a tile settles.
+- [concept-board.html](concept-board.html): the first concept board: a corridor render, mood, three directions (wall panels, floor path, lantern modules) and tile anatomy.
+
+Open them in a browser.
 
 ## How it reads
 

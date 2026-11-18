@@ -19,8 +19,8 @@ ARKOS asks one question: **how do we live and work with technology when it's eve
 | [Living Light Wall](builds/living-light-wall/) | Wall tiles that grow food from waste heat and show the health of the system that heats them | Concept and desk tests |
 | [Living Indicator Tiles](builds/living-indicator-tiles/) | Backlit algae tiles that light a corridor and report on the habitat's thermal loop | Concept study |
 | [The Lantern](builds/lantern/) | A silent home media server built as furniture, in glass and concrete | Build book complete |
-| [The Sand Table](builds/sand-table/) | An agent's computer whose sand figure shows, from measurement, how sure it was | Build book complete |
-| [The Float](builds/the-float/) | A gaming PC as furniture, hovering above a walnut block | Build book v1 |
+| [The Sand Table](builds/sand-table/) | An agent's computer whose sand figure shows, from measurement, how settled it was | Designed; desk test next |
+| [The Float](builds/the-float/) | A gaming PC as furniture, hovering above a walnut block | Designed, not yet built |
 
 ## How to read a build
 

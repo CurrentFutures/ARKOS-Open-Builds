@@ -8,7 +8,10 @@ A home media server you'd want in the living room: a silent, fanless computer an
 
 ## Files
 
-- [build-book.html](build-book.html): interactive 3D model, full parts list with rough costs (November 2026), build steps and the rules that can't change. Download it and open it in a browser. The model is a render, not a photo.
+- [model.html](model.html): **the latest model.** Interactive 3D, plus buttons that make the shop cut files (DXF, for acrylic and aluminium) and the 17 glass print files in the colours you choose.
+- [build-book.html](build-book.html): the full build book: parts list with rough costs (November 2026), build steps and the rules that can't change.
+
+Open them in a browser. The model is a render, not a photo.
 
 ## In short
 

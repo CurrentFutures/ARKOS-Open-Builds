@@ -1,0 +1,446 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>The Lantern Model</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a product photo studio. The object alone on a dark sweep, controls below like a spec sheet. Single dark theme by choice. */
+:root{
+  color-scheme:dark;
+  --room:#141312; --wall:#1d1b19; --line:#34302b; --ink:#efe9e1; --dim:#aaa196; --brass:#c9a25a;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--room);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:28px 64px;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 28px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(2rem,4.6vw,3rem);margin:0;line-height:1;text-wrap:balance}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+p{margin:0;max-width:66ch}
+.stage{position:relative;width:100%;aspect-ratio:16/11;max-width:100%;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--room)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage .hint{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--dim);pointer-events:none}
+.stage .fail{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--dim)}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 28px}
+.group{display:flex;flex-direction:column;gap:8px;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:inherit;font-size:.85rem;color:var(--ink);background:var(--wall);border:1px solid var(--line);border-radius:99px;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--brass);color:#e9cf98;background:#2a2214}
+.seg button:focus-visible,.swatch input:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.swatch{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--dim);padding-left:4px}
+.swatch input{width:34px;height:26px;border:1px solid var(--line);border-radius:6px;background:none;padding:0;cursor:pointer}
+.note{background:var(--wall);border:1px solid var(--line);border-radius:6px;padding:14px 18px;display:flex;flex-direction:column;gap:4px}
+.note b{font-family:var(--display);font-weight:500;font-size:1.05rem}
+.parts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 28px;margin:0;padding:0;list-style:none;font-size:.9rem;color:var(--dim)}
+.parts li{border-top:1px solid var(--line);padding:6px 0;min-width:0}.parts b{color:var(--ink);font-weight:500}
+.sec2{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.sec2 h2{font-family:var(--display);font-weight:500;font-size:1.6rem;margin:10px 0 0;text-wrap:balance}
+.sec2 h3{font-family:var(--display);font-weight:500;font-size:1.15rem;margin:8px 0 0}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px}
+.tbl table{border-collapse:collapse;width:100%;min-width:720px;font-size:.88rem}
+.tbl th,.tbl td{text-align:left;vertical-align:top;padding:8px 12px;border-top:1px solid var(--line)}
+.tbl thead th{border-top:0;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:500}
+.tbl td.p{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl tr.g td{background:var(--wall);font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#e9cf98}
+.tbl td span{color:var(--dim)}
+.steps{margin:0;padding-left:1.4em;display:flex;flex-direction:column;gap:10px;max-width:80ch}
+.steps li{padding-left:.3em}.steps li b{color:var(--ink)}.steps li span{color:var(--dim)}
+.rules{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;color:var(--dim);max-width:80ch}.rules b{color:var(--ink);font-weight:500}
+a{color:#e9cf98;text-underline-offset:3px}
+@media (max-width:900px){.opts{grid-template-columns:1fr 1fr}.stage{aspect-ratio:4/5}}
+@media (max-width:560px){.opts,.parts{grid-template-columns:1fr}}
+</style>
+<div class="wrap">
+  <header>
+    <div style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">Build 2 · the media lantern · model and build files</span><h1>The lantern</h1></div>
+    <p style="color:var(--dim);max-width:56ch">The object on its own, every side. Drag to turn it; it slowly turns by itself when left alone. Use the switches to light it, open the back and pull the drives, or see through the concrete. When it looks right, make the files: cut files for the shops, and print files for the glass in the colors you chose.</p>
+  </header>
+  <div class="stage" id="stage">
+    <canvas id="c" aria-label="3D render of the lantern: a concrete base with a cube of upright glass panes, a computer inside. Drag to orbit, scroll or pinch to zoom."></canvas>
+    <span class="hint">DRAG TO ORBIT · SCROLL TO ZOOM</span>
+  </div>
+  <div class="opts">
+    <div class="group"><span class="eyebrow">Light</span>
+      <div class="seg" data-k="mode"><button type="button" id="m-off" data-v="off" aria-pressed="false">Off</button><button type="button" id="m-lamp" data-v="lamp" aria-pressed="false">Lamp</button><button type="button" id="m-evening" data-v="evening" aria-pressed="true">Evening</button><button type="button" id="m-color" data-v="color" aria-pressed="false">Color</button><button type="button" id="m-sleep" data-v="sleep" aria-pressed="false">Asleep</button></div>
+      <div class="seg"><label class="swatch" for="lightColor">Light color <input type="color" id="lightColor" value="#3cc8b4"></label></div></div>
+    <div class="group"><span class="eyebrow">Glass and film</span>
+      <div class="seg" data-k="film"><button type="button" id="f-on" data-v="on" aria-pressed="true">Film squares</button><button type="button" id="f-off" data-v="off" aria-pressed="false">Tint only</button></div>
+      <div class="seg" data-k="band"><button type="button" id="b-on" data-v="on" aria-pressed="true">Clear band at the bottom</button><button type="button" id="b-off" data-v="off" aria-pressed="false">Tint to the edge</button></div>
+      <div class="seg" data-k="inner"><button type="button" id="i-on" data-v="on" aria-pressed="true">Light inside the window</button><button type="button" id="i-off" data-v="off" aria-pressed="false">Edge light only</button></div>
+      <div class="seg"><label class="swatch" for="glassColor">Glass <input type="color" id="glassColor" value="#2a8c7c"></label><label class="swatch" for="filmColor">Film <input type="color" id="filmColor" value="#d98a3a"></label></div></div>
+    <div class="group"><span class="eyebrow">Open it up</span>
+      <div class="seg" data-k="open"><button type="button" id="o-closed" data-v="closed" aria-pressed="true">Closed</button><button type="button" id="o-xray" data-v="xray" aria-pressed="false">See through the base</button><button type="button" id="o-drives" data-v="drives" aria-pressed="false">Pull the drives</button><button type="button" id="o-lift" data-v="lift" aria-pressed="false">Lift the glass</button></div></div>
+    <div class="group"><span class="eyebrow">Hardware</span>
+      <div class="seg" data-k="hw"><button type="button" id="h-nickel" data-v="nickel" aria-pressed="true">Satin nickel</button><button type="button" id="h-chrome" data-v="chrome" aria-pressed="false">Polished chrome</button><button type="button" id="h-brass" data-v="brass" aria-pressed="false">Brass</button></div></div>
+    <div class="group" style="grid-column:1/-1"><span class="eyebrow">View</span>
+      <div class="seg" data-k="view"><button type="button" id="v-34" data-v="q" aria-pressed="true">Three-quarter</button><button type="button" id="v-front" data-v="front" aria-pressed="false">Front</button><button type="button" id="v-right" data-v="right" aria-pressed="false">Side</button><button type="button" id="v-back" data-v="back" aria-pressed="false">Back</button><button type="button" id="v-top" data-v="top" aria-pressed="false">Top</button><button type="button" id="v-low" data-v="low" aria-pressed="false">Low</button></div></div>
+    <div class="group" style="grid-column:1/-1"><span class="eyebrow">Make the files</span><div class="seg"><button type="button" id="mkCut">Cut files (DXF, for acrylic and aluminum)</button><button type="button" id="mkPrint">Print files for these colors (17 PNG)</button></div><output id="fileOut" style="font-family:var(--mono);font-size:.78rem;color:var(--dim)">The cut files never change. The print files use the glass and film colors and the band set above.</output></div>
+    <div class="group" style="grid-column:1/-1"><div class="seg"><button type="button" id="resetAll">Reset everything</button><button type="button" id="copySet">Copy my settings</button></div><output id="setOut" style="font-family:var(--mono);font-size:.78rem;color:var(--dim);user-select:all;word-break:break-all"></output></div>
+  </div>
+  <div class="note"><b>What you're seeing</b><p id="noteText"></p></div>
+  <ul class="parts">
+    <li><b>Glass:</b> 17 panes of 6 mm cast acrylic, 210 × 220 mm, 6 mm gaps, open top. Each pane steps darker toward the center.</li>
+    <li><b>Film:</b> a soft-edged square of color printed on each pane, growing toward the center, where it's just bigger than the window.</li>
+    <li><b>Window:</b> notched out of the middle 7 panes, 158 × 154 mm, around the computer.</li>
+    <li><b>Rods:</b> four M5 stainless rods with acorn nuts hold the panes as one block, on clear acrylic spacer rings.</li>
+    <li><b>Computer:</b> MINIX Z100-0dB, fanless, 123 × 120 × 46 mm, standing on edge.</li>
+    <li><b>Base:</b> cast GFRC concrete, 210 × 200 × 172 mm, on an inset felt plinth.</li>
+    <li><b>Top:</b> 8 mm aluminum plate with air slots under the pane gaps, LED strips under the pane edges and a grommet for the computer's cables.</li>
+    <li><b>Back:</b> 2 mm aluminum plate set flush in a cast rebate on four thumbscrews. Air slots, power inlet, HDMI and Ethernet across the top, where the air space is; a window onto the peak-hold label and a vent plug below.</li>
+    <li><b>Cables:</b> right-angle plugs point down, so the three cables drop straight down the back.</li>
+    <li><b>Vault:</b> two 3.5" drives standing in a sled on elastic cords, on plastic runners; it slides out the back.</li>
+    <li><b>Power:</b> one 12 V supply in the air space under the top plate runs the computer, drives and lights. One cord.</li>
+    <li><b>Button:</b> a flush steel button on the front: tap for on and off, double-tap for the next mode, hold for lamp.</li>
+  </ul>
+
+  <section class="sec2" id="build">
+    <h2>Parts</h2>
+    <p style="color:var(--dim)">Rough prices for November 2026. The build guide that comes with this model has every step, drawing and test; this is the shopping list.</p>
+    <div class="tbl"><table><thead><tr><th>Part</th><th>What to ask for</th><th>Where</th><th>Rough cost</th></tr></thead><tbody><tr class="g"><td colspan="4">Computer and storage</td></tr><tr><td>Mini PC</td><td>MINIX NEO Z100-0dB: fanless Intel N100, 123 × 120 × 46 mm, runs on 12–19 V DC. Fits the window with room to spare.</td><td><a href="https://www.minix.com.hk/products/z100-0db-fanless-n100-mini-pc" target="_blank" rel="noopener">MINIX product page</a></td><td class="p">$200–280</td></tr><tr><td>Hard drives</td><td>WD Red Plus 8 TB, model WD80EFPX: 5640 rpm, CMR. One holds the library, one the nightly copy. (The 12 TB WD120EFGX spins at 7200 rpm even though it reports 5400; too hot and loud for a sealed vault.)</td><td><a href="https://www.westerndigital.com/products/internal-drives/wd-red-plus-sata-3-5-hdd?sku=WD80EFPX" target="_blank" rel="noopener">Western Digital</a></td><td class="p">$360–440</td></tr><tr><td>USB to SATA adapters</td><td>USB 3 to 3.5&quot; SATA adapter cable with its own 12 V barrel input and UASP. You will test that each one lets the drive sleep and passes SMART (step 2).</td><td><a href="https://www.google.com/search?q=USB+3.0+to+SATA+adapter+3.5+inch+12V+UASP" target="_blank" rel="noopener">search</a></td><td class="p">$15–25 each</td></tr><tr><td>Short USB cables</td><td>USB-A to the adapter&#x27;s plug, right-angle, 30 cm, if the adapter cable is too long to coil neatly.</td><td><a href="https://www.google.com/search?q=right+angle+USB+3.0+cable+30cm" target="_blank" rel="noopener">search</a></td><td class="p">$10–15</td></tr><tr class="g"><td colspan="4">Glass</td></tr><tr><td>Cast acrylic, cut</td><td>Clear cast acrylic, 6 mm (0.236&quot;). Window panes ×8, solid panes ×12, spacer rings ×72, from the cut files the model makes. Cast only: extruded crazes.</td><td><a href="https://sendcutsend.com/materials/acrylic" target="_blank" rel="noopener">SendCutSend acrylic</a></td><td class="p">$250–400</td></tr><tr><td>…or a local laser shop</td><td>Same files and material. Ask them to anneal after cutting if they can.</td><td><a href="https://www.multicraftplastics.com/capabilities/laser-cnc.html" target="_blank" rel="noopener">Multicraft Plastics laser service</a></td><td class="p"></td></tr><tr><td>UV printing</td><td>Print the 17 pane files on the inward face: color only, no white ink, no varnish. One test pane first.</td><td><a href="https://www.google.com/search?q=UV+flatbed+printing+on+acrylic+near+me" target="_blank" rel="noopener">search: UV flatbed print shop</a></td><td class="p">$150–350</td></tr><tr class="g"><td colspan="4">Metal and hardware</td></tr><tr><td>Top plate</td><td>6061 aluminum, 8 mm (or 5/16&quot; = 7.9 mm), from top-plate.dxf. Countersinks as noted in the order sheet.</td><td><a href="https://sendcutsend.com" target="_blank" rel="noopener">SendCutSend</a></td><td class="p">$60–120</td></tr><tr><td>Back plate</td><td>5052 aluminum, 2 mm (0.080&quot;), from back-plate.dxf. 2 mm is the thickest panel the HDMI feed-through takes.</td><td><a href="https://sendcutsend.com" target="_blank" rel="noopener">SendCutSend</a></td><td class="p">$20–40</td></tr><tr><td>Vault lid</td><td>5052 aluminum, 3 mm (0.125&quot;), from vault-lid.dxf.</td><td><a href="https://sendcutsend.com" target="_blank" rel="noopener">SendCutSend</a></td><td class="p">$20–35</td></tr><tr><td>Rods</td><td>M5 stainless (A2) threaded rod, cut to 4 × 208 mm. The clear spacer rings hide the thread between panes.</td><td><a href="https://www.google.com/search?q=McMaster+M5+stainless+threaded+rod" target="_blank" rel="noopener">McMaster-Carr threaded rod</a></td><td class="p">$8–15</td></tr><tr><td>Acorn nuts</td><td>M5 stainless acorn (cap) nuts.</td><td><a href="https://www.mcmaster.com/products/metric-acorn-nuts/" target="_blank" rel="noopener">McMaster-Carr metric acorn nuts</a></td><td class="p">$8–12</td></tr><tr><td>Nylon washers</td><td>M5 nylon washers, between each acorn nut and the acrylic.</td><td><a href="https://www.google.com/search?q=M5+nylon+washer" target="_blank" rel="noopener">search</a></td><td class="p">$3</td></tr><tr><td>Pane standoffs</td><td>Stainless round spacers 8 mm OD × 4 mm long for M4, with M4 × 10 stainless countersunk screws from under the plate.</td><td><a href="https://www.google.com/search?q=M4+stainless+spacer+8mm+OD+4mm+long" target="_blank" rel="noopener">search</a></td><td class="p">$6–10</td></tr><tr><td>Cast-in inserts</td><td>M5 stainless threaded inserts made for casting into concrete (4 for the top plate, 4 for the back plate). Never zinc or aluminum.</td><td><a href="https://www.google.com/search?q=M5+stainless+cast+in+threaded+insert+concrete" target="_blank" rel="noopener">search</a></td><td class="p">$15–30</td></tr><tr><td>Screws</td><td>M5 × 16 stainless countersunk (top plate). M5 stainless knurled thumbscrews, 10–12 mm thread (back plate).</td><td><a href="https://www.google.com/search?q=M5+stainless+knurled+thumb+screw" target="_blank" rel="noopener">search</a></td><td class="p">$15–25</td></tr><tr><td>Sled</td><td>15 × 15 × 1.5 mm aluminum angle (about 1.5 m), 3 mm shock cord, 2 strips of 3 mm UHMW tape or strip for runners, small pull.</td><td><a href="https://www.google.com/search?q=15mm+aluminium+angle+1.5mm" target="_blank" rel="noopener">hardware store</a></td><td class="p">$25–40</td></tr><tr><td>Felt and seals</td><td>Wool felt 10 mm for the plinth and 3 mm for the vault walls; closed-cell neoprene strip 3 × 10 mm; Ø16 and Ø30 rubber grommets.</td><td><a href="https://www.google.com/search?q=wool+felt+sheet+3mm+10mm" target="_blank" rel="noopener">search</a></td><td class="p">$30–45</td></tr><tr><td>Heat pads</td><td>Soft silicone thermal gap pad, 3–5 mm, from each drive&#x27;s top edge to the vault lid.</td><td><a href="https://www.google.com/search?q=soft+thermal+gap+pad+5mm" target="_blank" rel="noopener">search</a></td><td class="p">$10–20</td></tr><tr><td>Peak-hold labels</td><td>Irreversible temperature labels, about 40–60 °C in 5 ° steps (Tempilabel or Thermax).</td><td><a href="https://toolup.com/collections/tempil-temperature-indicating-labels" target="_blank" rel="noopener">Tempil labels at ToolUp</a></td><td class="p">$15–30</td></tr><tr><td>Vent plugs</td><td>Two short felt-filled plugs: Ø20 in the back plate (low inlet) and the lid (high outlet). Turned from acrylic rod or any Ø20 push-in plug.</td><td><a href="https://www.google.com/search?q=20mm+push+in+hole+plug" target="_blank" rel="noopener">search</a></td><td class="p">$5–10</td></tr><tr class="g"><td colspan="4">Concrete base</td></tr><tr><td>GFRC mix</td><td>Buddy Rhodes GFRC blended mix with its fibers and polymer, about 12 kg made up. Follow its technical bulletin.</td><td><a href="https://sculpturesupply.com/products/concrete-gfrc-blended-mix" target="_blank" rel="noopener">Sculpture Supply</a></td><td class="p">$60–90</td></tr><tr><td>Mold</td><td>Melamine board 16 mm, 2 mm acrylic or melamine shim for the back rebate, XPS foam for the cores, silicone caulk, release agent.</td><td>hardware store</td><td class="p">$40–60</td></tr><tr><td>Sealer</td><td>Penetrating concrete sealer (matte).</td><td>hardware store</td><td class="p">$20–30</td></tr><tr class="g"><td colspan="4">Power, light and controls</td></tr><tr><td>Power supply</td><td>Mean Well LRS-100-12: 12 V, 8.5 A, fanless, 129 × 97 × 30 mm. Runs the computer, drives and lights.</td><td><a href="https://www.omc-stepperonline.com/lrs-100-12-mean-well-100w-12vdc-8-5a-115-230vac-enclosed-switching-power-supply.html" target="_blank" rel="noopener">OMC StepperOnline</a></td><td class="p">$25–35</td></tr><tr><td>Power inlet</td><td>Qualtek 719W-UEL3BB81: IEC C14 with fuse holder and switch. Panel cutout 46.5 × 27.5 mm. Fuse not included.</td><td><a href="https://www.digikey.com/en/products/detail/qualtek/719W-UEL3BB81/23019207" target="_blank" rel="noopener">Digi-Key</a></td><td class="p">$10–15</td></tr><tr><td>Fuse</td><td>Slow-blow, the size the inlet takes (5 × 20 mm): T2A for 120 V, T1A for 230 V.</td><td><a href="https://www.google.com/search?q=5x20mm+slow+blow+fuse+T2A" target="_blank" rel="noopener">search</a></td><td class="p">$3</td></tr><tr><td>HDMI feed-through</td><td>Neutrik NAHDMI-W (D-size, panel up to 2 mm).</td><td><a href="https://neutrik.com/product/nahdmi-w" target="_blank" rel="noopener">Neutrik</a></td><td class="p">$20–30</td></tr><tr><td>Ethernet feed-through</td><td>Neutrik NE8FDP (D-size RJ45).</td><td><a href="https://www.google.com/search?q=Neutrik+NE8FDP" target="_blank" rel="noopener">search: Neutrik NE8FDP</a></td><td class="p">$12–20</td></tr><tr><td>Light controller</td><td>QuinLED An-Penta-Mini: 5-channel analog controller for one RGBCCT strip, runs WLED, 3 button inputs.</td><td><a href="https://quinled.info/quinled-an-penta-mini" target="_blank" rel="noopener">QuinLED</a></td><td class="p">$35–50</td></tr><tr><td>LED strip</td><td>12 V FCOB 5-in-1 RGBCCT, CRI 90+, 2700–6500 K. 1 m is plenty (2 × 180 mm under the panes, 72 mm in the window).</td><td><a href="https://www.superlightingled.com/12v-fcob-5in1-led-rgbw-tunable-white-light-strip-960-super-high-density-p-6906.html" target="_blank" rel="noopener">Super Lighting LED</a></td><td class="p">$20–40</td></tr><tr><td>Button</td><td>19 mm stainless momentary push button, flat face (anti-vandal style), normally open.</td><td><a href="https://www.google.com/search?q=19mm+stainless+momentary+push+button+flat" target="_blank" rel="noopener">search</a></td><td class="p">$8–15</td></tr><tr><td>Window LED plug</td><td>Small 6-pin plug and socket so the window strip unplugs when the glass lifts off.</td><td><a href="https://www.google.com/search?q=6+pin+JST+SM+connector+pair" target="_blank" rel="noopener">search</a></td><td class="p">$5</td></tr><tr><td>DC pigtails</td><td>Barrel plugs to feed 12 V to the computer and the two drive adapters. Match each socket (check the plug on each supplied adapter).</td><td><a href="https://www.google.com/search?q=5.5x2.5+DC+barrel+pigtail" target="_blank" rel="noopener">search</a></td><td class="p">$8</td></tr><tr><td>Wire and earth</td><td>18 AWG mains-rated wire, 20 AWG for 12 V, green/yellow earth wire, ring terminals, star washers, lever connectors, heat-shrink.</td><td>electrical supply</td><td class="p">$15–25</td></tr><tr><td>Cables out</td><td>Fabric-covered IEC C13 cord; right-angle HDMI and Ethernet cables (plugs pointing down).</td><td><a href="https://www.google.com/search?q=fabric+braided+IEC+C13+cord" target="_blank" rel="noopener">search</a></td><td class="p">$30–60</td></tr></tbody></table></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/geometries/RoundedBoxGeometry.js"></script>
+<script>
+(function(){
+var stage=document.getElementById('stage'),canvas=document.getElementById('c');
+if(!window.THREE){stage.insertAdjacentHTML('beforeend','<div class="fail">The 3D library didn\'t load. Reload the page to try again.</div>');return;}
+var renderer;try{renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});}catch(e){stage.insertAdjacentHTML('beforeend','<div class="fail">This browser can\'t show 3D right now (WebGL is off).</div>');return;}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+var scene=new THREE.Scene();scene.background=new THREE.Color(0x141312);scene.fog=new THREE.Fog(0x141312,160,420);
+try{var pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new THREE.RoomEnvironment(),0.04).texture;}catch(e){}
+var camera=new THREE.PerspectiveCamera(30,1,1,1500);var controls=new THREE.OrbitControls(camera,canvas);
+controls.enableDamping=true;controls.dampingFactor=.08;controls.enablePan=false;controls.minDistance=35;controls.maxDistance=260;controls.maxPolarAngle=Math.PI*.52;
+
+function cnv(w,h){var c=document.createElement('canvas');c.width=w;c.height=h;return c;}
+function add(o,p){(p||scene).add(o);return o;}
+function mesh(g,m,x,y,z,p){var o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;return add(o,p);}
+function box(sx,sy,sz,x,y,z,m,p){return mesh(new THREE.BoxGeometry(sx,sy,sz),m,x,y,z,p);}
+function rbox(sx,sy,sz,r,x,y,z,m,p){return mesh(new THREE.RoundedBoxGeometry(sx,sy,sz,3,r),m,x,y,z,p);}
+function cyl(r,h,x,y,z,m,axis,p,seg){var o=mesh(new THREE.CylinderGeometry(r,r,h,seg||32),m,x,y,z,p);if(axis==='x')o.rotation.z=Math.PI/2;if(axis==='z')o.rotation.x=Math.PI/2;return o;}
+
+// ---------- textures ----------
+function concreteC(){var c=cnv(1024,1024),g=c.getContext('2d');g.fillStyle='#a9a59e';g.fillRect(0,0,1024,1024);
+  for(var i=0;i<70;i++){var x=Math.random()*1024,y=Math.random()*1024,r=80+Math.random()*220,gr=g.createRadialGradient(x,y,0,x,y,r);var d=Math.random()<.5;gr.addColorStop(0,d?'rgba(90,86,80,.16)':'rgba(205,200,192,.16)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(x-r,y-r,r*2,r*2);}
+  for(i=0;i<26000;i++){var px=Math.random()*1024,py=Math.random()*1024,pr=Math.random()*1.3+.2;g.fillStyle=Math.random()<.55?'rgba(55,52,48,'+(.15+Math.random()*.45)+')':'rgba(235,232,226,'+(Math.random()*.25)+')';g.beginPath();g.arc(px,py,pr,0,7);g.fill();}
+  for(i=0;i<240;i++){var bx=Math.random()*1024,by=Math.random()*1024,br=1.5+Math.random()*3.5;g.fillStyle='rgba(40,38,35,.55)';g.beginPath();g.arc(bx,by,br,0,7);g.fill();g.fillStyle='rgba(255,255,255,.12)';g.beginPath();g.arc(bx-.6,by-.6,br*.6,0,7);g.fill();}
+  return c;}
+var cC=concreteC();
+function ct(srgb,r){var t=new THREE.CanvasTexture(cC);if(srgb)t.encoding=THREE.sRGBEncoding;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(r,r);t.anisotropy=8;return t;}
+var concM=new THREE.MeshStandardMaterial({map:ct(true,.9),bumpMap:ct(false,.9),bumpScale:.09,roughness:.93,envMapIntensity:.25,transparent:true,opacity:1});
+function brushC(){var c=cnv(512,512),g=c.getContext('2d');g.fillStyle='#9fa3a8';g.fillRect(0,0,512,512);for(var i=0;i<1600;i++){var y=Math.random()*512;g.fillStyle='rgba('+(Math.random()<.5?'255,255,255':'40,42,46')+','+(Math.random()*.08)+')';g.fillRect(0,y,512,Math.random()*1.4+.2);}return c;}
+var bC=brushC();var bT=new THREE.CanvasTexture(bC);bT.encoding=THREE.sRGBEncoding;bT.wrapS=bT.wrapT=THREE.RepeatWrapping;
+var alu=new THREE.MeshStandardMaterial({map:bT,color:0xd0d3d7,metalness:.92,roughness:.38,envMapIntensity:.9});
+var aluDark=new THREE.MeshStandardMaterial({color:0x4a4d52,metalness:.85,roughness:.45});
+var brass=new THREE.MeshStandardMaterial({color:0xc9a25a,metalness:1,roughness:.28,envMapIntensity:1.1});
+var felt=new THREE.MeshStandardMaterial({color:0x26221f,roughness:1});
+var black=new THREE.MeshStandardMaterial({color:0x101112,roughness:.55,metalness:.2});
+
+// ---------- floor ----------
+var floor=new THREE.Mesh(new THREE.PlaneGeometry(900,900),new THREE.MeshStandardMaterial({color:0x2a2724,roughness:.85,envMapIntensity:.15}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+
+var U=new THREE.Group();scene.add(U);
+var BW=21,BD=20,PLH=1.0,BTOP=18.2,PLATE=.8,NP=17,PH=22,GY=BTOP+PLATE+.4,HALF=BD/2;
+// ---------- base ----------
+box(BW-3,PLH,BD-3,0,PLH/2,0,felt,U);
+// concrete shell built from parts so the back can open and the inside can be seen
+var shell=new THREE.Group();U.add(shell);
+var solid=new THREE.Group();U.add(solid);
+(function(){var CHs=BTOP-PLH,HWs=BW-2.4,HHs=CHs-.2,yc=PLH+.2+HHs/2,G=.15,T=1.2,zc=-HALF+T/2;
+  var ox0=-HWs/2-G,ox1=HWs/2+G,oy0=yc-HHs/2-G,oy1=yc+HHs/2+G,cx0=-2.3,cx1=4.7;
+  rbox(BW,CHs,BD-T,.35,0,PLH+CHs/2,T/2,concM,solid);                          // main body
+  function slab(x0,x1,y0,y1,z0,z1,m,r){var o=r?rbox(x1-x0,y1-y0,z1-z0,r,(x0+x1)/2,(y0+y1)/2,(z0+z1)/2,m,solid):box(x1-x0,y1-y0,z1-z0,(x0+x1)/2,(y0+y1)/2,(z0+z1)/2,m,solid);return o;}
+  var zb=-HALF,ze=-HALF+T;
+  slab(-BW/2,ox0,PLH,BTOP,zb,ze,concM,.3);slab(ox1,BW/2,PLH,BTOP,zb,ze,concM,.3);     // sides of the back
+  oy1=BTOP;
+  var shadowM=new THREE.MeshStandardMaterial({color:0x0e0d0c,roughness:1});
+  slab(ox0,ox1,oy0,oy1,-HALF+.45,ze,shadowM);                                   // floor of the plate pocket: reads as the shadow gap
+})();
+var CH=BTOP-PLH,cy=PLH+CH/2;
+rbox(BW,CH,3.2,.35,0,cy,HALF-1.6,concM,shell);               // front wall, 32 mm
+[-1,1].forEach(function(sd){rbox(3.7,13.1,BD,.35,sd*(BW/2-1.85),PLH+6.55,0,concM,shell);rbox(3.0,CH-13.1,BD,.35,sd*(BW/2-1.5),PLH+13.1+(CH-13.1)/2,0,concM,shell);}); // walls: 37 mm round the vault, 30 mm round the air space (the step is the lid ledge)
+rbox(BW,1.5,BD,.35,0,PLH+.75,0,concM,shell);                 // floor, 15 mm
+// back frame around the hatch opening
+
+// light button, front: a flush 19 mm momentary switch
+var knurl=cnv(256,16),kx=knurl.getContext('2d');kx.fillStyle='#c9a25a';kx.fillRect(0,0,256,16);kx.fillStyle='#6e5426';for(var q=0;q<256;q+=4)kx.fillRect(q,0,2,16);
+var knurlM=new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(knurl),metalness:1,roughness:.35});
+var knob=cyl(1.25,.12,BW/2-3.6,BTOP-2.6,HALF+.06,brass,'z',U,48);cyl(.85,.22,BW/2-3.6,BTOP-2.6,HALF+.12,brass,'z',U,48);
+cyl(.06,.01,BW/2-3.6,BTOP-2.6,HALF+.24,new THREE.MeshStandardMaterial({color:0x1d1e20,roughness:.5}),'z',U);
+// ---------- top plate: slotted aluminum ----------
+var slotC=cnv(512,512),sg=slotC.getContext('2d');sg.drawImage(bC,0,0);sg.fillStyle='#0b0c0d';
+for(var s=0;s<NP-1;s++){var zz=(1+1.2*s)/BD*512;sg.fillRect(58,zz-5,396,10);}
+sg.fillStyle='#0b0c0d';sg.beginPath();sg.arc(256,(HALF-5.2)/BD*512,36,0,7);sg.fill();
+var slotT=new THREE.CanvasTexture(slotC);slotT.encoding=THREE.sRGBEncoding;
+var plateTop=new THREE.MeshStandardMaterial({map:slotT,metalness:.9,roughness:.36,color:0xd0d3d7});
+box(BW,PLATE,BD,0,BTOP+PLATE/2,0,[alu,alu,plateTop,alu,alu,alu],U);
+// LED strips under the pane edges, running front to back (they light every pane's bottom edge)
+var stripMat=new THREE.MeshBasicMaterial({color:0xffc58a,toneMapped:false});
+var strips=[box(.5,.12,BD-1.2,-8.6,BTOP+PLATE+.06,0,stripMat,U),box(.5,.12,BD-1.2,8.6,BTOP+PLATE+.06,0,stripMat,U)];
+strips.forEach(function(o){o.castShadow=false;});
+var uplight=cyl(1.4,.15,0,BTOP+PLATE+.08,5.2,stripMat,null,U);uplight.castShadow=false;
+// ---------- back hatch ----------
+var hatch=new THREE.Group();U.add(hatch);var HZ=0;
+var louverC=cnv(512,512),lg=louverC.getContext('2d');lg.drawImage(bC,0,0);lg.fillStyle='#0c0d0e';for(var l=0;l<6;l++)lg.fillRect(377,10+l*15,83,9);
+var louverT=new THREE.CanvasTexture(louverC);louverT.encoding=THREE.sRGBEncoding;
+var hatchM=new THREE.MeshStandardMaterial({map:louverT,metalness:.9,roughness:.38,color:0xd0d3d7});
+var HW=BW-2.4,HH=CH-.2;
+var hp=box(HW,HH,.2,0,PLH+.2+HH/2,-HALF+.2,[alu,alu,alu,alu,alu,hatchM],hatch);
+// ports: power inlet, HDMI, Ethernet
+var portY=PLH+.2+15.3;
+// window onto the peak-hold label, and the low fallback-vent plug
+var winM=new THREE.MeshPhysicalMaterial({color:0x1a2224,roughness:.05,transparent:true,opacity:.55});
+var labC=cnv(64,16),lx=labC.getContext('2d');['#e9e2c8','#e9e2c8','#e9e2c8','#2a2a2a','#2a2a2a'].forEach(function(c,i){lx.fillStyle=c;lx.fillRect(i*13,0,11,16);});
+cyl(1.25,.03,2.2,PLH+8.2,-HALF-.01,new THREE.MeshStandardMaterial({color:0x0f1314,roughness:.4}),'z',hatch,40);
+box(1.9,.5,.02,2.2,PLH+8.2,-HALF-.04,new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(labC)}),hatch);
+mesh(new THREE.TorusGeometry(1.3,.12,10,40),brass,2.2,PLH+8.2,-HALF-.05,hatch);
+cyl(.9,.25,-5.7,PLH+4.2,-HALF-.12,felt,'z',hatch,32);cyl(1.05,.06,-5.7,PLH+4.2,-HALF-.02,brass,'z',hatch,32);
+// panel-mount pass-throughs: Ethernet, HDMI, power inlet (left to right, seen from behind they mirror)
+box(2.6,3.1,.25,-2.5,portY,-HALF-.1,black,hatch);box(2.6,3.1,.25,.4,portY,-HALF-.1,black,hatch);box(5.0,3.1,.25,5.1,portY,-HALF-.1,black,hatch);
+box(.3,.7,.08,3.6,portY,-HALF-.26,aluDark,hatch);box(.3,.7,.08,4.2,portY+.35,-HALF-.26,aluDark,hatch);box(.3,.7,.08,4.8,portY,-HALF-.26,aluDark,hatch);box(1.2,1.6,.08,6.4,portY,-HALF-.26,new THREE.MeshStandardMaterial({color:0x2a1a1a,roughness:.5}),hatch);
+// right-angle plugs, pointing down
+var plugM=new THREE.MeshStandardMaterial({color:0x1b1c1e,roughness:.6});
+box(1.4,1.7,1.1,-2.5,portY-.45,-HALF-.75,new THREE.MeshStandardMaterial({color:0x8a8f96,roughness:.5}),hatch);
+box(1.6,1.5,1.0,.4,portY-.5,-HALF-.7,plugM,hatch);box(2.2,2.0,1.3,3.6,portY-.55,-HALF-.85,plugM,hatch);
+// engraved labels as tiny plates
+var tsC=cnv(64,64),tg=tsC.getContext('2d');tg.fillStyle='#c9a25a';tg.fillRect(0,0,64,64);tg.fillStyle='#5d4720';tg.fillRect(28,6,8,52);tg.fillRect(6,28,52,8);
+var thumbTop=new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(tsC),metalness:1,roughness:.3});
+[[-HW/2+.9,PLH+1.1],[HW/2-.9,PLH+1.1],[-HW/2+.9,BTOP-.9],[HW/2-.9,BTOP-.9]].forEach(function(p){cyl(.55,.7,p[0],p[1],-HALF-.35,[knurlM,thumbTop,brass],'z',hatch,32).rotation.x=-Math.PI/2;});
+// ---------- fabric cord ----------
+var braid=cnv(64,512),bg=braid.getContext('2d');bg.fillStyle='#3d4a46';bg.fillRect(0,0,64,512);for(var b2=0;b2<512;b2+=8){bg.fillStyle='rgba(255,255,255,.08)';bg.fillRect(0,b2,64,3);bg.fillStyle='rgba(0,0,0,.25)';bg.fillRect(0,b2+4,64,2);}
+var braidT=new THREE.CanvasTexture(braid);braidT.encoding=THREE.sRGBEncoding;braidT.wrapS=braidT.wrapT=THREE.RepeatWrapping;braidT.repeat.set(1,60);
+var cordM=new THREE.MeshStandardMaterial({map:braidT,roughness:.85});
+function cable(x,r,zOut,m,endX){var c=new THREE.CatmullRomCurve3([[x,portY-1.4,zOut],[x,portY-3.5,-HALF-.75],[x,PLH+1.2,-HALF-.6],[x,r+.02,-HALF-1.4],[x+(endX-x)*.15,r+.02,-HALF-10],[endX,r+.02,-HALF-70]].map(function(p){return new THREE.Vector3(p[0],p[1],p[2]);}));return mesh(new THREE.TubeGeometry(c,140,r,12,false),m,0,0,0,hatch);}
+var cord=cable(3.6,.32,-HALF-.85,cordM,16);
+cable(.4,.27,-HALF-.7,black,2);
+cable(-2.5,.24,-HALF-.75,new THREE.MeshStandardMaterial({color:0x8a8f96,roughness:.5}),-12);
+// ---------- inside: vault, drive sled, power supply ----------
+var inside=new THREE.Group();U.add(inside);
+var vaultLid=box(14.8,.3,16.6,0,PLH+13.1+.35,-1.6,alu,inside);
+var feltLine=box(13.0,11.4,16.2,0,PLH+1.5+5.8,-1.6,new THREE.MeshStandardMaterial({color:0x4a3f36,roughness:1,side:THREE.BackSide}),inside);
+var psu=box(12.9,3.0,9.7,0,BTOP-1.5,1.95,aluDark,inside);
+box(4.4,.16,3.6,-4.9,BTOP-.3,-5.6,new THREE.MeshStandardMaterial({color:0x1d4a2c,roughness:.6}),inside);box(1.2,.5,1,-4.9,BTOP-.6,-5.6,black,inside);
+
+var sled=new THREE.Group();inside.add(sled);
+var SB=PLH+2.0,ST=PLH+12.8;
+function rail(x){box(.5,.5,15,x,SB,-1.6,alu,sled);box(.5,.5,15,x,ST,-1.6,alu,sled);box(.5,ST-SB,.5,x,(SB+ST)/2,5.7,alu,sled);box(.5,ST-SB,.5,x,(SB+ST)/2,-8.9,alu,sled);}
+rail(-5.75);rail(5.75);
+box(11.5,.5,.5,0,ST,-8.9,alu,sled);box(11.5,.5,.5,0,SB,-8.9,alu,sled);
+[-5.75,5.75].forEach(function(x){box(1.0,.25,15,x,SB-.37,-1.6,new THREE.MeshStandardMaterial({color:0xe8e6e0,roughness:.7}),sled);}); // UHMW runners
+box(11.5,ST-SB+.5,.3,0,(SB+ST)/2,-9.1,new THREE.MeshStandardMaterial({color:0x1a1715,roughness:1}),sled); // felt-faced sled back
+cyl(.2,4,0,SB+1.2,-9.55,brass,'x',sled);box(.3,.3,.4,-1.8,SB+1.2,-9.35,brass,sled);box(.3,.3,.4,1.8,SB+1.2,-9.35,brass,sled);
+var lab=cnv(256,256),lb=lab.getContext('2d');lb.fillStyle='#e9ebee';lb.fillRect(0,0,256,256);lb.fillStyle='#2b2f36';lb.fillRect(14,14,228,40);lb.fillStyle='#9aa0a8';for(var r=0;r<9;r++)lb.fillRect(18,72+r*18,150+Math.random()*60,6);
+var driveTop=new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(lab),roughness:.6});
+var driveM=new THREE.MeshStandardMaterial({color:0xa6aab0,metalness:.85,roughness:.32});
+var pcb=new THREE.MeshStandardMaterial({color:0x14351f,roughness:.6});
+var cordBlack=new THREE.MeshStandardMaterial({color:0x111,roughness:.9});
+[-2.2,2.2].forEach(function(x){var yc=(SB+ST)/2;
+  box(2.6,10.2,14.7,x,yc,-1.5,[driveTop,pcb,driveM,driveM,driveM,driveM],sled);
+  [[0,yc+4.6,-8],[0,yc+4.6,4.8],[0,yc-4.6,-8],[0,yc-4.6,4.8]].forEach(function(p){var dx=(x<0?-5.5:5.5)-x;var c=box(Math.abs(dx)-1.3,.14,.14,x+dx/2,p[1],p[2],cordBlack,sled);c.castShadow=false;});});
+// ---------- glass panes with stepped tint and a soft film square ----------
+var glass=new THREE.Group();U.add(glass);
+var WX=7.9,WY1=15.4,faceMats=[],edgeMats=[],texs=[];
+for(var i=0;i<NP;i++){
+  var z=-HALF+.1+i*1.2,zc=z+.3,sh=new THREE.Shape();
+  if(Math.abs(zc)<4.2){ // window panes: an upside-down U, open at the bottom so the computer can pass through
+    sh.moveTo(-BW/2,0);sh.lineTo(-WX,0);sh.lineTo(-WX,WY1);sh.lineTo(WX,WY1);sh.lineTo(WX,0);sh.lineTo(BW/2,0);sh.lineTo(BW/2,PH);sh.lineTo(-BW/2,PH);sh.closePath();
+  }else{sh.moveTo(-BW/2,0);sh.lineTo(BW/2,0);sh.lineTo(BW/2,PH);sh.lineTo(-BW/2,PH);sh.closePath();}
+  var g=new THREE.ExtrudeGeometry(sh,{depth:.6,bevelEnabled:false});
+  var uv=g.attributes.uv;for(var k=0;k<uv.count;k++)uv.setXY(k,(uv.getX(k)+BW/2)/BW,uv.getY(k)/PH);
+  var tc=cnv(256,256),tt=new THREE.CanvasTexture(tc);tt.encoding=THREE.sRGBEncoding;texs.push(tc);
+  var fm=new THREE.MeshPhysicalMaterial({map:tt,emissiveMap:tt,emissive:0x000000,roughness:.03,transparent:true,depthWrite:false,envMapIntensity:.55,side:THREE.DoubleSide,specularIntensity:1});
+  var em=new THREE.MeshPhysicalMaterial({color:0x1b6b5f,roughness:.12,emissive:0x000000,transparent:true,opacity:.95,envMapIntensity:.6});
+  var m=new THREE.Mesh(g,[fm,em]);m.position.set(0,GY,z);m.renderOrder=2+i;glass.add(m);faceMats.push(fm);edgeMats.push(em);}
+// rods with acorn nuts
+[[-9.3,1.3],[9.3,1.3],[-9.3,PH-1.3],[9.3,PH-1.3]].forEach(function(p){cyl(.25,BD+.2,p[0],GY+p[1],0,brass,'z',glass,16);
+  [-1,1].forEach(function(sd){var n=mesh(new THREE.SphereGeometry(.42,20,12,0,Math.PI*2,0,Math.PI/2),brass,p[0],GY+p[1],sd*(HALF+.15),glass);n.rotation.x=sd*Math.PI/2;cyl(.42,.35,p[0],GY+p[1],sd*(HALF+.05),brass,'z',glass,6);});});
+// LED channel along the inside top of the window, resting under the 7 window panes' top edges
+var innerLed=new THREE.Group();glass.add(innerLed);
+box(1.4,.6,7.6,0,GY+WY1-.32,-.6,alu,innerLed);
+var innerStripMat=new THREE.MeshBasicMaterial({color:0x3cc8b4,toneMapped:false});
+var innerStrip=box(.9,.08,7.2,0,GY+WY1-.66,-.6,innerStripMat,innerLed);innerStrip.castShadow=false;
+mesh(new THREE.CylinderGeometry(.08,.08,WY1-1,6),black,WX-.25,GY+(WY1-1)/2,-4.3,innerLed);
+var innerGlow=add(new THREE.PointLight(0x3cc8b4,0,30,1.6),innerLed);innerGlow.position.set(0,GY+WY1-2,-.6);
+// small brass standoffs under the panes
+[[-9.3,-9.3],[9.3,-9.3],[-9.3,9.3],[9.3,9.3]].forEach(function(p){cyl(.4,.4,p[0],GY-.2,p[1],brass,null,glass);});
+// ---------- the computer ----------
+var finC=cnv(256,256),fx=finC.getContext('2d');fx.fillStyle='#3b3d42';fx.fillRect(0,0,256,256);for(var f=0;f<256;f+=12){fx.fillStyle='#17181b';fx.fillRect(f,0,5,256);fx.fillStyle='rgba(255,255,255,.08)';fx.fillRect(f+6,0,2,256);}
+var finT=new THREE.CanvasTexture(finC);finT.encoding=THREE.sRGBEncoding;
+var finM=new THREE.MeshStandardMaterial({map:finT,metalness:.75,roughness:.5,bumpMap:finT,bumpScale:.3});
+var pcBody=new THREE.MeshStandardMaterial({color:0x2f3135,metalness:.7,roughness:.45});
+var pcTop=GY+.3+13;
+var pc=new THREE.Group();U.add(pc);
+box(13,13,4.5,0,GY+.3+6.5,0,[pcBody,pcBody,pcBody,pcBody,finM,finM],pc);
+box(.6,.16,.05,4.6,GY+1.4,2.28,new THREE.MeshBasicMaterial({color:0xfff1d6,toneMapped:false}),pc);
+[[-5.5,-1.5],[5.5,-1.5],[-5.5,1.5],[5.5,1.5]].forEach(function(p){cyl(.5,.3,p[0],GY+.15,p[1],black,null,pc);});
+// cables from the computer's back down through the grommet
+[[-1.6,0x111111,.22],[0,0x111111,.3],[1.6,0x2b2b2b,.2]].forEach(function(c){var cv=new THREE.CatmullRomCurve3([new THREE.Vector3(c[0],GY+4,-2.3),new THREE.Vector3(c[0],GY+3,-3.2),new THREE.Vector3(c[0]*.8,GY+1.2,-4.6),new THREE.Vector3(c[0]*.6,BTOP+.4,-5.2),new THREE.Vector3(c[0]*.6,BTOP-1,-5.2)]);mesh(new THREE.TubeGeometry(cv,30,c[2],8,false),new THREE.MeshStandardMaterial({color:c[1],roughness:.6}),0,0,0,pc);});
+mesh(new THREE.TorusGeometry(1.5,.22,10,32),black,0,BTOP+PLATE+.05,-5.2,U).rotation.x=Math.PI/2;
+// ---------- lights ----------
+var hemi=add(new THREE.HemisphereLight(0xfff1e0,0x1a1612,.25));
+var key=add(new THREE.DirectionalLight(0xfff0de,.9));key.position.set(60,110,80);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-40;key.shadow.camera.right=40;key.shadow.camera.top=60;key.shadow.camera.bottom=-20;key.shadow.radius=6;key.shadow.bias=-.0005;
+var rim=add(new THREE.DirectionalLight(0xdfe8ff,.35));rim.position.set(-70,60,-90);
+var glow=add(new THREE.PointLight(0xffc58a,0,50,1.6),U);glow.position.set(0,GY+9,0);
+var glowLow=add(new THREE.PointLight(0xffc58a,0,40,1.8),U);glowLow.position.set(0,GY+2,6);
+var up=add(new THREE.SpotLight(0xffc58a,0,200,.6,.7,1.2),U);up.position.set(0,GY+PH-2,0);up.target.position.set(0,150,0);U.add(up.target);
+var pool=add(new THREE.PointLight(0xffc58a,0,60,1.6),U);pool.position.set(0,GY+PH+6,0);
+
+// ---------- state ----------
+var S={mode:'evening',color:'#3cc8b4',glass:'#2a8c7c',film:'#d98a3a',filmOn:true,open:'closed'};
+var MODES={off:{c:'#000000',a:0,studio:1},lamp:{c:'#ffc184',a:1,studio:.5},evening:{c:'#ff9a48',a:.45,studio:.32},color:{c:null,a:.8,studio:.32},sleep:{c:null,a:.18,studio:.32}};
+var NOTES={off:'Off: grey concrete and a cube of glass. The panes step darker toward the middle, and the film squares grow toward the computer, so even unlit there\'s a soft block of color hanging around it.',
+lamp:'Lamp: warm white at full brightness. The strips under the panes light every bottom edge; light leaves through the open top onto the ceiling.',
+evening:'Evening: dim amber. The film squares glow where the light passes through them, making a soft colored volume around the computer.',
+color:'Color: any color, from the knob or your phone.',sleep:'Asleep: a slow breath of light; the drives are spun down.',
+xray:' The concrete is shown see-through: the drive sled in the vault, the aluminum lid that seals it, and the power supply and light controller mounted under the top plate, in the air space fed by the back slots.',
+drives:' The back hatch is off (four thumbscrews) and the drive sled is pulled out: two drives standing on elastic cords.',
+lift:' The glass block is lifted off. The computer stays on the plate; its cables run down through the grommet.'};
+function stepD(i){return Math.min(i,NP-1-i);} // 0 at the faces, 8 at the center
+function paintPanes(){var gc=new THREE.Color(S.glass),fc=new THREE.Color(S.film);
+  for(var i=0;i<NP;i++){var c=texs[i],g=c.getContext('2d'),d=stepD(i),v=Math.pow(.9,d);g.clearRect(0,0,256,256);g.filter='none';
+    var tr=Math.round(gc.r*255*v),tg2=Math.round(gc.g*255*v),tb=Math.round(gc.b*255*v),ta=(.05+(1-v)*.26);
+    if(S.band==='on'){var bandPx=2/PH*256,fadePx=4/PH*256,lgr=g.createLinearGradient(0,256,0,256-fadePx);lgr.addColorStop(0,'rgba('+tr+','+tg2+','+tb+',0)');lgr.addColorStop(bandPx/fadePx,'rgba('+tr+','+tg2+','+tb+',0)');lgr.addColorStop(1,'rgba('+tr+','+tg2+','+tb+','+ta.toFixed(3)+')');g.fillStyle=lgr;g.fillRect(0,256-fadePx,256,fadePx);g.fillStyle='rgba('+tr+','+tg2+','+tb+','+ta.toFixed(3)+')';g.fillRect(0,0,256,256-fadePx);}
+    else{g.fillStyle='rgba('+tr+','+tg2+','+tb+','+ta.toFixed(3)+')';g.fillRect(0,0,256,256);}
+    if(S.filmOn){var sizeCm=6.5+d*1.55; // grows in steps to just over the window at the center
+      var wpx=sizeCm/BW*256,hpx=sizeCm/PH*256,cx=128,cy=256-(WY1/2+.2)/PH*256;
+      g.filter='blur('+(5+d*.6)+'px)';g.fillStyle='rgba('+Math.round(fc.r*255)+','+Math.round(fc.g*255)+','+Math.round(fc.b*255)+','+(.34+d*.03).toFixed(2)+')';
+      g.fillRect(cx-wpx/2,cy-hpx/2,wpx,hpx);g.filter='none';}
+    faceMats[i].map.needsUpdate=true;
+    edgeMats[i].color.copy(gc).multiplyScalar(.4*v+.1);}}
+var liftT=0,sledT=0;
+function apply(){document.getElementById('noteText').textContent=NOTES[S.mode]+(NOTES[S.open]||'');
+  var x=S.open==='xray';var opened=(S.open==='xray'||S.open==='drives');solid.visible=!opened;shell.visible=opened;concM.opacity=x?.22:1;concM.depthWrite=!x;inside.visible=(S.open!=='closed'&&S.open!=='lift');feltLine.visible=x;paintPanes();}
+document.getElementById('lightColor').addEventListener('input',function(e){S.color=e.target.value;});
+document.getElementById('glassColor').addEventListener('input',function(e){S.glass=e.target.value;paintPanes();});
+document.getElementById('filmColor').addEventListener('input',function(e){S.film=e.target.value;paintPanes();});
+var T=[0,22,0];
+var VIEWS={q:[[62,44,78],T],front:[[0,30,96],T],right:[[98,30,0],T],back:[[-40,32,-88],[0,14,0]],top:[[8,112,22],[0,24,0]],low:[[46,6,62],[0,20,0]]};
+var tween=null,t0=0;function setView(v){tween={from:camera.position.clone(),to:new THREE.Vector3().fromArray(VIEWS[v][0]),tf:controls.target.clone(),tt:new THREE.Vector3().fromArray(VIEWS[v][1])};t0=performance.now();lastTouch=performance.now();}
+document.querySelectorAll('.seg').forEach(function(seg){seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+  seg.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});var k=seg.dataset.k,v=b.dataset.v;
+  if(k==='view')setView(v);else if(k==='film'){S.filmOn=(v==='on');paintPanes();}else if(k==='band'){S.band=v;paintPanes();}else if(k==='inner'){S.inner=v;}else if(k==='hw'){S.hw=v;setHardware(v);}else{S[k]=v;apply();if(k==='open'&&v==='drives')setView('back');}});});
+function setHardware(h){var P={nickel:[0xc2c4c6,.3,'#c2c4c6','#5b5e62'],chrome:[0xeceef0,.06,'#eceef0','#45484d'],brass:[0xc9a25a,.28,'#c9a25a','#6e5426']}[h]||[0xc2c4c6,.3,'#c2c4c6','#5b5e62'];
+  brass.color.setHex(P[0]);brass.roughness=P[1];
+  kx.fillStyle=P[2];kx.fillRect(0,0,256,16);kx.fillStyle=P[3];for(var q=0;q<256;q+=4)kx.fillRect(q,0,2,16);knurlM.map.needsUpdate=true;knurlM.roughness=P[1]+.07;
+  tg.fillStyle=P[2];tg.fillRect(0,0,64,64);tg.fillStyle=P[3];tg.fillRect(28,6,8,52);tg.fillRect(6,28,52,8);thumbTop.map.needsUpdate=true;thumbTop.roughness=P[1];}
+var DEF={mode:'color',color:'#3cc8b4',glass:'#050606',film:'#6fe3cf',filmOn:true,open:'closed',band:'on',inner:'on',hw:'nickel'};
+function resetAll(){for(var k in DEF)S[k]=DEF[k];document.getElementById('lightColor').value=DEF.color;document.getElementById('glassColor').value=DEF.glass;document.getElementById('filmColor').value=DEF.film;
+  var on={mode:'m-color',film:'f-on',open:'o-closed',view:'v-34',band:'b-on',inner:'i-on',hw:'h-nickel'};Object.keys(on).forEach(function(k){document.querySelectorAll('.seg[data-k="'+k+'"] button').forEach(function(b){b.setAttribute('aria-pressed',b.id===on[k]?'true':'false');});});
+  apply();setHardware(S.hw);setView('q');}
+document.getElementById('resetAll').addEventListener('click',resetAll);
+document.getElementById('copySet').addEventListener('click',function(){var txt='Lantern settings: light '+S.mode+' '+S.color+', glass '+S.glass+', film '+(S.filmOn?'on ':'off ')+S.film;var out=document.getElementById('setOut');
+  try{navigator.clipboard.writeText(txt).then(function(){out.textContent='Copied. Paste it to Claude: '+txt;},function(){out.textContent='Select and copy this: '+txt;});}catch(e){out.textContent='Select and copy this: '+txt;}});
+var lastTouch=-1e9;resetAll();camera.position.fromArray(VIEWS.q[0]);controls.target.fromArray(VIEWS.q[1]);
+var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+controls.addEventListener('start',function(){lastTouch=performance.now();tween=null;});controls.addEventListener('end',function(){lastTouch=performance.now();});
+function resize(){var w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w/h<1?40:30;camera.updateProjectionMatrix();}
+new ResizeObserver(resize).observe(stage);resize();
+var clock=new THREE.Clock(),amt=0,studio=1,col=new THREE.Color(0xff9a48);
+function loop(){var dt=Math.min(.12,clock.getDelta()),t=clock.elapsedTime;
+  if(tween){var e=Math.min(1,(performance.now()-t0)/1200);e=1-Math.pow(1-e,3);camera.position.lerpVectors(tween.from,tween.to,e);controls.target.lerpVectors(tween.tf,tween.tt,e);if(e>=1)tween=null;}
+  else if(!reduce&&performance.now()-lastTouch>6000){controls.autoRotate=true;controls.autoRotateSpeed=.6;}else controls.autoRotate=false;
+  var M=MODES[S.mode],tgt=M.a;if(S.mode==='sleep'&&!reduce)tgt=.06+.14*(.5+.5*Math.sin(t*1.1));
+  var k=1-Math.exp(-Math.min(.5,dt*4)*2);amt+=(tgt-amt)*k;studio+=(M.studio-studio)*k;col.lerp(new THREE.Color(M.c||S.color),k);
+  stripMat.color.copy(col).multiplyScalar(.08+amt*1.7);
+  for(var i=0;i<NP;i++){var v=Math.pow(.9,stepD(i));edgeMats[i].emissive.copy(col).multiplyScalar((.03+amt*1.1)*(.5+.5*v));var inn=S.inner==='on',zc=-9.6+1.2*i,win=Math.abs(zc)<4.2,band=S.band==='on'?1.25:1;
+    if(inn&&win)edgeMats[i].emissive.multiplyScalar(1.35);edgeMats[i].emissive.multiplyScalar(band);
+    faceMats[i].emissive.copy(col).lerp(new THREE.Color(1,1,1),.3).multiplyScalar(amt*(.42+(inn?.22:0))*(S.band==='on'?1.1:.9));}
+  innerLed.visible=(S.inner==='on');innerStripMat.color.copy(col).multiplyScalar(.08+amt*1.6);innerGlow.color.copy(col);innerGlow.intensity=amt*1.1;
+  glow.color.copy(col);glowLow.color.copy(col);up.color.copy(col);pool.color.copy(col);glow.intensity=amt*1.3;glowLow.intensity=amt*.7;up.intensity=amt*2.5;pool.intensity=amt*.9;
+  key.intensity=.95*studio;hemi.intensity=.08+.2*studio;rim.intensity=.35*studio+.05;
+  liftT+=((S.open==='lift'?1:0)-liftT)*(1-Math.exp(-dt*4));glass.position.y=liftT*16;
+  sledT+=((S.open==='drives'?1:0)-sledT)*(1-Math.exp(-dt*3));sled.position.z=-sledT*17;
+  hatch.position.z=HZ-sledT*30;hatch.position.y=0;hatch.visible=sledT<.98;
+  controls.update();renderer.render(scene,camera);requestAnimationFrame(loop);}
+loop();
+// ---------- build files: cut files (DXF, mm) and print files (PNG, true size at 150 dpi) ----------
+(function(){
+var CRCT=(function(){var t=[],c;for(var n=0;n<256;n++){c=n;for(var k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+function crc(u){var c=0xFFFFFFFF;for(var i=0;i<u.length;i++)c=CRCT[(c^u[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+var enc=new TextEncoder(),DT=new Date(),DD=((DT.getFullYear()-1980)<<9)|((DT.getMonth()+1)<<5)|DT.getDate();
+function zip(files){var parts=[],cd=[],off=0;
+  files.forEach(function(f){var nm=enc.encode(f.name),d=f.data,c=crc(d),h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(12,DD,true);h.setUint32(14,c,true);h.setUint32(18,d.length,true);h.setUint32(22,d.length,true);h.setUint16(26,nm.length,true);
+    parts.push(new Uint8Array(h.buffer),nm,d);
+    var e=new DataView(new ArrayBuffer(46));e.setUint32(0,0x02014b50,true);e.setUint16(4,20,true);e.setUint16(6,20,true);e.setUint16(8,0x0800,true);e.setUint16(14,DD,true);e.setUint32(16,c,true);e.setUint32(20,d.length,true);e.setUint32(24,d.length,true);e.setUint16(28,nm.length,true);e.setUint32(42,off,true);
+    cd.push(new Uint8Array(e.buffer),nm);off+=30+nm.length+d.length;});
+  var cdl=cd.reduce(function(a,b){return a+b.length;},0),end=new DataView(new ArrayBuffer(22));
+  end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);end.setUint32(12,cdl,true);end.setUint32(16,off,true);
+  return new Blob(parts.concat(cd,[new Uint8Array(end.buffer)]),{type:'application/zip'});}
+function fx(n){return String(Math.round(n*1000)/1000);}
+function DXF(){var o=[];return{
+  poly:function(pts,bul){o.push('0','POLYLINE','8','CUT','66','1','10','0','20','0','30','0','70','1');pts.forEach(function(p,i){o.push('0','VERTEX','8','CUT','10',fx(p[0]),'20',fx(p[1]),'30','0');if(bul&&bul[i])o.push('42',String(bul[i]));});o.push('0','SEQEND','8','CUT');return this;},
+  rect:function(x,y,w,h){return this.poly([[x,y],[x+w,y],[x+w,y+h],[x,y+h]]);},
+  circ:function(x,y,d){o.push('0','CIRCLE','8','CUT','10',fx(x),'20',fx(y),'30','0','40',fx(d/2));return this;},
+  bytes:function(){return enc.encode(['0','SECTION','2','HEADER','9','$ACADVER','1','AC1009','9','$INSUNITS','70','4','0','ENDSEC','0','SECTION','2','ENTITIES'].concat(o,['0','ENDSEC','0','EOF']).join('\r\n')+'\r\n');}};}
+var Q=-0.41421356; // bulge for a 90 degree arc turning right
+function rodHoles(d){[[12,13],[198,13],[12,207],[198,207]].forEach(function(p){d.circ(p[0],p[1],6);});return d;}
+function cutFiles(){var F=[];
+  F.push({name:'pane-window.dxf',data:rodHoles(DXF().poly([[0,0],[26,0],[26,151],[29,154],[181,154],[184,151],[184,0],[210,0],[210,220],[0,220]],[0,0,Q,0,Q,0,0,0,0,0])).bytes()});
+  F.push({name:'pane-solid.dxf',data:rodHoles(DXF().rect(0,0,210,220)).bytes()});
+  F.push({name:'spacer-ring.dxf',data:DXF().circ(6,6,12).circ(6,6,5.5).bytes()});
+  var t=DXF().rect(0,0,210,200);for(var s=0;s<16;s++){var y=100-(-90+12*s);t.rect(29,y-2,152,4);}
+  t.circ(105,152,30);[[12,7],[198,7],[12,193],[198,193]].forEach(function(p){t.circ(p[0],p[1],4.5);});
+  [[12,60],[198,60],[12,140],[198,140]].forEach(function(p){t.circ(p[0],p[1],5.5);});t.circ(19,186,6).circ(191,186,6);
+  F.push({name:'top-plate.dxf',data:t.bytes()});
+  var b=DXF().rect(0,0,186,170);[[9,9],[177,9],[9,161],[177,161]].forEach(function(p){b.circ(p[0],p[1],5.5);});
+  b.rect(42-23.25,153-13.75,46.5,27.5);[89,118].forEach(function(x){b.circ(x,153,24).circ(x-9.5,153+12,3.2).circ(x+9.5,153-12,3.2);});
+  [140,145,150,155,160,165].forEach(function(c){b.rect(137,c-1.5,30,3);});b.circ(71,80,25).circ(150,42,20);
+  F.push({name:'back-plate.dxf',data:b.bytes()});
+  F.push({name:'vault-lid.dxf',data:DXF().rect(0,0,148,166).circ(74,119,16).circ(124,140,20).circ(10,156,4.2).bytes()});
+  F.push({name:'ORDER-SHEET.txt',data:enc.encode(ORDER)});return F;}
+var ORDER=['THE LANTERN: CUT FILES','All files are in millimetres, drawn at true size, cut layer only. Check the scale on import: the pane is 210 x 220 mm.','',
+ 'CLEAR CAST ACRYLIC, 6 mm (0.236"), cast only, not extruded',
+ '  pane-window.dxf   x 8   (7 + 1 spare)   window notch has 3 mm inside corner radii, keep them',
+ '  pane-solid.dxf    x 12  (10 + 2 spare)',
+ '  spacer-ring.dxf   x 72  (64 + 8 spare)  12 mm OD, 5.5 mm hole',
+ '  Leave the protective film on. Anneal after cutting: 80 C for 2 hours, then cool slowly in the oven.','',
+ '6061 ALUMINUM, 8 mm (or 5/16" = 7.9 mm)',
+ '  top-plate.dxf     x 1   front edge is y = 0',
+ '    4 x 5.5 mm holes at y = 60 and 140: countersink 90 deg from the TOP for M5 flat heads',
+ '    4 x 4.5 mm holes near the corners: countersink 90 deg from the BOTTOM for M4 flat heads (they hold the pane standoffs)','',
+ '5052 ALUMINUM, 2 mm (0.080")',
+ '  back-plate.dxf    x 1   drawn as seen from behind (outside face up)',
+ '    Before ordering: check the IEC inlet cutout (46.5 x 27.5 mm) and the two Neutrik D-size cutouts (24 mm hole, 3.2 mm holes on a 19 x 24 mm diagonal) against the parts\' own drawings.',
+ '    The inlet\'s two screw holes are not in the file: drill them from the part itself.','',
+ '5052 ALUMINUM, 3 mm (0.125")',
+ '  vault-lid.dxf     x 1   front edge is y = 0','',
+ 'FINISH: brush all aluminum by hand with a fine non-woven pad, in one direction, after cutting.'].join('\r\n');
+var DPMM=150/25.4;
+function paneCanvas(i){var W=Math.round(210*DPMM),H=Math.round(220*DPMM),c=document.createElement('canvas');c.width=W;c.height=H;
+  var g=c.getContext('2d'),gc=new THREE.Color(S.glass),fc=new THREE.Color(S.film),d=stepD(i),v=Math.pow(.9,d);
+  var col='rgba('+Math.round(gc.r*255*v)+','+Math.round(gc.g*255*v)+','+Math.round(gc.b*255*v)+',',ta=(.05+(1-v)*.26).toFixed(3);
+  if(S.band==='on'){var bd=20*DPMM,fd=40*DPMM,lg=g.createLinearGradient(0,H,0,H-fd);lg.addColorStop(0,col+'0)');lg.addColorStop(bd/fd,col+'0)');lg.addColorStop(1,col+ta+')');g.fillStyle=lg;g.fillRect(0,H-fd,W,fd);g.fillStyle=col+ta+')';g.fillRect(0,0,W,H-fd);}
+  else{g.fillStyle=col+ta+')';g.fillRect(0,0,W,H);}
+  if(S.filmOn){var sz=(65+d*15.5)*DPMM,cx=W/2,cy=H-79*DPMM,sig=(5+d*.6)*.82*DPMM;
+    g.save();g.shadowColor='rgba('+Math.round(fc.r*255)+','+Math.round(fc.g*255)+','+Math.round(fc.b*255)+','+(.34+d*.03).toFixed(2)+')';g.shadowBlur=sig*2;g.shadowOffsetX=W*3;g.fillStyle='#000';g.fillRect(cx-sz/2-W*3,cy-sz/2,sz,sz);g.restore();}
+  if(Math.abs(-9.6+1.2*i)<4.2)g.clearRect(26*DPMM,H-154*DPMM,158*DPMM,154*DPMM);
+  return c;}
+function withDpi(u){var o=new Uint8Array(u.length+21),ph=new Uint8Array(21),dv=new DataView(ph.buffer),ppm=Math.round(DPMM*1000);
+  dv.setUint32(0,9);ph.set(enc.encode('pHYs'),4);dv.setUint32(8,ppm);dv.setUint32(12,ppm);ph[16]=1;dv.setUint32(17,crc(ph.subarray(4,17)));
+  o.set(u.subarray(0,33),0);o.set(ph,33);o.set(u.subarray(33),54);return o;}
+function toBytes(c){return new Promise(function(res){c.toBlob(function(b){b.arrayBuffer().then(function(a){res(withDpi(new Uint8Array(a)));});},'image/png');});}
+function printFiles(){var jobs=[],names=[];
+  for(var i=0;i<NP;i++){var n=NP-i,win=Math.abs(-9.6+1.2*i)<4.2;names.push('pane-'+(n<10?'0':'')+n+'-'+(win?'window':'solid')+'.png');jobs.push(toBytes(paneCanvas(i)));}
+  return Promise.all(jobs).then(function(datas){var F=datas.map(function(d,k){return{name:names[k],data:d};});
+    var txt=['THE LANTERN: PRINT FILES','17 files, one per pane, true size (210 x 220 mm at 150 dpi). Pane 01 is the front pane, 17 the back.',
+     'Settings: glass '+S.glass+', film '+(S.filmOn?S.film:'off')+', clear band '+(S.band==='on'?'on':'off')+'.','',
+     'Print on the INWARD face of each pane: panes 01-08 on the face toward the back, 10-17 on the face toward the front, 09 on either face.',
+     'Color only: no white ink, no gloss or varnish layer. The transparency in each file is the ink density; do not flatten it onto white.',
+     'Window panes: the notch area is empty in the file, it is cut away.','Print one test pane first and look at it over the LED strip in a dark room before printing the rest.'].join('\r\n');
+    F.push({name:'PRINT-NOTES.txt',data:enc.encode(txt)});return F;});}
+function save(blob,name){var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},3000);}
+var out=document.getElementById('fileOut');
+document.getElementById('mkCut').addEventListener('click',function(){save(zip(cutFiles()),'lantern-cut-files.zip');out.textContent='Saved lantern-cut-files.zip: 6 DXF files and the order sheet.';});
+document.getElementById('mkPrint').addEventListener('click',function(){out.textContent='Making 17 print files…';printFiles().then(function(F){save(zip(F),'lantern-print-files.zip');out.textContent='Saved lantern-print-files.zip: 17 pane files for glass '+S.glass+(S.filmOn?' and film '+S.film:'')+', plus print notes.';});});
+window.LANTERN_FILES={cutFiles:cutFiles,printFiles:printFiles,zip:zip};
+})();
+})();
+</script>
+
+</body></html>

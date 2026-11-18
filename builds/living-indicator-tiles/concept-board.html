@@ -1,0 +1,201 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Living Light</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a concept board. Hero corridor render, then mood, directions, tile anatomy, components. Single dark theme by choice: backlit tiles only read against the dark. */
+:root{
+  color-scheme:dark;
+  --hull:#0c1011; --panel:#141a1b; --line:#253031; --ink:#e6eeec; --dim:#93a3a0; --ok:#57c9a8; --warn:#e2b14a; --bad:#e2735a;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--hull);color:var(--ink);font-family:var(--display);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:32px 72px;display:flex;flex-direction:column;gap:48px}
+section{display:flex;flex-direction:column;gap:16px}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+h1{font-weight:700;font-size:clamp(2.2rem,6vw,3.6rem);line-height:.98;margin:0;letter-spacing:-.015em;text-wrap:balance}
+h2{font-weight:600;font-size:clamp(1.3rem,2.6vw,1.7rem);margin:0;text-wrap:balance}
+h3{font-weight:600;font-size:1.08rem;margin:0}
+p{margin:0;max-width:68ch}.lede{color:var(--dim)}
+.hero{position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#000}
+.hero canvas{display:block;width:100%;aspect-ratio:16/8}
+.hero .cap{position:absolute;left:14px;bottom:12px;right:14px;font-family:var(--mono);font-size:.72rem;color:#cfe;opacity:.8}
+.mood{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.mood figure{margin:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.mood .sw{aspect-ratio:4/3;border-radius:3px;position:relative;overflow:hidden}
+.mood figcaption{font-size:.86rem;color:var(--dim)}.mood figcaption b{color:var(--ink);font-weight:600;display:block}
+.dirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.dir{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.dir.pick{border-color:var(--ok)}
+.dir canvas{width:100%;aspect-ratio:4/3;display:block;border-radius:3px;background:#000}
+.badge{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}.dir.pick .badge{color:var(--ok)}
+.dir p{font-size:.9rem;color:var(--dim)}
+.anat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:center}
+.anat svg{width:100%;height:auto;display:block}
+.layers{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.layers li{display:grid;grid-template-columns:1.7em 1fr;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:.9rem;color:var(--dim)}
+.layers li b{color:var(--ink);font-weight:600}.layers .n{font-family:var(--mono);color:var(--ok)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;min-width:700px;font-size:.88rem}
+th,td{text-align:left;vertical-align:top;padding:8px 12px;border-top:1px solid var(--line)}
+thead th{border-top:0;font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:500}
+td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}td{color:var(--dim)}
+.note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:0 6px 6px 0;padding:14px 18px;display:flex;flex-direction:column;gap:6px}
+.fine{font-family:var(--mono);font-size:.72rem;color:var(--dim);max-width:90ch}
+@media (max-width:960px){.mood{grid-template-columns:repeat(2,minmax(0,1fr))}.dirs,.anat{grid-template-columns:1fr}}
+</style>
+<div class="wrap">
+  <section style="gap:14px">
+    <span class="eyebrow">Concept · materials as governance in space habitats</span>
+    <h1>Living light</h1>
+    <p class="lede">Backlit algae tiles warmed by the habitat's thermal loop. They light the corridors, and their color and density show anyone walking past, person or agent, whether the loop is running right. A warm stretch of loop shows up as a yellowing stretch of wall.</p>
+  </section>
+
+  <div class="hero"><canvas id="hero" width="1600" height="800" aria-label="A habitat corridor lined with glowing blue-green algae tiles; a stretch of tiles on the right wall has turned yellow-green where the loop runs warm."></canvas>
+    <span class="cap">CORRIDOR C · RIGHT WALL, BAYS 6–8 RUNNING WARM · FLOOR PATH TILES DIMMED FOR NIGHT CYCLE</span></div>
+
+  <section>
+    <span class="eyebrow">01 · Mood</span>
+    <h2>Light that is also a reading</h2>
+    <div class="mood" id="mood"></div>
+  </section>
+
+  <section>
+    <span class="eyebrow">02 · Three directions</span>
+    <h2>Where the tiles live</h2>
+    <div class="dirs">
+      <article class="dir pick"><canvas id="d1" width="480" height="360" aria-label="Wall panels"></canvas><span class="badge">Direction A · start here</span><h3>Wall panels</h3><p>A continuous band of tiles at eye level along every corridor, one tile per loop segment. Easiest to read, easiest to plumb, and the whole loop becomes a map you walk along.</p></article>
+      <article class="dir"><canvas id="d2" width="480" height="360" aria-label="Floor path"></canvas><span class="badge">Direction B</span><h3>Floor path</h3><p>Walkable tiles marking routes. Optional bioluminescent layer that flashes underfoot. Harder: load-bearing glass, cleaning, and the culture needs protecting from impact.</p></article>
+      <article class="dir"><canvas id="d3" width="480" height="360" aria-label="Lantern modules"></canvas><span class="badge">Direction C</span><h3>Lantern modules</h3><p>Hanging or standing units, one per room or system, like the media lantern with a living pane. Most sculptural; fewest readings.</p></article>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">03 · Tile anatomy</span>
+    <h2>One tile, front to back</h2>
+    <div class="anat">
+      <svg viewBox="0 0 520 380" role="img" aria-label="Exploded view of a tile's layers">
+        <g id="ex"></g>
+      </svg>
+      <ol class="layers">
+        <li><span class="n">1</span><span><b>Cover glass.</b> Low-iron, so it doesn't tint the reading. Cleanable side.</span></li>
+        <li><span class="n">2</span><span><b>Culture layer, 5–10 mm.</b> Thin enough to stay readable. Its own sealed loop with a harvest port and a gas membrane (CO₂ in, oxygen out).</span></li>
+        <li><span class="n">3</span><span><b>Reference band.</b> Printed healthy color under the same light, along the bottom edge. Plus the harvest date.</span></li>
+        <li><span class="n">4</span><span><b>Heat plate.</b> Carries the loop's heat into the culture without the coolant ever touching it. Algae in a real coolant loop would foul it.</span></li>
+        <li><span class="n">5</span><span><b>Fixed backlight.</b> Same brightness and spectrum on every tile, on a day-night cycle, so differences come from the loop, not the lamp.</span></li>
+        <li><span class="n">6</span><span><b>Optical sensor.</b> Measures light through the culture at the pigment wavelengths. The agent's copy of what people see.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">04 · Potential components</span>
+    <h2>What it could be built from</h2>
+    <div class="tbl"><table><thead><tr><th>Part</th><th>Candidates</th><th>Why, and the catch</th></tr></thead><tbody>
+      <tr><td>Culture</td><td>Spirulina (<i>Arthrospira</i>); a warm/cool species pair</td><td>Spirulina's blue pigment fades with heat: a built-in thermometer. A pair separates "too hot" from "stressed." Each needs calibrating.</td></tr>
+      <tr><td>Glow layer (optional)</td><td>Bioluminescent dinoflagellates (<i>Pyrocystis</i>)</td><td>Flash when disturbed, so floor tiles light underfoot. Narrow temperature range, needs its own dark cycle.</td></tr>
+      <tr><td>Panel</td><td>Flat-panel photobioreactor, glass or acrylic</td><td>Lab and pilot versions exist. Thin, sealed, with ports for harvest and gas.</td></tr>
+      <tr><td>Backlight</td><td>Fixed-spectrum white LED panel</td><td>White keeps the color honest for people. Grow-light red/blue would distort the reading.</td></tr>
+      <tr><td>Sensor</td><td>Multi-channel spectral sensor chip (e.g. ams AS7341) or a camera with filters</td><td>Cheap and small. Reads 620 nm (blue pigment) and 680 nm (chlorophyll).</td></tr>
+      <tr><td>Heat coupling</td><td>Aluminum or stainless cold plate on the loop</td><td>Shares heat, never water. The key safety separation.</td></tr>
+      <tr><td>Culture loop</td><td>Peristaltic pump, membrane gas exchanger, harvest valve</td><td>Mixing matters in low gravity: bubbles don't rise on their own.</td></tr>
+      <tr><td>Reference</td><td>UV-printed band on the cover glass</td><td>The same printing method as the lantern's panes.</td></tr>
+    </tbody></table></div>
+    <p class="fine">Precedents to read: ESA's MELiSSA closed-loop life-support project (uses Spirulina); the BIQ House in Hamburg (an algae bioreactor façade); NASA's OMEGA project (algae in floating membranes).</p>
+  </section>
+
+  <div class="note"><b>First prototype</b><p class="lede">One living pane: a sealed 5 mm algae layer, backlit, on a small heated plate with a dial. Turn the heat up over a week and photograph it daily. That tests the whole idea on a desk, and it could sit in the media lantern as a side experiment.</p></div>
+  <p class="fine">All colors on this page are modeled from how algal pigments absorb light, not photographed from real cultures.</p>
+</div>
+
+<script>
+(function(){
+var ABS={c:[1.0,.22,.85],p:[1.15,.32,.12],r:[.08,.55,1.25],x:[.55,.65,.8]},BACK=[1,.97,.9];
+function tr(s,k){var o=[];for(var c=0;c<3;c++){o[c]=BACK[c]*Math.exp(-s.d*k*(s.c*ABS.c[c]+s.p*ABS.p[c]+s.r*ABS.r[c]+(s.x||0)*ABS.x[c]));}return o;}
+function rgb(s,k,l,a){var t=tr(s,k||2.2);l=l==null?1:l;return 'rgba('+Math.round(255*l*t[0])+','+Math.round(255*l*t[1])+','+Math.round(255*l*t[2])+','+(a==null?1:a)+')';}
+var H={d:.55,c:.6,p:.85,r:.08},WARM={d:.62,c:.55,p:.3,r:.22},HOT={d:.42,c:.38,p:.08,r:.35,x:.08},NIGHT=.18;
+function mix(a,b,t){return {d:a.d+(b.d-a.d)*t,c:a.c+(b.c-a.c)*t,p:a.p+(b.p-a.p)*t,r:a.r+(b.r-a.r)*t,x:(a.x||0)+((b.x||0)-(a.x||0))*t};}
+function rnd(i){var x=Math.sin(i*127.1+311.7)*43758.5453;return x-Math.floor(x);}
+// quad fill helper
+function quad(g,p,fill){g.beginPath();g.moveTo(p[0][0],p[0][1]);for(var i=1;i<4;i++)g.lineTo(p[i][0],p[i][1]);g.closePath();g.fillStyle=fill;g.fill();}
+// ---------- hero corridor ----------
+function corridor(cv,opt){opt=opt||{};var g=cv.getContext('2d'),W=cv.width,Hh=cv.height,vx=W*.5,vy=Hh*.47;
+  g.fillStyle='#050707';g.fillRect(0,0,W,Hh);
+  // corridor frame: near rect and far rect
+  var n={l:-W*.08,r:W*1.08,t:-Hh*.05,b:Hh*1.05},f={l:vx-W*.07,r:vx+W*.07,t:vy-Hh*.09,b:vy+Hh*.09};
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function depth(t){return Math.pow(t,1.9);} // perspective spacing
+  var bays=opt.bays||10;
+  // ceiling and floor base
+  quad(g,[[n.l,n.t],[n.r,n.t],[f.r,f.t],[f.l,f.t]],'#0b0e0f');quad(g,[[n.l,n.b],[n.r,n.b],[f.r,f.b],[f.l,f.b]],'#0a0c0c');
+  for(var side=0;side<2;side++){
+    for(var i=0;i<bays;i++){var t0=depth(i/bays),t1=depth((i+1)/bays);
+      var xn0=side?lerp(n.r,f.r,t0):lerp(n.l,f.l,t0),xn1=side?lerp(n.r,f.r,t1):lerp(n.l,f.l,t1);
+      var tt0=lerp(n.t,f.t,t0),tt1=lerp(n.t,f.t,t1),bb0=lerp(n.b,f.b,t0),bb1=lerp(n.b,f.b,t1);
+      var h0=bb0-tt0,h1=bb1-tt1;
+      // wall base
+      quad(g,[[xn0,tt0],[xn1,tt1],[xn1,bb1],[xn0,bb0]],'#101515');
+      // tile band from 30% to 72% height, with a gap between bays
+      var gp=.08,xa=lerp(xn0,xn1,gp),xb=lerp(xn0,xn1,1-gp),ya0=lerp(tt0,tt1,gp)+lerp(h0,h1,gp)*.28,yb0=ya0+lerp(h0,h1,gp)*.44,ya1=lerp(tt0,tt1,1-gp)+lerp(h0,h1,1-gp)*.28,yb1=ya1+lerp(h0,h1,1-gp)*.44;
+      var st=H;var bay=bays-1-i;
+      if(side===1&&opt.warm){if(i>=5&&i<=7)st=i===6?HOT:WARM;else if(i===4||i===8)st=mix(H,WARM,.45);}
+      var l=1-i*.045;
+      var gr=g.createLinearGradient(xa,0,xb,0);gr.addColorStop(0,rgb(st,2.2,l*.82));gr.addColorStop(.5,rgb(st,2.2,l));gr.addColorStop(1,rgb(st,2.2,l*.85));
+      quad(g,[[xa,ya0],[xb,ya1],[xb,yb1],[xa,yb0]],gr);
+      // reference band
+      var rb0=yb0+(yb0-ya0)*.04,rb1=yb1+(yb1-ya1)*.04,rh0=(yb0-ya0)*.09,rh1=(yb1-ya1)*.09;
+      quad(g,[[xa,rb0],[xb,rb1],[xb,rb1+rh1],[xa,rb0+rh0]],rgb(H,2.2,l*.9));
+      // glow spill onto floor
+      var fy0=lerp(bb0,bb1,.5),fx=lerp(xa,xb,.5);var sp=g.createRadialGradient(fx,fy0,0,fx,fy0,Math.abs(xb-xa)*1.3);sp.addColorStop(0,rgb(st,2.2,.18*l,.5));sp.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=sp;g.fillRect(fx-Math.abs(xb-xa)*1.4,fy0-Math.abs(xb-xa)*1.4,Math.abs(xb-xa)*2.8,Math.abs(xb-xa)*2.8);
+    }}
+  // floor path tiles down the middle (night-dimmed)
+  for(var j=0;j<bays*2;j++){var u0=depth(j/(bays*2)),u1=depth((j+.7)/(bays*2));
+    var y0=lerp(n.b,f.b,u0),y1=lerp(n.b,f.b,u1),w0=lerp(W*.16,W*.012,u0),w1=lerp(W*.16,W*.012,u1);
+    quad(g,[[vx-w0,y0],[vx+w0,y0],[vx+w1,y1],[vx-w1,y1]],rgb(H,2.2,(opt.floorLight||NIGHT)*(1-u0*.4)));}
+  // ceiling light line
+  for(j=0;j<bays;j++){var c0=depth(j/bays),c1=depth((j+.6)/bays);var cy0=lerp(n.t,f.t,c0),cy1=lerp(n.t,f.t,c1),cw0=lerp(W*.05,W*.004,c0),cw1=lerp(W*.05,W*.004,c1);
+    quad(g,[[vx-cw0,cy0],[vx+cw0,cy0],[vx+cw1,cy1],[vx-cw1,cy1]],'rgba(225,235,232,.16)');}
+  // far end: hatch glow
+  var fg=g.createRadialGradient(vx,vy,0,vx,vy,W*.08);fg.addColorStop(0,'rgba(200,230,225,.35)');fg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=fg;g.fillRect(vx-W*.1,vy-W*.1,W*.2,W*.2);
+}
+corridor(document.getElementById('hero'),{warm:true,bays:10});
+// ---------- mood swatches (generated) ----------
+var MOOD=[
+ ['Light as material','James Turrell\'s skyspaces: a field of color with no visible source.',function(g,W,H){var gr=g.createRadialGradient(W/2,H/2,0,W/2,H/2,W*.7);gr.addColorStop(0,'#7fd6c4');gr.addColorStop(1,'#0d2d2a');g.fillStyle=gr;g.fillRect(0,0,W,H);g.fillStyle='rgba(0,0,0,.85)';g.fillRect(0,0,W,H*.12);g.fillRect(0,H*.88,W,H*.12);}],
+ ['Color as record','Stained glass: light filtered through color tells a story to anyone who looks.',function(g,W,H){for(var i=0;i<6;i++)for(var j=0;j<4;j++){var s=mix(H_,[WARM,HOT,H_,H_][j%4],rnd(i*7+j)*.8);g.fillStyle=rgb(s,2.2,.95);g.fillRect(i*W/6+2,j*H/4+2,W/6-4,H/4-4);}}],
+ ['Backlit screens','Shoji panels: a soft layer that turns a lamp into a surface.',function(g,W,H){g.fillStyle='#f2ead8';g.fillRect(0,0,W,H);g.strokeStyle='rgba(60,45,30,.55)';g.lineWidth=3;for(var i=1;i<4;i++){g.beginPath();g.moveTo(i*W/4,0);g.lineTo(i*W/4,H);g.stroke();}for(i=1;i<3;i++){g.beginPath();g.moveTo(0,i*H/3);g.lineTo(W,i*H/3);g.stroke();}}],
+ ['Living façade','Algae bioreactor panels on a building: daylight, growth and heat in one skin.',function(g,W,H){for(var i=0;i<5;i++){var s=mix(H_,{d:.75,c:.65,p:.7,r:.1},rnd(i));g.fillStyle=rgb(s,2.2,.85);g.fillRect(i*W/5+3,4,W/5-6,H-8);for(var b=0;b<14;b++){g.fillStyle='rgba(255,255,255,.25)';g.beginPath();g.arc(i*W/5+W/10+(rnd(i*9+b)-.5)*W/7,H-((b*37+i*17)%H),2+rnd(b)*3,0,7);g.fill();}}}],
+ ['Culture flasks','Lab bottles in a row: the same organism at different densities.',function(g,W,H){g.fillStyle='#0b0f10';g.fillRect(0,0,W,H);for(var i=0;i<6;i++){var s={d:.12+i*.2,c:.6,p:.85,r:.08};g.fillStyle=rgb(s,2.2,.95);var x=i*W/6+W/24,w=W/12;g.fillRect(x,H*.3,w,H*.6);g.fillStyle='rgba(255,255,255,.18)';g.fillRect(x+2,H*.3,3,H*.6);}}],
+ ['Light underfoot','Bioluminescent plankton flashing in a wave: light made by being disturbed.',function(g,W,H){g.fillStyle='#03080d';g.fillRect(0,0,W,H);for(var i=0;i<220;i++){var x=rnd(i)*W,y=H*.55+Math.sin(x/40)*14+(rnd(i*3)-.5)*H*.25,r=rnd(i*5)*2.2+.4;g.fillStyle='rgba(90,190,255,'+(.3+rnd(i*7)*.6)+')';g.beginPath();g.arc(x,y,r,0,7);g.fill();}}],
+ ['Patina','Copper and brass that record their history in color, slowly.',function(g,W,H){var gr=g.createLinearGradient(0,0,W,H);gr.addColorStop(0,'#b07a3f');gr.addColorStop(.55,'#6f8f6a');gr.addColorStop(1,'#4fa38f');g.fillStyle=gr;g.fillRect(0,0,W,H);for(var i=0;i<400;i++){g.fillStyle='rgba(30,60,50,'+rnd(i)*.25+')';g.fillRect(rnd(i*3)*W,rnd(i*5)*H,2,2);}}],
+ ['The habitat hull','Matte, dark, quiet surfaces, so the living light carries the information.',function(g,W,H){g.fillStyle='#14191a';g.fillRect(0,0,W,H);g.strokeStyle='#263031';g.lineWidth=2;for(var i=1;i<5;i++){g.beginPath();g.moveTo(0,i*H/5);g.lineTo(W,i*H/5);g.stroke();}g.fillStyle=rgb(H_,2.2,.9);g.fillRect(W*.1,H*.4,W*.8,H*.2);}]
+];
+var H_=H,mood=document.getElementById('mood');
+MOOD.forEach(function(m){var f=document.createElement('figure');var c=document.createElement('canvas');c.width=400;c.height=300;c.className='sw';c.style.width='100%';c.setAttribute('aria-hidden','true');
+  f.appendChild(c);var cap=document.createElement('figcaption');cap.innerHTML='<b>'+m[0]+'</b>'+m[1];f.appendChild(cap);mood.appendChild(f);m[2](c.getContext('2d'),400,300);});
+// ---------- direction thumbnails ----------
+corridor(document.getElementById('d1'),{warm:true,bays:7});
+(function(){var cv=document.getElementById('d2'),g=cv.getContext('2d'),W=cv.width,Hh=cv.height;g.fillStyle='#060808';g.fillRect(0,0,W,Hh);
+  for(var r=0;r<7;r++)for(var k=-3;k<=3;k++){var t0=r/7,t1=(r+.82)/7,y0=Hh*(1-.85*Math.pow(t0,.7)),y1=Hh*(1-.85*Math.pow(t1,.7)),s0=1-t0*.8,s1=1-t1*.8;
+    var x0=W/2+k*W*.15*s0,x1=W/2+k*W*.15*s1,w0=W*.065*s0,w1=W*.065*s1;var lit=(Math.abs(k)<=1&&r<3);
+    quad(g,[[x0-w0,y0],[x0+w0,y0],[x1+w1,y1],[x1-w1,y1]],lit?'rgba(110,200,255,'+(.8-r*.15)+')':rgb(H,2.2,.25*(1-t0*.5)));}
+  g.fillStyle='rgba(120,210,255,.18)';g.beginPath();g.ellipse(W/2,Hh*.86,W*.22,Hh*.08,0,0,7);g.fill();})();
+(function(){var cv=document.getElementById('d3'),g=cv.getContext('2d'),W=cv.width,Hh=cv.height;g.fillStyle='#070909';g.fillRect(0,0,W,Hh);
+  [[.25,.32,1],[.5,.42,.9],[.75,.3,1.05]].forEach(function(p,i){var x=W*p[0],y=Hh*p[1],w=W*.13*p[2],h=Hh*.34*p[2];g.strokeStyle='rgba(200,210,210,.25)';g.beginPath();g.moveTo(x,0);g.lineTo(x,y-h/2);g.stroke();
+    var s=i===2?WARM:H;var gr=g.createRadialGradient(x,y,0,x,y,w*2.4);gr.addColorStop(0,rgb(s,2.2,.35,.6));gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(x-w*2.5,y-w*2.5,w*5,w*5);
+    for(var k=0;k<6;k++){g.fillStyle=rgb(s,2.2,.95-k*.08,.55);g.fillRect(x-w/2+k*2,y-h/2+k*2,w,h);}});})();
+// ---------- exploded anatomy (SVG) ----------
+(function(){var ex=document.getElementById('ex'),ns='http://www.w3.org/2000/svg';
+  var L=[['Cover glass','rgba(220,240,240,.18)'],['Culture layer',rgb(H,2.2,.95)],['Reference band',null],['Heat plate','#7d868c'],['Backlight','#f4efe2'],['Sensor','#2b3335']];
+  L.forEach(function(l,i){var x=70+i*62,y=40+i*26,w=210,h=210,sk=60;var pts=[[x,y+sk],[x+w*.55,y],[x+w*.55,y+h],[x,y+h+sk]];
+    var p=document.createElementNS(ns,'polygon');p.setAttribute('points',pts.map(function(q){return q.join(',');}).join(' '));
+    if(i===2){p.setAttribute('fill','rgba(0,0,0,0)');p.setAttribute('stroke','rgba(147,163,160,.5)');p.setAttribute('stroke-dasharray','4 4');
+      var b=document.createElementNS(ns,'polygon');var by=h*.82;b.setAttribute('points',[[x,y+sk+by],[x+w*.55,y+by],[x+w*.55,y+by+h*.1],[x,y+sk+by+h*.1]].map(function(q){return q.join(',');}).join(' '));b.setAttribute('fill',rgb(H,2.2,.9));ex.appendChild(p);ex.appendChild(b);}
+    else{p.setAttribute('fill',l[1]);p.setAttribute('stroke','rgba(230,238,236,.35)');ex.appendChild(p);}
+    if(i===5){for(var k=0;k<2;k++){var c=document.createElementNS(ns,'circle');c.setAttribute('cx',x+w*.27);c.setAttribute('cy',y+h*.5+sk/2+k*24-12);c.setAttribute('r',6);c.setAttribute('fill','#57c9a8');ex.appendChild(c);}}
+    var t=document.createElementNS(ns,'text');t.setAttribute('x',x+w*.27);t.setAttribute('y',y+h+sk+22);t.setAttribute('text-anchor','middle');t.setAttribute('fill','#93a3a0');t.setAttribute('font-size','13');t.setAttribute('font-family','IBM Plex Mono, monospace');t.textContent=String(i+1);ex.appendChild(t);});})();
+})();
+</script>
+
+</body></html>

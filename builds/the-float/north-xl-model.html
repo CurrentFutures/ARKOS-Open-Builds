@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>House PC Close-Up</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a studio table. The machine alone on a dark warm ground; option rows underneath like a spec sheet. Single warm-dark theme by choice. */
+:root{
+  color-scheme: dark;
+  --room:#121010; --wall:#1c1916; --line:#332c25; --ink:#efe7dc; --dim:#ab9f90; --brass:#c9a25a;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--room);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:28px 64px;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 28px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(2rem,4.6vw,3rem);margin:0;line-height:1}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+p{margin:0;max-width:66ch}
+.stage{position:relative;width:100%;aspect-ratio:16/10;max-width:100%;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--room)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage .hint{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--dim);pointer-events:none}
+.stage .fail{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--dim)}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 28px}
+.group{display:flex;flex-direction:column;gap:8px;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:inherit;font-size:.85rem;color:var(--ink);background:var(--wall);border:1px solid var(--line);border-radius:99px;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--brass);color:#e9cf98;background:#2a2214}
+.swatch{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--dim);padding-left:4px}
+.swatch input{width:34px;height:26px;border:1px solid var(--line);border-radius:6px;background:none;padding:0;cursor:pointer}
+.seg button:focus-visible,input[type=range]:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.slider{display:grid;grid-template-columns:7.5em 1fr 4.5em;gap:10px;align-items:center;font-size:.85rem}
+.slider output{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--dim);text-align:right}
+input[type=range]{accent-color:var(--brass);width:100%;min-width:100px}
+.note{background:var(--wall);border:1px solid var(--line);border-radius:6px;padding:14px 18px;display:flex;flex-direction:column;gap:4px}
+.note b{font-family:var(--display);font-weight:500;font-size:1.05rem}
+.fine{font-family:var(--mono);font-size:.72rem;color:var(--dim)}
+@media (max-width:900px){ .opts{grid-template-columns:1fr 1fr} .stage{aspect-ratio:4/5} }
+@media (max-width:560px){ .opts{grid-template-columns:1fr} }
+</style>
+
+<div class="wrap">
+  <header>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span class="eyebrow">House build · the machine alone</span>
+      <h1>House PC close-up</h1>
+    </div>
+    <p style="color:var(--dim);max-width:52ch">Real shapes at real sizes: fan blades, radiator and heatsink fins, the board's slots and connectors. Switch the side to clear to look inside, light the fans, swap the finish.</p>
+  </header>
+
+  <div class="stage" id="stage">
+    <canvas id="c" aria-label="Detailed 3D model of the house PC. Drag to orbit, scroll or pinch to zoom."></canvas>
+    <span class="hint">DRAG TO ORBIT · SCROLL TO ZOOM</span>
+  </div>
+
+  <div class="opts">
+    <div class="group"><span class="eyebrow">Side panel</span>
+      <div class="seg" data-k="side"><button type="button" id="o-side-fluted" data-v="fluted" aria-pressed="true">Reeded bronze</button><button type="button" id="o-side-clear" data-v="clear" aria-pressed="false">Clear (to inspect)</button><button type="button" id="o-side-off" data-v="off" aria-pressed="false">Panel off</button></div></div>
+    <div class="group"><span class="eyebrow">Fans</span>
+      <div class="seg" data-k="fans"><button type="button" id="o-fans-plain" data-v="plain" aria-pressed="true">Plain, unlit</button><button type="button" id="o-fans-ring" data-v="ring" aria-pressed="false">Warm ring light</button></div></div>
+    <div class="group"><span class="eyebrow">Power cables inside</span>
+      <div class="seg" data-k="cab"><button type="button" id="o-cab-amber" data-v="amber" aria-pressed="true">Amber</button><button type="button" id="o-cab-orange" data-v="orange" aria-pressed="false">Orange</button><button type="button" id="o-cab-cream" data-v="cream" aria-pressed="false">Cream</button><button type="button" id="o-cab-black" data-v="black" aria-pressed="false">Black</button></div></div>
+    <div class="group"><span class="eyebrow">Memory sticks</span>
+      <div class="seg" data-k="ramn"><button type="button" id="o-ramn-2" data-v="2" aria-pressed="true">2 sticks (2 slots empty)</button><button type="button" id="o-ramn-4" data-v="4" aria-pressed="false">4 sticks (all slots)</button></div></div>
+    <div class="group"><span class="eyebrow">Memory light</span>
+      <div class="seg" data-k="ramlit"><button type="button" id="o-rl-on" data-v="on" aria-pressed="true">On</button><button type="button" id="o-rl-off" data-v="off" aria-pressed="false">Off</button>
+      <label class="swatch" for="ramColor">Color <input type="color" id="ramColor" value="#ffc35a"></label></div></div>
+    <div class="group"><span class="eyebrow">Case back</span>
+      <div class="seg" data-k="backmat"><button type="button" id="o-bm-steel" data-v="steel" aria-pressed="true">Perforated black steel</button><button type="button" id="o-bm-brass" data-v="brass" aria-pressed="false">Perforated brass</button></div></div>
+    <div class="group"><span class="eyebrow">Memory finish</span>
+      <div class="seg" data-k="ram"><button type="button" id="o-ram-dark" data-v="dark" aria-pressed="false">Plain dark</button><button type="button" id="o-ram-gold" data-v="gold" aria-pressed="true">Gold (Trident Z5 Royal style)</button></div></div>
+    <div class="group"><span class="eyebrow">Base perforation</span>
+      <div class="seg" data-k="base"><button type="button" id="o-b-slots" data-v="slots" aria-pressed="true">Slots on the slat rhythm</button><button type="button" id="o-b-halftone" data-v="halftone" aria-pressed="false">Halftone holes</button><button type="button" id="o-b-dither" data-v="dither" aria-pressed="false">Old random fade</button></div></div>
+    <div class="group"><span class="eyebrow">Board + card finish</span>
+      <div class="seg" data-k="finish"><button type="button" id="o-fin-wood" data-v="wood" aria-pressed="true">Dark Wood</button><button type="button" id="o-fin-dark" data-v="dark" aria-pressed="false">Standard dark</button></div></div>
+    <div class="group"><span class="eyebrow">Power</span>
+      <div class="seg" data-k="state"><button type="button" id="o-st-off" data-v="off" aria-pressed="false">Off</button><button type="button" id="o-st-on" data-v="on" aria-pressed="true">On</button><button type="button" id="o-st-sleep" data-v="sleep" aria-pressed="false">Asleep</button></div></div>
+    <div class="group"><span class="eyebrow">View</span>
+      <div class="seg" data-k="view"><button type="button" id="o-v-hero" data-v="hero" aria-pressed="true">Corner</button><button type="button" id="o-v-side" data-v="side" aria-pressed="false">Side</button><button type="button" id="o-v-front" data-v="front" aria-pressed="false">Front</button><button type="button" id="o-v-inside" data-v="inside" aria-pressed="false">Inside close</button><button type="button" id="o-v-top" data-v="top" aria-pressed="false">Top</button><button type="button" id="o-v-back" data-v="back" aria-pressed="false">Back</button></div></div>
+    <div class="group" style="gap:10px">
+      <label class="slider" for="inside"><span>Edge strips</span><input type="range" id="inside" min="0" max="100" value="80"><output id="insideOut">2680 K</output></label>
+      <label class="slider" for="load"><span>Power draw</span><input type="range" id="load" min="40" max="600" step="10" value="380"><output id="loadOut">380 W</output></label>
+    </div>
+  </div>
+
+  <div class="note" id="note"><b>What's lighting it</b><p id="noteText"></p></div>
+  <p class="fine">Model of a walnut-front 50 × 24 × 50 cm mid-tower on a 9 cm walnut base. Parts are drawn to real dimensions (140 mm front fans, 360 mm radiator, 33 cm three-slot graphics card, ATX board) but are generic, not exact product models.</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script>
+(function(){
+var stage=document.getElementById('stage'),canvas=document.getElementById('c');
+if(!window.THREE){stage.insertAdjacentHTML('beforeend','<div class="fail">The 3D library didn\'t load. Reload the page to try again.</div>');return;}
+var renderer;try{renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});}catch(e){stage.insertAdjacentHTML('beforeend','<div class="fail">This browser can\'t show 3D right now (WebGL is off).</div>');return;}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
+var scene=new THREE.Scene();scene.background=new THREE.Color(0x121010);
+try{var pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new THREE.RoomEnvironment(),0.04).texture;}catch(e){}
+var camera=new THREE.PerspectiveCamera(30,1,1,1000);var controls=new THREE.OrbitControls(camera,canvas);
+controls.enableDamping=true;controls.dampingFactor=.08;controls.enablePan=false;controls.minDistance=25;controls.maxDistance=260;controls.maxPolarAngle=Math.PI*.62;
+
+var W=24,H=50,D=50,BH=9,PX=32,TOG={u:5.2,v:3.6},EXITX=6;
+function cnv(w,h){var c=document.createElement('canvas');c.width=w;c.height=h;return c;}
+function tex(c,srgb,rx,ry){var t=new THREE.CanvasTexture(c);if(srgb)t.encoding=THREE.sRGBEncoding;t.anisotropy=8;if(rx){t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rx,ry||rx);}return t;}
+function rnd(i){var x=Math.sin(i*127.1)*43758.5453;return x-Math.floor(x);}
+function add(o,parent){(parent||scene).add(o);return o;}
+function box(sx,sy,sz,x,y,z,m,parent){var o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);o.position.set(x,y,z);return add(o,parent);}
+function cyl(r,h,x,y,z,m,axis,parent,seg){var o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,seg||40),m);if(axis==='x')o.rotation.z=Math.PI/2;if(axis==='z')o.rotation.x=Math.PI/2;o.position.set(x,y,z);return add(o,parent);}
+function tube(pts,r,m){var cv=new THREE.CatmullRomCurve3(pts.map(function(p){return new THREE.Vector3(p[0],p[1],p[2]);}));return add(new THREE.Mesh(new THREE.TubeGeometry(cv,60,r,12,false),m));}
+
+/* ---------- procedural textures ---------- */
+function walnutC(w,h,vert){var c=cnv(w,h),g=c.getContext('2d');g.fillStyle='#5a3821';g.fillRect(0,0,w,h);var n=vert?w:h;
+  for(var i=0;i<n;i++){var v=Math.sin(i*.07)*.5+Math.sin(i*.013+2)*.5+Math.sin(i*.31)*.25,l=Math.round(30+v*10+Math.random()*6);g.fillStyle='rgba('+(l+52)+','+(l+22)+','+(l+2)+',.35)';if(vert)g.fillRect(i,0,1,h);else g.fillRect(0,i,w,1);}
+  for(i=0;i<160;i++){g.strokeStyle='rgba(40,22,10,'+(.08+Math.random()*.18)+')';g.lineWidth=.6+Math.random()*1.6;g.beginPath();var p=Math.random()*n;
+    if(vert){g.moveTo(p,0);g.bezierCurveTo(p+Math.random()*10-5,h*.33,p+Math.random()*10-5,h*.66,p+Math.random()*8-4,h);}else{g.moveTo(0,p);g.bezierCurveTo(w*.33,p+Math.random()*10-5,w*.66,p+Math.random()*10-5,w,p+Math.random()*8-4);}g.stroke();}return c;}
+function brushedC(base){var c=cnv(256,256),g=c.getContext('2d');g.fillStyle=base;g.fillRect(0,0,256,256);for(var i=0;i<1400;i++){var y=Math.random()*256,a=Math.random()*.05;g.fillStyle=Math.random()<.5?'rgba(255,255,255,'+a+')':'rgba(0,0,0,'+a+')';g.fillRect(0,y,256,.6+Math.random());}return c;}
+function linesC(a,b,period,width,vertical){var c=cnv(64,64),g=c.getContext('2d');g.fillStyle=a;g.fillRect(0,0,64,64);g.fillStyle=b;for(var i=0;i<64;i+=period){if(vertical)g.fillRect(i,0,width,64);else g.fillRect(0,i,64,width);}return c;}
+function pcbC(){var c=cnv(512,640),g=c.getContext('2d');g.fillStyle='#101114';g.fillRect(0,0,512,640);g.strokeStyle='rgba(60,64,72,.35)';g.lineWidth=1;
+  for(var i=0;i<220;i++){var x=Math.random()*512,y=Math.random()*640,l=20+Math.random()*90;g.beginPath();g.moveTo(x,y);if(Math.random()<.5){g.lineTo(x+l,y);g.lineTo(x+l+10,y+10);}else{g.lineTo(x,y+l);g.lineTo(x+10,y+l+10);}g.stroke();}
+  g.fillStyle='rgba(120,124,132,.35)';for(i=0;i<120;i++)g.fillRect(Math.random()*512,Math.random()*640,4+Math.random()*10,2+Math.random()*4);return c;}
+function braidC(col){var c=cnv(64,32),g=c.getContext('2d');g.fillStyle=col||'#d9531a';g.fillRect(0,0,64,32);g.strokeStyle='rgba(90,25,0,.45)';g.lineWidth=2;for(var i=-32;i<96;i+=6){g.beginPath();g.moveTo(i,0);g.lineTo(i+16,32);g.stroke();}return c;}
+function hexC(){var c=cnv(128,128),g=c.getContext('2d');g.fillStyle='#1c1c1f';g.fillRect(0,0,128,128);g.fillStyle='#050505';for(var y=0,r=0;y<140;y+=11,r++)for(var x=(r%2)*6.5;x<140;x+=13){g.beginPath();for(var k=0;k<6;k++){var a=Math.PI/3*k+Math.PI/6;g.lineTo(x+Math.cos(a)*5,y+Math.sin(a)*5);}g.fill();}return c;}
+function slotsC(){var c=cnv(256,64),g=c.getContext('2d');g.fillStyle='#141416';g.fillRect(0,0,256,64);g.fillStyle='#050506';for(var x=10;x<246;x+=9)g.fillRect(x,14,4,36);return c;}
+
+/* ---------- materials ---------- */
+var walnut=new THREE.MeshStandardMaterial({map:tex(walnutC(512,512,false),true),roughness:.55,envMapIntensity:.35});
+var walnutV=new THREE.MeshStandardMaterial({map:tex(walnutC(64,512,true),true),roughness:.5,envMapIntensity:.35});
+var woodPanel=new THREE.MeshStandardMaterial({map:walnut.map,color:0x8a6648,roughness:.45,envMapIntensity:.5});
+var brass=new THREE.MeshStandardMaterial({color:0xb8924f,metalness:1,roughness:.38,envMapIntensity:1});
+var brassB=new THREE.MeshStandardMaterial({color:0xdcb56a,metalness:1,roughness:.2,envMapIntensity:1.2});
+var charcoal=new THREE.MeshStandardMaterial({map:tex(brushedC('#1a1918'),true,2),metalness:.6,roughness:.5,envMapIntensity:.3});
+var gun=new THREE.MeshStandardMaterial({map:tex(brushedC('#4b4b52'),true,2),metalness:.9,roughness:.3,envMapIntensity:.9});
+var gunDark=new THREE.MeshStandardMaterial({map:tex(brushedC('#2b2b30'),true,2),metalness:.85,roughness:.35,envMapIntensity:.8});
+var finMat=new THREE.MeshStandardMaterial({map:tex(linesC('#3a3a40','#0b0b0d',4,2,true),true,30,1),metalness:.8,roughness:.4,envMapIntensity:.7});
+var finMatH=new THREE.MeshStandardMaterial({map:tex(linesC('#45454c','#0e0e10',4,2,false),true,1,6),metalness:.85,roughness:.35,envMapIntensity:.8});
+var fanFrame=new THREE.MeshStandardMaterial({color:0x0c0c0d,roughness:.75,metalness:.05,envMapIntensity:.2});
+var bladeMat=new THREE.MeshStandardMaterial({color:0x111113,roughness:.55,metalness:.05,side:THREE.DoubleSide,envMapIntensity:.3});
+var hubMat=new THREE.MeshStandardMaterial({color:0x26262a,roughness:.4,metalness:.3});
+var pcbMat=new THREE.MeshStandardMaterial({map:tex(pcbC(),true),roughness:.7,envMapIntensity:.2});
+var plastic=new THREE.MeshStandardMaterial({color:0x0e0e10,roughness:.6});
+var cordBraidMap=tex(braidC('#d9531a'),true,30,1); // the outside cord stays orange
+var CABLE={orange:'#d9531a',amber:'#c4801c',cream:'#d6cab2',black:'#1b1816'};
+var braid=new THREE.MeshStandardMaterial({map:tex(braidC(CABLE.amber),true,30,1),roughness:.75});
+function setCables(v){var o=braid.map;braid.map=tex(braidC(CABLE[v]),true,30,1);braid.needsUpdate=true;if(o)o.dispose();}
+var tubeMat=new THREE.MeshStandardMaterial({map:tex(linesC('#141416','#08080a',6,2,false),true,1,40),roughness:.8});
+var psuMat=new THREE.MeshStandardMaterial({map:tex(hexC(),true,4,3),metalness:.6,roughness:.5,envMapIntensity:.5});
+var ventMat=new THREE.MeshStandardMaterial({map:tex(slotsC(),true,3,1),metalness:.7,roughness:.4,envMapIntensity:.6});
+var mirror=new THREE.MeshStandardMaterial({color:0xd9a246,metalness:1,roughness:.07,envMapIntensity:1.3});
+var ringMat=new THREE.MeshBasicMaterial({color:0xffc35a,toneMapped:false});
+var ledMat=new THREE.MeshBasicMaterial({color:0xffd2a0,toneMapped:false});
+var channelMat=new THREE.MeshStandardMaterial({color:0xb9b9be,metalness:.9,roughness:.35});
+
+/* ---------- ground ---------- */
+var gc=cnv(256,256),gg=gc.getContext('2d'),gr=gg.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,'#2a231d');gr.addColorStop(1,'#121010');gg.fillStyle=gr;gg.fillRect(0,0,256,256);
+var ground=add(new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshStandardMaterial({map:tex(gc,true),roughness:.9,envMapIntensity:.05})));ground.rotation.x=-Math.PI/2;ground.position.y=-BH-.01;
+
+/* ---------- fan builder (axis +z) ---------- */
+var fanBlades=[],ringMeshes=[];
+function makeFan(size,parent){var g=new THREE.Group();add(g,parent);var R=size*.47,s=size/2,r=1.2;
+  var sh=new THREE.Shape();sh.moveTo(-s+r,-s);sh.lineTo(s-r,-s);sh.quadraticCurveTo(s,-s,s,-s+r);sh.lineTo(s,s-r);sh.quadraticCurveTo(s,s,s-r,s);sh.lineTo(-s+r,s);sh.quadraticCurveTo(-s,s,-s,s-r);sh.lineTo(-s,-s+r);sh.quadraticCurveTo(-s,-s,-s+r,-s);
+  var hole=new THREE.Path();hole.absarc(0,0,R,0,Math.PI*2,true);sh.holes.push(hole);
+  var fg=new THREE.ExtrudeGeometry(sh,{depth:2.5,bevelEnabled:false,curveSegments:48});fg.translate(0,0,-1.25);g.add(new THREE.Mesh(fg,fanFrame));
+  var rot=new THREE.Group();g.add(rot);var n=9,hubR=size*.16;
+  for(var i=0;i<n;i++){var b=new THREE.Shape(),a0=-.32,a1=.3,sw=.42;b.moveTo(Math.cos(a0)*hubR,Math.sin(a0)*hubR);
+    for(var k=0;k<=8;k++){var t=k/8,a=a0+sw*t,rr=hubR+(R-.3-hubR)*t;b.lineTo(Math.cos(a)*rr,Math.sin(a)*rr);}
+    for(k=8;k>=0;k--){t=k/8;a=a1+sw*t*.9;rr=hubR+(R-.3-hubR)*t;b.lineTo(Math.cos(a)*rr,Math.sin(a)*rr);}
+    var bg=new THREE.ExtrudeGeometry(b,{depth:.18,bevelEnabled:false});var piv=new THREE.Group();piv.rotation.z=i/n*Math.PI*2;rot.add(piv);var bm=new THREE.Mesh(bg,bladeMat);bm.rotation.x=.38;piv.add(bm);}
+  var hub=new THREE.Mesh(new THREE.CylinderGeometry(hubR,hubR,2,32),hubMat);hub.rotation.x=Math.PI/2;g.add(hub);
+  var cap=new THREE.Mesh(new THREE.CircleGeometry(hubR*.8,32),new THREE.MeshStandardMaterial({color:0x101012,roughness:.3,metalness:.4}));cap.position.z=1.01;g.add(cap);
+  [0,1,2,3].forEach(function(q){var st=new THREE.Mesh(new THREE.BoxGeometry(.35,R-hubR,.3),fanFrame);var a=q*Math.PI/2+Math.PI/4;st.position.set(Math.cos(a)*(hubR+(R-hubR)/2),Math.sin(a)*(hubR+(R-hubR)/2),-1.05);st.rotation.z=a-Math.PI/2;g.add(st);});
+  var ring=new THREE.Mesh(new THREE.TorusGeometry(R-.05,.16,10,72),ringMat);ring.position.z=1.2;g.add(ring);ringMeshes.push(ring);
+  fanBlades.push(rot);return g;}
+
+/* ---------- base ---------- */
+var wBase=walnutC(1024,288,false);
+// Base perforation. Holes sit in two bands, above and below the brass line, with a clear margin around it.
+// Columns follow the front slat pitch so the base continues the case's vertical rhythm.
+// density t: 1 at the back (nearest the power supply) -> 0 by mid-depth.
+var PITCH=(W-2.4-13*1.15)/12+1.15, BANDS=[[.8,TOG.v-.8],[TOG.v+.8,9-.8]], baseMode='slots';
+function drawPattern(c,wcm,hcm,seed,tFn){var g=c.getContext('2d');g.fillStyle='#0b0704';var k=0;
+  function yToPx(y){return (hcm-y)*PX;}
+  if(baseMode==='dither'){var p=.9;BANDS.forEach(function(b){for(var y=b[0]+.3;y<b[1];y+=p*.866)for(var x=1+(Math.round(y/p)%2)*p/2;x<wcm-.8;x+=p,k++){if(rnd(k+seed)<tFn(x)){g.beginPath();g.arc(x*PX,yToPx(y),.3*PX,0,7);g.fill();}}});return;}
+  for(var x=PITCH/2;x<wcm;x+=PITCH/2){var t=tFn(x);if(t<.04)continue;
+    BANDS.forEach(function(b){var bh=b[1]-b[0];
+      if(baseMode==='slots'){var h=bh*t,w=.45;g.beginPath();var x0=x*PX-w*PX/2,y0=yToPx(b[0]+(bh-h)/2+h),hp=h*PX,wp=w*PX,r=wp/2;g.moveTo(x0+r,y0);g.arcTo(x0+wp,y0,x0+wp,y0+hp,r);g.arcTo(x0+wp,y0+hp,x0,y0+hp,r);g.arcTo(x0,y0+hp,x0,y0,r);g.arcTo(x0,y0,x0+wp,y0,r);g.fill();}
+      else{var rr=.08+.27*t;for(var y=b[0]+.45;y<=b[1]-.4;y+=.9){g.beginPath();g.arc(x*PX,yToPx(y),rr*PX,0,7);g.fill();}}});}}
+function ss(a,b,x){var t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);}
+var frontC=cnv(768,288);frontC.getContext('2d').drawImage(wBase,0,0);
+function sideC(dense,seed){var c=cnv(1600,288),g=c.getContext('2d');g.drawImage(wBase,0,0);g.drawImage(wBase,1024,0);drawPattern(c,50,9,seed,dense==='right'?function(x){return ss(24,46,x);}:function(x){return ss(26,4,x);});return c;}
+var GAPX=(function(){var slw=1.15,g=(W-2.4-13*slw)/12,a=[];for(var i=0;i<12;i++)a.push(-W/2+1.2+slw/2+i*(slw+g)+(slw+g)/2);return a;})();
+function backCv(){var c=cnv(768,288),g=c.getContext('2d');g.drawImage(wBase,0,0);
+  if(baseMode!=='slots'){drawPattern(c,24,9,5,function(){return 1;});return c;}
+  g.fillStyle='#0b0704';GAPX.forEach(function(x){if(Math.abs(x-EXITX)<1.3)return;var u=W/2-x;
+    BANDS.forEach(function(b){var w=.55,x0=(u-w/2)*PX,y0=(9-b[1])*PX,hp=(b[1]-b[0])*PX,wp=w*PX,r=wp/2;g.beginPath();g.moveTo(x0+r,y0);g.arcTo(x0+wp,y0,x0+wp,y0+hp,r);g.arcTo(x0+wp,y0+hp,x0,y0+hp,r);g.arcTo(x0,y0+hp,x0,y0,r);g.arcTo(x0,y0,x0+wp,y0,r);g.fill();});});
+  return c;}
+var backC=backCv();
+var rayC=cnv(768,288),rg=rayC.getContext('2d'),rayTex=tex(rayC,true),NR=12;
+function drawRays(lv){rg.fillStyle='#000';rg.fillRect(0,0,768,288);for(var i=0;i<NR;i++){var L=lv[i];if(L<=.003)continue;var a=Math.PI-(i/(NR-1))*Math.PI;for(var r=1.15;r<=3.9;r+=.17){var x=(TOG.u+Math.cos(a)*r)*PX,y=(9-(TOG.v+Math.sin(a)*r*.95))*PX,f=1-(r-1.15)/3.2*.45;rg.fillStyle='rgba(255,'+Math.round(196+30*L)+','+Math.round(100+40*L)+','+Math.min(1,L*f)+')';rg.beginPath();rg.arc(x,y,.07*PX,0,7);rg.fill();}}rayTex.needsUpdate=true;}
+var bFront=new THREE.MeshStandardMaterial({map:tex(frontC,true),emissive:0xffffff,emissiveMap:rayTex,emissiveIntensity:2.2,roughness:.5,envMapIntensity:.35});
+var baseM=[new THREE.MeshStandardMaterial({map:tex(sideC('right',77),true),roughness:.5,envMapIntensity:.35}),new THREE.MeshStandardMaterial({map:tex(sideC('left',91),true),roughness:.5,envMapIntensity:.35}),walnut,walnut,bFront,new THREE.MeshStandardMaterial({map:tex(backC,true),roughness:.5,envMapIntensity:.35})];
+function rebuildBase(){[[0,sideC('right',77)],[1,sideC('left',91)],[5,backCv()]].forEach(function(p){var o=baseM[p[0]].map;baseM[p[0]].map=tex(p[1],true);baseM[p[0]].needsUpdate=true;if(o)o.dispose();});}
+box(W,BH,D,0,-BH/2,0,baseM);
+var ly=-BH+TOG.v,seamMat=new THREE.MeshBasicMaterial({color:0xffc35a,toneMapped:false}),fl=TOG.u-.75,bl=(EXITX-1.62)+W/2;
+box(fl,.6,.06,-W/2+fl/2,ly,D/2+.02,brass);box(fl,.14,.05,-W/2+fl/2,ly-.48,D/2+.01,seamMat);
+box(.06,.6,D,-W/2-.02,ly,0,brass);box(.05,.14,D,-W/2-.01,ly-.48,0,seamMat);
+box(bl,.6,.06,-W/2+bl/2,ly,-D/2-.02,brass);box(bl,.14,.05,-W/2+bl/2,ly-.48,-D/2-.01,seamMat);
+// the brass line ends in a brass ring standing off the back of the base; the power cord drops from the PSU inlet through it
+var clip=add(new THREE.Mesh(new THREE.TorusGeometry(1.0,.22,10,32,Math.PI),brass));clip.rotation.x=-Math.PI/2;clip.position.set(EXITX,ly,-D/2-.02);
+box(.55,.8,.12,EXITX-1.35,ly,-D/2-.06,brass);box(.55,.8,.12,EXITX+1.35,ly,-D/2-.06,brass);
+cyl(.12,.05,EXITX-1.35,ly,-D/2-.14,brassB,'z');cyl(.12,.05,EXITX+1.35,ly,-D/2-.14,brassB,'z');
+var cordMat=new THREE.MeshStandardMaterial({map:cordBraidMap,emissive:0xff4400,emissiveIntensity:.1,roughness:.7});
+tube([[EXITX,6,-D/2+.4],[EXITX,6,-D/2-1.0],[EXITX,2,-D/2-1.0],[EXITX,ly,-D/2-1.0],[EXITX,-BH+1.4,-D/2-1.0],[EXITX+.3,-BH+.5,-D/2-3.5],[EXITX+3,-BH+.45,-D/2-30]],.45,cordMat);
+var tg=new THREE.Group();tg.position.set(-W/2+TOG.u,ly,D/2);add(tg);
+var pl=new THREE.Mesh(new THREE.CylinderGeometry(.8,.8,.25,32),brass);pl.rotation.x=Math.PI/2;pl.position.z=.13;tg.add(pl);
+var bu=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,.7,24),brass);bu.rotation.x=Math.PI/2;bu.position.z=.6;tg.add(bu);
+var lever=new THREE.Group();lever.position.z=.95;tg.add(lever);var bat=new THREE.Mesh(new THREE.CylinderGeometry(.14,.24,2.1,20),brassB);bat.position.y=1.05;lever.add(bat);var tip=new THREE.Mesh(new THREE.SphereGeometry(.25,16,12),brassB);tip.position.y=2.1;lever.add(tip);
+
+/* ---------- case shell ---------- */
+var rightPanel=box(.6,H,D,W/2-.3,H/2,0,charcoal);box(W,.6,D,0,.3,0,charcoal); // back panel is built later with real openings
+var veneerMat=new THREE.MeshStandardMaterial({map:tex(walnutC(512,512,true),true),roughness:.5,envMapIntensity:.35});
+var sideFrame=[box(.7,H,1.2,-W/2+.35,H/2,D/2-.6,charcoal),box(.7,H,1.2,-W/2+.35,H/2,-D/2+.6,charcoal),box(.7,1.2,D,-W/2+.35,H-.6,0,charcoal),box(.7,1.2,D,-W/2+.35,.6,0,charcoal)];
+box(W,1.4,2,0,H-.7,D/2-1,charcoal);box(W,1.4,2,0,.7,D/2-1,charcoal);box(1.2,H,2,-W/2+.6,H/2,D/2-1,charcoal);box(1.2,H,2,W/2-.6,H/2,D/2-1,charcoal);
+var meshC=cnv(64,64),mg=meshC.getContext('2d');mg.fillStyle='#000';mg.fillRect(0,0,64,64);mg.fillStyle='#fff';for(var q=0;q<64;q+=8){mg.fillRect(q,0,3,64);mg.fillRect(0,q,64,3);}
+function brassMesh(w,h){var t=new THREE.CanvasTexture(meshC);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(w/.45,h/.45);return new THREE.MeshStandardMaterial({color:0xb08a45,metalness:1,roughness:.4,alphaMap:t,alphaTest:.5,side:THREE.DoubleSide,envMapIntensity:1});}
+var fm=add(new THREE.Mesh(new THREE.PlaneGeometry(W-2.4,H-2.8),brassMesh(W-2.4,H-2.8)));fm.position.set(0,H/2,D/2-1.2);
+var nsl=13,slw=1.15,gap=(W-2.4-nsl*slw)/(nsl-1),slatX=[];
+for(var i=0;i<nsl;i++){var sx=-W/2+1.2+slw/2+i*(slw+gap);slatX.push(sx);box(slw,H-2.8,1.3,sx,H/2,D/2-.4,walnutV);}
+box(W,.4,D,0,H-.1,0,new THREE.MeshStandardMaterial({map:ventMat.map,metalness:.6,roughness:.5}));
+var tm=add(new THREE.Mesh(new THREE.PlaneGeometry(W-1,D-1),brassMesh(W-1,D-1)));tm.rotation.x=-Math.PI/2;tm.position.set(0,H+.5,0);
+slatX.forEach(function(x){box(slw,1.1,D-.8,x,H+1.45,0,walnut);});
+[[-W/2+1.5,-D/2+2],[W/2-1.5,-D/2+2],[-W/2+1.5,D/2-2],[W/2-1.5,D/2-2]].forEach(function(p){cyl(.35,1.2,p[0],H+.5,p[1],brass);});
+// rear I/O + expansion slots on the back panel
+
+
+/* ---------- motherboard (ATX 30.5 x 24.4), board plane at x=BX ---------- */
+var BX=W/2-1.2,BZ0=-D/2+1.2,BZC=BZ0+12.2,BYC=31.25;
+box(.25,30.5,24.4,BX,BYC,BZC,pcbMat);
+var woodParts=[];
+function hs(sx,sy,sz,x,y,z,woodFace){box(sx,sy,sz,x,y,z,finMatH);if(woodFace){var w=box(.1,sy*.9,sz*.9,x-sx/2-.05,y,z,woodPanel);woodParts.push(w);}}
+// matches Gigabyte's product photo: wood only on two vertical strips along the board's rear edge,
+// a brushed champagne-to-bronze VRM heatsink, small copper accent dots, everything else black
+hs(2.4,4,11,BX-1.3,44.2,BZ0+10,false); // top VRM: black
+var chc=cnv(64,256),chg=chc.getContext('2d'),chgr=chg.createLinearGradient(0,0,0,256);chgr.addColorStop(0,'#c9c4bb');chgr.addColorStop(.55,'#9a8a76');chgr.addColorStop(1,'#6e5338');chg.fillStyle=chgr;chg.fillRect(0,0,64,256);for(var ci=0;ci<500;ci++){chg.fillStyle='rgba(255,255,255,'+Math.random()*.06+')';chg.fillRect(Math.random()*64,0,.7,256);}
+var champ=new THREE.MeshStandardMaterial({map:tex(chc,true),metalness:.95,roughness:.28,envMapIntensity:1});
+box(2.6,12.5,3.4,BX-1.4,37.2,BZ0+5.4,champ); // the 'AERO' heatsink
+var copper=new THREE.MeshStandardMaterial({color:0xb87333,metalness:1,roughness:.3});
+box(3.2,16.5,3.5,BX-1.7,38.25,BZ0+1.75,gunDark);woodParts.push(box(.12,16.2,2.2,BX-3.36,38.25,BZ0+1.2,woodPanel)); // I/O shroud with its wood strip
+box(1.4,12.5,2.4,BX-.9,22.75,BZ0+1.2,gunDark);woodParts.push(box(.12,12.2,2.2,BX-1.66,22.75,BZ0+1.2,woodPanel)); // lower rear-edge strip
+cyl(.32,.15,BX-2.75,44.2,BZ0+15.2,copper,'x');cyl(.32,.15,BX-1.85,19.5,BZ0+22.5,copper,'x');
+// socket + pump
+var pump=cyl(3.2,3.6,BX-2,36,BZ0+10.5,gun,'x');cyl(2.75,.25,BX-3.95,36,BZ0+10.5,new THREE.MeshStandardMaterial({color:0x08080a,roughness:.12,metalness:.3}),'x');
+var pumpRing=add(new THREE.Mesh(new THREE.TorusGeometry(2.95,.12,8,60),ringMat));pumpRing.rotation.y=Math.PI/2;pumpRing.position.set(BX-3.95,36,BZ0+10.5);ringMeshes.push(pumpRing);
+// DIMM slots + two sticks
+[0,1,2,3].forEach(function(k){box(.7,13.6,.55,BX-.45,36,BZ0+16.3+k*.85,plastic);});
+// 32 GB = two 16 GB sticks in slots A2 + B2 (2nd and 4th from the CPU); two slots stay empty on purpose
+var goldRam=new THREE.MeshStandardMaterial({color:0xc48f2c,metalness:1,roughness:.16,envMapIntensity:1.1}),ramBar=new THREE.MeshBasicMaterial({color:0x8a6420,toneMapped:false}),ramMeshes=[],ramTops=[];
+[0,1,2,3].forEach(function(k){var z=BZ0+16.3+k*.85,a=box(3.1,13.3,.5,BX-1.9,36,z,gun),b=box(.22,13.3,.34,BX-3.5,36,z,gunDark);a.userData.k=b.userData.k=k;ramMeshes.push(a);ramTops.push(b);});
+var RAM={count:2,fin:'gold',lit:true,color:'#ffc35a'};
+var litBar=new THREE.MeshBasicMaterial({color:0xffc35a,toneMapped:false}),litBase=new THREE.Color(0xffc35a);
+function setRam(){ramMeshes.concat(ramTops).forEach(function(m){m.visible=RAM.count===4||m.userData.k%2===1;});
+  ramMeshes.forEach(function(m){m.material=RAM.fin==='gold'?goldRam:gun;});ramTops.forEach(function(m){m.material=RAM.lit?litBar:(RAM.fin==='gold'?ramBar:gunDark);});}
+setRam();
+// 24-pin on the front edge
+box(1.2,5.4,1.4,BX-.7,33,BZ0+23.6,plastic);
+// PCIe slots, M.2 shields, chipset
+[25.6,16.2,10.4].forEach(function(y){box(.8,1,8.9,BX-.5,y,BZ0+9.5,plastic);});
+box(.35,2.4,11,BX-.3,22.6,BZ0+13,gunDark);box(.35,2.4,11,BX-.3,13.4,BZ0+13,gunDark);
+hs(1.8,6,7,BX-1,19.5,BZ0+19.5,false);
+box(.18,2.4,.9,BX-1.5,11.2,BZ0+19.5,new THREE.MeshStandardMaterial({color:0x5a3a24,roughness:.85})); // leather pull tab
+
+/* ---------- AIO: radiator + 3x120 fans under the top, tubes ---------- */
+var radY=H-2.6;box(12,2.7,36.5,1,radY,0,finMat);box(12.2,2.9,2.2,1,radY,-19.3,gunDark);box(12.2,2.9,2.2,1,radY,19.3,gunDark);
+[-12,0,12].forEach(function(z){var f=makeFan(12);f.rotation.x=-Math.PI/2;f.position.set(1,radY-2.6,z);});
+tube([[BX-3.2,37.6,BZ0+8.6],[3,42,BZ0+12],[4.5,radY-1.5,15]],.55,tubeMat);tube([[BX-3.2,37.6,BZ0+12.4],[2,43.5,BZ0+16],[-1.5,radY-1.5,17]],.55,tubeMat);
+
+/* ---------- graphics card: 33 x 13.5 x 6.5 (3-slot), fans facing down ---------- */
+var gx=BX-.6-6.75,gy=20.6,gz=BZ0+16.2;
+box(13.5,5.2,33,gx,gy+.4,gz,gun);                      // shroud
+box(13.1,1.4,32.4,gx,gy-2.6,gz,finMat);                // fin stack peeking below the shroud
+box(13.6,.3,33.2,gx,gy+3.15,gz,gunDark);               // backplate
+box(13,.05,30,gx,gy+3.32,gz,ventMat);                  // backplate vent slots
+box(.3,5.6,33,gx-6.8,gy+.3,gz,gunDark);                // outer edge frame
+woodParts.push(box(.25,3.6,27,gx-6.98,gy+.3,gz,woodPanel)); // Infinity Wood panel on the edge facing the glass
+[-10.5,0,10.5].forEach(function(z){var f=makeFan(9.5);f.rotation.x=Math.PI/2;f.position.set(gx,gy-3.4,gz+z);});
+box(1.2,.8,2,gx-2,gy+3.7,gz+4,plastic);                // 12V-2x6 connector
+
+
+/* ---------- power supply (honeycomb grille down) ---------- */
+box(15,8.6,16,2,4.9,-D/2+9.2,new THREE.MeshStandardMaterial({map:gunDark.map,color:0x8a8a90,metalness:.8,roughness:.4}));
+box(14,.05,14,2,.62,-D/2+9.2,psuMat);
+
+/* ---------- case back: real openings (140 mm exhaust, rear I/O, 7 expansion slots, PSU) ---------- */
+var SLOTY=[28.85,26.82,24.79,22.76,20.73,18.70,16.67];
+function backShape(withFan){var sh=new THREE.Shape();sh.moveTo(-W/2,0);sh.lineTo(W/2,0);sh.lineTo(W/2,H);sh.lineTo(-W/2,H);sh.closePath();
+  function hole(x0,y0,x1,y1){var h=new THREE.Path();h.moveTo(x0,y0);h.lineTo(x0,y1);h.lineTo(x1,y1);h.lineTo(x1,y0);h.closePath();sh.holes.push(h);}
+  if(withFan){var f=new THREE.Path();f.absarc(-1.3,38,6.6,0,Math.PI*2,true);sh.holes.push(f);}
+  hole(BX-4.6,30.5,BX-.2,46.4);hole(BX-12,15.6,BX-.4,29.9);hole(-5.5,.9,9.5,9.2);return sh;}
+// industrial back: the whole blank area is perforated black steel (the fan breathes through it), openings for I/O, slots and PSU
+var hc=cnv(64,56),hg=hc.getContext('2d');hg.fillStyle='#fff';hg.fillRect(0,0,64,56);hg.fillStyle='#000';
+[[16,14],[48,14],[0,42],[32,42],[64,42]].forEach(function(p){hg.beginPath();hg.arc(p[0],p[1],10,0,7);hg.fill();});
+var holeA=new THREE.CanvasTexture(hc);holeA.wrapS=holeA.wrapT=THREE.RepeatWrapping;holeA.repeat.set(1/1.1,1/.96);
+var perfMat=new THREE.MeshStandardMaterial({color:0x1a1919,metalness:.6,roughness:.5,envMapIntensity:.3,alphaMap:holeA,alphaTest:.5,side:THREE.DoubleSide});
+var backPanel=add(new THREE.Mesh(new THREE.ExtrudeGeometry(backShape(false),{depth:.08,bevelEnabled:false,curveSegments:48}),perfMat));backPanel.position.z=-D/2;
+// fan guard (wire rings + cross bars)
+// frame around the perforated panel
+box(W,.8,.6,0,H-.4,-D/2+.3,charcoal);box(.8,H,.6,-W/2+.4,H/2,-D/2+.3,charcoal);box(.8,H,.6,W/2-.4,H/2,-D/2+.3,charcoal);
+// rear I/O plate with ports
+box(4.4,15.9,.2,BX-2.4,38.45,-D/2+.4,new THREE.MeshStandardMaterial({color:0x2a2a2e,metalness:.6,roughness:.45}));
+var portB=new THREE.MeshStandardMaterial({color:0x0a0a0b,roughness:.5}),portBlue=new THREE.MeshStandardMaterial({color:0x2f5fd0,roughness:.5});
+[[44.8,'a'],[43.6,'a'],[42.2,'c'],[41.0,'c'],[39.6,'a'],[38.4,'a'],[36.6,'e'],[34.6,'e'],[32.8,'j']].forEach(function(r,i){var y=r[0];
+  if(r[1]==='a'){box(1.35,.55,.15,BX-3.3,y,-D/2+.25,portB);box(1.35,.55,.15,BX-1.6,y,-D/2+.25,i>3?portBlue:portB);}
+  else if(r[1]==='c'){box(.9,.32,.15,BX-3.3,y,-D/2+.25,portB);box(.9,.32,.15,BX-1.6,y,-D/2+.25,portB);}
+  else if(r[1]==='e'){box(1.6,1.35,.15,BX-2.45,y,-D/2+.25,portB);}
+  else{[-1.2,0,1.2].forEach(function(dx){cyl(.32,.15,BX-2.45+dx,y,-D/2+.25,portB,'z');});}});
+cyl(.38,.6,BX-3.5,31.2,-D/2-.1,copper,'z');cyl(.38,.6,BX-1.4,31.2,-D/2-.1,copper,'z'); // Wi-Fi antenna posts
+// expansion slots: four vented blanks + the graphics card's 3-slot bracket with its outputs
+[0,1,2,6].forEach(function(k){box(11.4,1.8,.2,BX-6.2,SLOTY[k],-D/2+.4,ventMat);});
+box(11.4,6,.25,BX-6.2,SLOTY[4],-D/2+.4,gunDark);
+[[-3.6,'d'],[-1.6,'d'],[.4,'d'],[2.6,'h']].forEach(function(p){box(p[1]==='h'?1.5:1.1,.5,.15,BX-6.2+p[0],SLOTY[4]-.6,-D/2+.25,portB);});
+box(9,.15,.15,BX-6.2,SLOTY[4]+1.6,-D/2+.25,portB);
+cyl(.32,.5,BX-.9,SLOTY[3],-D/2-.05,brass,'z');cyl(.32,.5,BX-.9,SLOTY[5],-D/2-.05,brass,'z'); // brass thumbscrews on the card bracket
+// power supply rear, seen through its cutout: grille, C14 inlet (above the brass ring), rocker switch
+box(9,7.2,.1,-1.3,4.9,-D/2+1.15,psuMat);
+box(2.6,2,.4,EXITX,6,-D/2+1.0,plastic);box(1.4,1,.3,EXITX,3.4,-D/2+1.0,plastic);
+// optional walnut back skin: same openings, slotted walnut over the exhaust fan
+var skinTex=walnut.map.clone();skinTex.needsUpdate=true;skinTex.wrapS=skinTex.wrapT=THREE.RepeatWrapping;skinTex.repeat.set(1/24,1/24);
+var skinMat=new THREE.MeshStandardMaterial({map:skinTex,roughness:.5,envMapIntensity:.35});
+var skin=add(new THREE.Mesh(new THREE.ExtrudeGeometry(backShape(true),{depth:.45,bevelEnabled:false,curveSegments:48}),skinMat));skin.position.z=-D/2-.5;
+var skinFan=new THREE.Group();add(skinFan);
+slatX.forEach(function(x){var d=x+1.3;if(Math.abs(d)>6.3)return;var h=2*Math.sqrt(6.6*6.6-d*d)-.2;var bar=new THREE.Mesh(new THREE.BoxGeometry(slw,h,.45),skinMat);bar.position.set(x,38,-D/2-.28);skinFan.add(bar);});
+function setBack(v){skin.visible=skinFan.visible=(v==='wood');}
+function setBackMat(v){if(v==='brass'){perfMat.color.setHex(0xb8924f);perfMat.metalness=1;perfMat.roughness=.38;perfMat.envMapIntensity=1;}else{perfMat.color.setHex(0x1a1919);perfMat.metalness=.6;perfMat.roughness=.5;perfMat.envMapIntensity=.3;}}
+document.getElementById('ramColor').addEventListener('input',function(e){litBase.set(e.target.value);RAM.color=e.target.value;});setBack('metal'); // walnut skin rejected: decoration without a job
+
+/* ---------- front 3x140 intake + rear 140 exhaust ---------- */
+[10,24,38].forEach(function(y){var f=makeFan(14);f.position.set(0,y,D/2-3.4);});
+var rf=makeFan(14);rf.rotation.y=Math.PI;rf.position.set(-1.3,38,-D/2+2);
+
+/* ---------- orange braided power cables (unlit) ---------- */
+tube([[BX-1.5,33,BZ0+24.2],[BX-2.8,33,BZ0+25.4],[BX-1.4,32,BZ0+27],[BX+.2,31,BZ0+28]],.85,braid);
+tube([[gx-2,gy+4.1,gz+4],[gx-1,gy+6.5,gz+6],[BX-2,gy+5,BZ0+27],[BX+.2,gy+3,BZ0+28]],.62,braid);
+tube([[BX-.6,46.5,BZ0+1.4],[BX-1.8,48,BZ0+3],[BX-1,48.6,BZ0+6],[BX+.2,48.6,BZ0+8]],.45,braid);
+
+/* ---------- scored bronze mirror strips on the exposed tray ---------- */
+for(i=0;i<14;i++){var m=add(new THREE.Mesh(new THREE.BoxGeometry(.1,40,1.0),mirror));m.position.set(W/2-.68,26,BZ0+25+i*1.02);m.rotation.y=(rnd(i+3)-.5)*.35;}
+
+/* ---------- edge strips in aluminum channels with opal diffusers ---------- */
+var ZF=D/2-5.2,ZB=-D/2+1.4,XL=-W/2+1.5,XR=W/2-2.2,YT=H-5,YB=1.4,strips=[];
+function strip(sx,sy,sz,x,y,z){box(sx+.25,sy+.25,sz+.25,x,y,z,channelMat);strips.push(box(sx,sy,sz,x,y,z,ledMat));}
+strip(.35,.35,ZF-ZB,XL,YT,(ZF+ZB)/2);strip(XR-XL,.35,.35,(XL+XR)/2,YT,ZF);strip(XR-XL,.35,.35,(XL+XR)/2,YB,ZF);
+strip(.35,.35,ZF-ZB,XL,YB,(ZF+ZB)/2);strip(.35,YT-YB,.35,XL,(YT+YB)/2,ZF);strip(.35,YT-YB,.35,XL,(YT+YB)/2,ZB);strip(XR-XL,.35,.35,(XL+XR)/2,YT,ZB);
+var inL=[[-8,44,12],[-8,44,-14],[-8,8,10],[-8,8,-14],[-6,26,18]].map(function(p){var l=new THREE.PointLight(0xffd2a0,1,55,1.2);l.position.set(p[0],p[1],p[2]);return add(l);});
+var fanLight=add(new THREE.PointLight(0xffc35a,0,45,1.5));fanLight.position.set(0,24,D/2-7);
+
+/* ---------- side panel ---------- */
+var flc=cnv(256,8),fg=flc.getContext('2d'),P=16;for(var x=0;x<256;x++){var t=((x%P)+.5)/P*2-1,nx=t*.85,nz=Math.sqrt(1-nx*nx);fg.fillStyle='rgb('+Math.round((nx*.5+.5)*255)+',128,'+Math.round((nz*.5+.5)*255)+')';fg.fillRect(x,0,1,8);}
+var fluteN=new THREE.CanvasTexture(flc);fluteN.wrapS=fluteN.wrapT=THREE.RepeatWrapping;fluteN.repeat.set((D-2)/16,1);
+var bronzeGlass=new THREE.MeshPhysicalMaterial({color:0xd4ad84,roughness:.08,transmission:1,thickness:1.2,ior:1.5,normalMap:fluteN,normalScale:new THREE.Vector2(1.2,1.2),specularIntensity:1,specularColor:new THREE.Color(0xffd8a8),envMapIntensity:1,attenuationColor:new THREE.Color(0xa87444),attenuationDistance:4});
+var clearGlass=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:.02,transmission:1,thickness:.4,ior:1.5,specularIntensity:.6,envMapIntensity:.4});
+var side=box(.5,H-2.4,D-2.2,-W/2+.3,H/2,0,bronzeGlass);
+
+/* ---------- lighting ---------- */
+add(new THREE.HemisphereLight(0xffe6c8,0x120e0b,.18));
+var key=add(new THREE.DirectionalLight(0xffe2c0,.35));key.position.set(-80,90,100);
+var rimL=add(new THREE.DirectionalLight(0xc8d0ff,.12));rimL.position.set(80,60,-90);
+var rayGlow=add(new THREE.PointLight(0xffc04a,0,25,2));rayGlow.position.set(-W/2+TOG.u,ly+1,D/2+4);
+
+/* ---------- state + options ---------- */
+var S={state:'on',load:380,inside:.8,fans:'plain',side:'fluted',finish:'wood'};
+var loadEl=document.getElementById('load'),insideEl=document.getElementById('inside');
+function kelvin(v){return Math.round(2200+v*600);}
+loadEl.addEventListener('input',function(){S.load=+loadEl.value;document.getElementById('loadOut').textContent=S.load+' W';});
+insideEl.addEventListener('input',function(){S.inside=insideEl.value/100;document.getElementById('insideOut').textContent=kelvin(S.inside)+' K';note();});
+function note(){var t=[];
+  if(S.state==='off')t.push('Everything is off, so only the room lights it: dark metal, walnut and brass.');
+  else{t.push(S.state==='on'?'Seven dim-to-warm strips in aluminum channels run around the inner edges (top, bottom, the front and back corners on the glass side). They are the main light; every part is dark and unlit, so you see it by the light raking across it: highlights on the brushed gunmetal, the fin edges, the brass bolts and the scored mirror strips behind.':'Asleep: the strips, the seam under the brass line and the cord breathe together in gold at about 5%.');
+    if(S.fans==='ring')t.push('Fans: each fan has a warm amber ring at its frame edge, and the pump cap has one too. That adds three glowing circles behind the brass mesh at the front and three over the radiator.');else t.push('Fans: plain black, unlit, so they read as dark discs with lit edges.');}
+  if(S.finish==='wood')t.push('Finish: wood-toned panels on the board\'s heatsinks and I/O cover and on the card\'s glass-facing edge.');
+  if(S.side==='fluted')t.push('Side: reeded bronze, so everything above blurs into vertical bands. Switch to Clear to see the parts sharply.');
+  document.getElementById('noteText').textContent=t.join(' ');}
+function apply(){side.visible=S.side!=='off';side.material=S.side==='clear'?clearGlass:bronzeGlass;
+  woodParts.forEach(function(w){w.visible=S.finish==='wood';});
+  lever.rotation.x=S.state==='on'?.5:Math.PI-.5;loadEl.disabled=S.state!=='on';note();}
+var VIEWS={hero:[[-78,42,92],[0,20,0]],side:[[-115,24,2],[0,22,0]],front:[[0,24,115],[0,22,0]],inside:[[-58,34,8],[3,28,-6]],top:[[-25,135,30],[0,30,0]],back:[[72,40,-100],[0,18,0]]};
+var tween=null;function setView(v){tween={from:camera.position.clone(),to:new THREE.Vector3().fromArray(VIEWS[v][0]),tf:controls.target.clone(),tt:new THREE.Vector3().fromArray(VIEWS[v][1]),t:0};}
+document.querySelectorAll('.seg').forEach(function(seg){seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+  seg.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});var k=seg.dataset.k,v=b.dataset.v;
+  if(k==='view')setView(v);else if(k==='ramlit'){RAM.lit=(v==='on');setRam();}else if(k==='backmat'){setBackMat(v);}else if(k==='rside'){rightPanel.material=v==='wood'?veneerMat:charcoal;}else if(k==='back'){setBack(v);}else if(k==='cab'){setCables(v);}else if(k==='ram'){RAM.fin=v;setRam();}else if(k==='ramn'){RAM.count=+v;setRam();}else if(k==='base'){baseMode=v;rebuildBase();}else{S[k==='state'?'state':k]=v;apply();}});});
+apply();camera.position.fromArray(VIEWS.hero[0]);controls.target.fromArray(VIEWS.hero[1]);
+
+var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches,lastTouch=-1e9;
+controls.addEventListener('start',function(){lastTouch=performance.now();tween=null;});controls.addEventListener('end',function(){lastTouch=performance.now();});
+function resize(){var w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w/h<1?40:30;camera.updateProjectionMatrix();}
+new ResizeObserver(resize).observe(stage);resize();
+
+var warm=new THREE.Color(0xffb444),white=new THREE.Color(0xffdcae),tmp=new THREE.Color();
+var clock=new THREE.Clock(),shown=new Array(NR).fill(0),lastKey='',stShown=0,inShown=0,ringShown=0;
+function loop(){var dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;
+  if(tween){tween.t=Math.min(1,tween.t+dt/1.1);var e=1-Math.pow(1-tween.t,3);camera.position.lerpVectors(tween.from,tween.to,e);controls.target.lerpVectors(tween.tf,tween.tt,e);if(tween.t>=1)tween=null;}
+  else if(!reduce&&performance.now()-lastTouch>7000){controls.autoRotate=true;controls.autoRotateSpeed=Math.sin(t*.2)*.4;}else controls.autoRotate=false;
+  var breath=reduce?.6:(.5-.5*Math.cos(t*2*Math.PI/6)),target=new Array(NR).fill(0),stT=0,inT=0,ringT=0,col=S.inside;
+  if(S.state==='on'){var L=Math.max(.3,S.load/50);for(var i=0;i<NR;i++)target[i]=Math.max(0,Math.min(1,L-i));stT=.35;inT=S.inside;ringT=S.fans==='ring'?1:0;}
+  else if(S.state==='sleep'){stT=.08+.3*breath;inT=.05+.1*breath;col=0;}
+  var k=1-Math.exp(-dt*3);for(i=0;i<NR;i++)shown[i]+=(target[i]-shown[i])*k;stShown+=(stT-stShown)*k;inShown+=(inT-inShown)*k;ringShown+=(ringT-ringShown)*k;
+  var key2=shown.map(function(v){return Math.round(v*60);}).join(',');if(key2!==lastKey){drawRays(shown);lastKey=key2;}
+  rayGlow.intensity=shown.reduce(function(a,b){return a+b;},0)/NR*1.2;
+  seamMat.color.setRGB(1,.78,.38).multiplyScalar(.04+stShown*1.5);cordMat.emissiveIntensity=.03+stShown*.6;
+  tmp.copy(warm).lerp(white,col);inL.forEach(function(l){l.color.copy(tmp);l.intensity=.9*inShown;});ledMat.color.copy(tmp).multiplyScalar(.12+inShown*1.0);
+  ringMat.color.setRGB(1,.78,.38).multiplyScalar(.02+ringShown*1.2);litBar.color.copy(litBase).multiplyScalar(S.state==='on'?1:.03);ringMeshes.forEach(function(r){r.visible=ringShown>.02;});fanLight.intensity=ringShown*1.6;
+  if(!reduce&&S.state==='on')fanBlades.forEach(function(b,j){b.rotation.z+=dt*(2.5+(j%3)*.3);});
+  controls.update();renderer.render(scene,camera);requestAnimationFrame(loop);}
+loop();
+})();
+</script>
+
+</body></html>
