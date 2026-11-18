@@ -1,0 +1,665 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>House PC Build Book</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a studio table. The machine alone on a dark warm ground; option rows underneath like a spec sheet. Single warm-dark theme by choice. */
+:root{
+  color-scheme: dark;
+  --room:#121010; --wall:#1c1916; --line:#332c25; --ink:#efe7dc; --dim:#ab9f90; --brass:#c9a25a;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--room);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:28px 64px;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 28px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(2rem,4.6vw,3rem);margin:0;line-height:1}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+p{margin:0;max-width:66ch}
+.stage{position:relative;width:100%;aspect-ratio:16/10;max-width:100%;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--room)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage .hint{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--dim);pointer-events:none}
+.stage .fail{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--dim)}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 28px}
+.group{display:flex;flex-direction:column;gap:8px;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:inherit;font-size:.85rem;color:var(--ink);background:var(--wall);border:1px solid var(--line);border-radius:99px;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--brass);color:#e9cf98;background:#2a2214}
+.swatch{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--dim);padding-left:4px}
+.swatch input{width:34px;height:26px;border:1px solid var(--line);border-radius:6px;background:none;padding:0;cursor:pointer}
+.seg button:focus-visible,input[type=range]:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.swatch{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--dim);padding-left:4px}
+.swatch input{width:34px;height:26px;border:1px solid var(--line);border-radius:6px;background:none;padding:0;cursor:pointer}
+.slider{display:grid;grid-template-columns:7.5em 1fr 4.5em;gap:10px;align-items:center;font-size:.85rem}
+.slider output{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--dim);text-align:right}
+input[type=range]{accent-color:var(--brass);width:100%;min-width:100px}
+.note{background:var(--wall);border:1px solid var(--line);border-radius:6px;padding:14px 18px;display:flex;flex-direction:column;gap:4px}
+.note b{font-family:var(--display);font-weight:500;font-size:1.05rem}
+.fine{font-family:var(--mono);font-size:.72rem;color:var(--dim)}
+.toc{border:1px solid var(--line);border-radius:6px;padding:16px 20px;display:flex;flex-direction:column;gap:8px;background:var(--wall)}
+.toc ol{margin:0;padding-left:20px;columns:2;column-gap:32px;font-size:.92rem}
+.toc a{color:#e9cf98;text-underline-offset:3px}
+.doc{display:flex;flex-direction:column;gap:44px;margin-top:12px}
+.doc section{display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--line);padding-top:28px;scroll-margin-top:16px}
+.doc h2{font-family:var(--display);font-weight:600;font-size:clamp(1.5rem,3vw,2rem);margin:0;line-height:1.15;text-wrap:balance}
+.doc h3{font-family:var(--display);font-weight:500;font-size:1.15rem;margin:6px 0 0}
+.doc p,.doc li{max-width:72ch}
+.doc ul,.doc ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.doc a{color:#e9cf98;text-underline-offset:3px}
+.lede2{font-size:1.05rem}
+.small{font-size:.88rem;color:var(--dim)}
+.mono{font-family:var(--mono);font-size:.85em}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 28px}
+.facts div{display:flex;flex-direction:column;gap:2px;border-left:2px solid var(--brass);padding-left:12px;min-width:0}
+.facts b{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:400}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:6px}
+.t{border-collapse:collapse;width:100%;min-width:680px;font-size:.9rem}
+.t th,.t td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.t th{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:400;background:var(--wall)}
+section > .t{min-width:0}
+td.ok{color:#9fd39a;white-space:nowrap} td.open{color:#f2c14a;white-space:nowrap}
+.rules > li{padding-left:4px}
+.make{border:1px solid var(--line);border-radius:6px;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+@media (max-width:700px){.toc ol{columns:1}.facts{grid-template-columns:1fr}}
+.howto{background:var(--wall);border:1px solid var(--line);border-left:3px solid var(--brass);border-radius:0 6px 6px 0;padding:14px 18px;font-size:.95rem}
+@media (max-width:900px){ .opts{grid-template-columns:1fr 1fr} .stage{aspect-ratio:4/5} }
+@media (max-width:560px){ .opts{grid-template-columns:1fr} }
+</style>
+<div class="wrap">
+  <header>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span class="eyebrow">Build book · Nov 2026 · a free, for-fun project</span>
+      <h1>The Float: house PC build book</h1>
+    </div>
+    <p style="color:var(--dim);max-width:54ch">Everything needed to build, source and improvise this computer: the concept, the rules behind every choice, parts with links, and how to make what can't be bought. The model below is to scale; use the switches to see the options.</p>
+  </header>
+  <div class="stage" id="stage">
+    <canvas id="c" aria-label="3D model of the C8 Curve Wood floating on brass posts over a walnut base. Drag to orbit, scroll or pinch to zoom."></canvas>
+    <span class="hint">DRAG TO ORBIT · SCROLL TO ZOOM</span>
+  </div>
+  <div class="opts">
+    <div class="group"><span class="eyebrow">Glass</span>
+      <div class="seg" data-k="side"><button type="button" id="c-side-reeded" data-v="reeded" aria-pressed="true">Reeded wrap</button><button type="button" id="c-side-clear" data-v="clear" aria-pressed="false">Clear (to inspect)</button><button type="button" id="c-side-off" data-v="off" aria-pressed="false">Glass off</button></div></div>
+    <div class="group"><span class="eyebrow">Fan light</span>
+      <div class="seg" data-k="fans"><button type="button" id="c-fans-on" data-v="on" aria-pressed="true">On</button><button type="button" id="c-fans-off" data-v="off" aria-pressed="false">Off</button><label class="swatch" for="fanColor">Color <input type="color" id="fanColor" value="#ffc35a"></label></div></div>
+    <div class="group"><span class="eyebrow">Fan effect</span>
+      <div class="seg" data-k="effect"><button type="button" id="c-eff-static" data-v="static" aria-pressed="true">Steady</button><button type="button" id="c-eff-breathe" data-v="breathe" aria-pressed="false">Slow breathe</button></div></div>
+    <div class="group"><span class="eyebrow">Power</span>
+      <div class="seg" data-k="state"><button type="button" id="c-st-off" data-v="off" aria-pressed="false">Off</button><button type="button" id="c-st-on" data-v="on" aria-pressed="true">On</button><button type="button" id="c-st-sleep" data-v="sleep" aria-pressed="false">Asleep</button></div></div>
+    <div class="group"><span class="eyebrow">Board + card finish</span>
+      <div class="seg" data-k="finish"><button type="button" id="c-fin-wood" data-v="wood" aria-pressed="true">Dark Wood</button><button type="button" id="c-fin-dark" data-v="dark" aria-pressed="false">Standard dark</button></div></div>
+    <div class="group"><span class="eyebrow">Power cables inside</span>
+      <div class="seg" data-k="cab"><button type="button" id="c-cab-amber" data-v="amber" aria-pressed="true">Amber</button><button type="button" id="c-cab-black" data-v="black" aria-pressed="false">Black</button><button type="button" id="c-cab-cream" data-v="cream" aria-pressed="false">Cream</button></div></div>
+    <div class="group"><span class="eyebrow">View</span>
+      <div class="seg" data-k="view"><button type="button" id="c-v-hero" data-v="hero" aria-pressed="true">Corner</button><button type="button" id="c-v-left" data-v="left" aria-pressed="false">Your side</button><button type="button" id="c-v-front" data-v="front" aria-pressed="false">Front</button><button type="button" id="c-v-inside" data-v="inside" aria-pressed="false">Inside</button><button type="button" id="c-v-gap" data-v="gap" aria-pressed="false">The gap</button><button type="button" id="c-v-back" data-v="back" aria-pressed="false">Back</button></div></div>
+    <div class="group" style="gap:10px">
+      <label class="slider" for="inside"><span>Edge strips</span><input type="range" id="inside" min="0" max="100" value="60"><output id="insideOut">2560 K</output></label>
+      <label class="slider" for="load"><span>Power draw</span><input type="range" id="load" min="40" max="600" step="10" value="380"><output id="loadOut">380 W</output></label>
+    </div>
+  </div>
+  <div class="note"><b>What's lighting it</b><p>The light now comes mostly from ten programmable fans (three under the card, three on the side, three on the radiator, one at the back). Their color is yours to set; gold is the default. Edge strips stay as warm fill. The base no longer breathes, so it has no holes: the gap does the airflow. The walnut is the C8's own side panel plus the base.</p></div>
+  <p class="fine">Antec C8 Curve Wood: 303 × 464 × 476 mm (W × D × H), from Antec's listing. Brass posts 4 cm. Parts are generic shapes at real sizes. Top radiator support on the Curve version should be confirmed before buying a 360 mm cooler.</p>
+  <nav class="toc" aria-label="Contents">
+    <span class="eyebrow">In this book</span>
+    <ol>
+      <li><a href="#concept">The concept in one page</a></li>
+      <li><a href="#principles">Design principles (use these to swap parts)</a></li>
+      <li><a href="#parts">Parts list and status</a></li>
+      <li><a href="#swap">Swap checklist by component</a></li>
+      <li><a href="#make">Things we can't buy, and how to make them</a></li>
+      <li><a href="#safety">Safety and serviceability rules</a></li>
+      <li><a href="#sequence">Build order and timeline</a></li>
+      <li><a href="#helpers">Who helps with what</a></li>
+      <li><a href="#open">Open decisions</a></li>
+      <li><a href="#planb">Appendix: plan B in the Fractal North XL</a></li>
+    </ol>
+  </nav>
+
+  <article class="doc">
+
+  <section id="concept">
+    <div class="howto"><b>How to use this book.</b> It's written for the friends and makers helping with this build, and for anyone who finds it online and wants to make their own. Start with the concept and principles; jump to your piece in section 5. The 3D model at the top is to scale and needs an internet connection; use its switches to see options and views. Prices were checked in mid-November 2026 and change daily; anything marked "est." is an estimate. Where this book is silent, the principles in section 2 decide.</div>
+    <span class="eyebrow">1 · Concept</span>
+    <h2>The Float: a lit cabinet hovering over a walnut block</h2>
+    <p>A gaming and modding PC (heavily modded Skyrim SE, the Creation Kit, new games as they come out, 3D-printer slicing) built as a piece of furniture for a living room. The case sits 4 cm above a solid walnut block on four brass posts. Its curved glass corner is wrapped in one reeded panel, so you <b>see without quite seeing</b>: glowing fan rings and dark shapes, broken into vertical bands. The gap under the case does the breathing and catches the light.</p>
+    <div class="facts">
+      <div><b>Where it sits</b><span>On the right-hand wing of a fixed L-desk, to the user's right, reeded corner facing the chair, back toward the wall (≥10 cm gap)</span></div>
+      <div><b>Size</b><span>Antec C8 Curve Wood, 303 × 464 × 476 mm, on 4 cm posts and a 9 cm walnut base: about 61 cm tall overall</span></div>
+      <div><b>Build path</b><span>Full DIY (choosing the graphics card and fans ourselves makes buying a prebuilt pointless)</span></div>
+      <div><b>Builder</b><span>A first-time builder, with helpers for woodwork and electronics</span></div>
+    </div>
+    <h3>What you see</h3>
+    <ul>
+      <li><b>The reeded wrap:</b> reeded film over the C8's single curved glass panel, front and left side, reeds vertical. Everything inside becomes soft vertical bands of light and shape.</li>
+      <li><b>The light:</b> ten programmable fans (three under the graphics card, three on the side, three on the top radiator, one at the back). Gold is the home color; it can be changed any evening. Warm white edge strips add fill.</li>
+      <li><b>The walnut:</b> the C8's own walnut side panel, and the walnut base.</li>
+      <li><b>The float:</b> four brass posts lift the case 4 cm. The bottom fans pull air through that gap, and their light spills out of it onto the walnut. The back-right post is a hollow brass tube carrying the switch and lighting wires up into the case, so nothing dangles.</li>
+      <li><b>The base:</b> a solid walnut block. No holes (it has no airflow job). It holds a brass toggle switch, a hidden "dead-front" power indicator, a brass inlay line with a lit seam beneath it, the controller and the wiring.</li>
+      <li><b>The back:</b> stock, industrial. The power cord drops straight down from the power supply's socket, past the gap, into a brass clip where the brass line ends.</li>
+      <li><b>Inside:</b> the Gigabyte Dark Wood motherboard (wood strips, champagne-bronze heatsink), gold memory with a color-adjustable light bar, amber power cables, gold mirror strips on the divider.</li>
+      <li><b>Power:</b> an orange Conway Extō power box on the floor. Orange marks power outside the case only.</li>
+    </ul>
+    <h3>How it behaves</h3>
+    <table class="t"><thead><tr><th>State</th><th>Brass toggle</th><th>Seam under the brass line</th><th>Rays around the toggle</th><th>Fans and gap</th></tr></thead>
+      <tbody>
+        <tr><td>On</td><td>up</td><td>faint steady gold</td><td>12 rays, each = 50 W of power draw</td><td>chosen color (default gold), steady or slow breathe</td></tr>
+        <tr><td>Asleep</td><td>down</td><td>breathing gold, ~6 s per breath, ~5% peak</td><td>dark</td><td>off (PC lighting sleeps with the PC)</td></tr>
+        <tr><td>Off</td><td>down</td><td>dark</td><td>dark (invisible)</td><td>off; the reeded glass reflects the room</td></tr>
+      </tbody></table>
+  </section>
+
+  <section id="principles">
+    <span class="eyebrow">2 · Principles</span>
+    <h2>Design principles</h2>
+    <p class="lede2">The rule is <b>"every choice deliberate."</b> Every element must be justified by <b>airflow</b>, <b>touch</b>, or a <b>named reference</b>. Use these when swapping a part or improvising, but don't treat them as a cage: if something looks better and still has a reason, it's in.</p>
+    <ol class="rules">
+      <li><b>See without quite seeing.</b> The reeded wrap is the main effect. It turns hardware into light and shape, so parts don't have to be beautiful up close; they have to glow or catch light.</li>
+      <li><b>Light first, parts second.</b> Spend on programmable fans and lighting control before decorative parts. Gold is the home color; the ability to change it is a feature.</li>
+      <li><b>Hide the light source when you can.</b> Fans glow behind the reeds; strips sit in channels; indicators shine through tiny holes in wood. No bare LEDs on the outside.</li>
+      <li><b>Light reports the machine.</b> The seam shows state (on, asleep, off). The rays show effort (watts). Breathing is a nice extra, not a requirement.</li>
+      <li><b>Material meanings.</b> Walnut: furniture surfaces. Brass, unlacquered: what your hand and eye follow (toggle, inlay, posts, clip); it darkens with age and the lever stays bright where touched. Gold: a few accents inside. Orange: power outside the case. Amber: power cables inside. Dark metal: everything else.</li>
+      <li><b>Airflow is honest.</b> Holes only where air goes. The C8 breathes in through its bottom fans, so the gap does that job and the walnut base stays solid.</li>
+      <li><b>Every part earns its brass.</b> The posts carry weight; one carries wires; the clip holds the cord; the toggle switches. No brass for decoration alone.</li>
+      <li><b>Industrial where it works.</b> The back is the working face and stays stock. No veneers or skins without a job.</li>
+      <li><b>Reversible and serviceable.</b> Films peel, posts unbolt, the base's bottom panel comes off for the electronics, the case's bottom filter slides out. Mains cords are never modified.</li>
+      <li><b>It's a fun computer.</b> Performance first where it matters (graphics card, CPU, 64 GB of memory, 4 TB of storage) so new games and side projects just work.</li>
+    </ol>
+  </section>
+
+  <section id="parts">
+    <span class="eyebrow">3 · Parts</span>
+    <h2>Parts list and status</h2>
+    <p class="small">Prices seen online between August and November 2026, during a memory and flash shortage; they change daily. "Est." means our estimate, not a listing. Fan models are examples: confirm the exact product before buying.</p>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Part</th><th>Choice</th><th>Status</th><th>Price</th><th>Link</th></tr></thead>
+      <tbody>
+        <tr><td>Case</td><td><b>Antec C8 Curve Wood</b>: dual chamber, single curved glass, walnut side panel, no fans included</td><td class="ok">decided</td><td>$149.99</td><td><a href="https://www.antec.com/product/case/c8-curve-wood" target="_blank" rel="noopener">Antec</a></td></tr>
+        <tr><td>Fans</td><td>10 × 120 mm programmable (5 V addressable) fans that daisy-chain to cut cables; one brand throughout</td><td class="ok">spec</td><td>est. $150–300</td><td>choose a well-reviewed ARGB fan line</td></tr>
+        <tr><td>Lighting control</td><td>Motherboard ARGB headers, plus a SATA-powered hub if the fan count exceeds them; software: SignalRGB or OpenRGB</td><td class="ok">spec</td><td>est. $0–40</td><td>—</td></tr>
+        <tr><td>CPU</td><td>AMD Ryzen 7 9800X3D</td><td class="ok">decided</td><td>~$399</td><td><a href="https://www.newegg.com/p/pl?d=Ryzen+7+9800X3D" target="_blank" rel="noopener">deal report</a></td></tr>
+        <tr><td>Motherboard</td><td>Gigabyte X870E AERO X3D Dark Wood</td><td class="ok">decided</td><td>~$450–540</td><td><a href="https://www.gigabyte.com/Motherboard/X870E-AERO-X3D-DARK-WOOD" target="_blank" rel="noopener">Gigabyte</a> · <a href="https://www.techpowerup.com/review/gigabyte-x870e-aero-x3d-dark-wood/12.html" target="_blank" rel="noopener">review</a></td></tr>
+        <tr><td>Graphics card</td><td>RTX 5080: Aorus Infinity Wood, ASUS ROG Astral Dhahab CORE (gold), or a plain dark 5080 (the reeds hide most of it)</td><td class="open">open</td><td>~$1,870–2,300</td><td><a href="https://www.newegg.com/p/pl?d=RTX+5080+Infinity+Wood" target="_blank" rel="noopener">Infinity Wood</a> · <a href="https://www.microcenter.com/search/search_results.aspx?Ntt=RTX+5080+Dhahab" target="_blank" rel="noopener">Dhahab</a></td></tr>
+        <tr><td>Memory</td><td>64 GB (2 × 32 GB) DDR5-6000, G.Skill Trident Z5 Royal <b>Neo</b> gold (AMD), model F5-6000J2636H32GX2-TR5NG; light bar set to match the fans</td><td class="ok">recommended</td><td>varies widely</td><td><a href="https://www.newegg.com/p/pl?d=F5-6000J2636H32GX2-TR5NG" target="_blank" rel="noopener">Newegg</a></td></tr>
+        <tr><td>Storage</td><td>4 TB PCIe 4.0 or 5.0 NVMe</td><td class="ok">recommended</td><td>est. $350–550</td><td>any reputable brand</td></tr>
+        <tr><td>CPU cooler</td><td>360 mm liquid cooler, dark pump, lighting off or matching the fans. <b>Confirm the C8 Curve's top 360 mm support</b>; otherwise mount it on the side</td><td class="ok">spec</td><td>est. $100–200</td><td>—</td></tr>
+        <tr><td>Power supply</td><td>ATX 3.1, 850–1000 W, Gold+, fully modular, native 12V-2x6, ≤210 mm long (C8 limit)</td><td class="ok">spec</td><td>est. $130–200</td><td>—</td></tr>
+        <tr><td>Power cables inside</td><td>Amber sleeved extensions: 24-pin, CPU 8-pin, 12V-2x6</td><td class="ok">decided</td><td>est. $60–120</td><td><a href="https://usstore.cablemod.com/product/cablemod-pro-modflex-sleeved-12v-2x6-12vhpwr-stealthsense-cable-extension-kit/" target="_blank" rel="noopener">CableMod ModFlex</a> (check colors)</td></tr>
+        <tr><td>Reeded film</td><td>Reeded/fluted window film with a light bronze tint layer, for the curved glass</td><td class="ok">decided</td><td>~$30–50</td><td><a href="https://www.amazon.com/s?k=Velimax+reeded+glass+window+film" target="_blank" rel="noopener">Velimax reeded</a></td></tr>
+        <tr><td>Edge strips</td><td>Warm white (≈2200–2800 K) LED strip in aluminum channels with opal diffusers, ~2 m</td><td class="ok">spec</td><td>est. $40–80</td><td>—</td></tr>
+        <tr><td>Brass posts</td><td>4 × brass round bar or tube, ~2.2 cm (7/8") diameter, 4 cm long; one is tube (hollow) for wires</td><td class="ok">decided</td><td>est. $40–80</td><td>metal supplier, e.g. McMaster-Carr</td></tr>
+        <tr><td>Mirror strips</td><td>Gold/amber mirror vinyl</td><td class="ok">decided</td><td>~$15–25</td><td>any gold mirror vinyl</td></tr>
+        <tr><td>Toggle</td><td>All-brass latching bat toggle (SPST ON-OFF)</td><td class="ok">decided</td><td>est. $10–20</td><td><a href="https://www.delcity.net/store/switches/toggle-switches/die-cast-brass-toggles/all-brass-spst/" target="_blank" rel="noopener">Del City</a></td></tr>
+        <tr><td>Controller parts</td><td>Microcontroller board, 2 × PC817 optocouplers, 12 addressable LEDs, seam LEDs, MOSFET module, connectors, USB-C charger</td><td class="ok">spec</td><td>est. $30–50</td><td>—</td></tr>
+        <tr><td>Power box</td><td>Conway Electric Extō, Pumpkin Orange (12 ft, UL listed)</td><td class="ok">order early (2–3 week lead)</td><td>$70</td><td><a href="https://conwaygoods.com/collections/conway-electric-exto" target="_blank" rel="noopener">listing</a></td></tr>
+        <tr><td>Surge protector</td><td>Compact, hidden (the Extō has none)</td><td class="ok">spec</td><td>est. $20–40</td><td>—</td></tr>
+        <tr><td>Windows</td><td>Retail Windows 11 license</td><td class="ok">needed</td><td>~$139</td><td>Microsoft</td></tr>
+        <tr><td>Monitor</td><td>27" 1440p high-refresh OLED (e.g. ASUS PG27AQDP)</td><td class="ok">planned</td><td>~$799</td><td><a href="https://www.newegg.com/p/pl?d=ASUS+PG27AQDP" target="_blank" rel="noopener">roundup</a></td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section id="swap">
+    <span class="eyebrow">4 · Swapping</span>
+    <h2>Swap checklist by component</h2>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Component</th><th>Must have (function)</th><th>Must look/behave like</th><th>Avoid</th></tr></thead>
+      <tbody>
+        <tr><td>Case</td><td>Bottom-intake layout with a slide-out bottom filter; curved or wraparound glass a reeded film can follow (single-direction curve); room for a 33 cm card and 360 mm radiator</td><td>Glass corner + one wood or dark side</td><td>Glass with compound curves (film won't lay flat); cases that need front intake through a solid panel</td></tr>
+        <tr><td>Fans</td><td>120 mm, PWM, quiet, 5 V addressable lighting, daisy-chain</td><td>Even ring light that reads as a soft circle behind reeds</td><td>Mixed brands with different software; proprietary-only controllers</td></tr>
+        <tr><td>Graphics card</td><td>RTX 5080-class or better, 16 GB+, ≤ case limit (440 mm), 12V-2x6</td><td>Dark, wood or gold; its lighting can match the fans or turn off</td><td>Large lit logos fighting the fan color</td></tr>
+        <tr><td>Motherboard</td><td>AM5, X870/X870E, ATX, DDR5, PCIe 5.0, ≥2 addressable-lighting headers, Wi-Fi</td><td>Dark with warm metal or wood accents</td><td>White boards</td></tr>
+        <tr><td>Memory</td><td>DDR5-6000, AMD EXPO, 2 sticks</td><td>Gold or dark; light bar can match the fans</td><td>Four sticks unless chosen deliberately (slower on AM5)</td></tr>
+        <tr><td>Power supply</td><td>ATX 3.1, 850–1000 W, fully modular, ≤210 mm</td><td>Hidden in the rear chamber</td><td>Non-modular units</td></tr>
+        <tr><td>Posts</td><td>Carry ~15 kg (case + parts) with margin; flat ends; one hollow</td><td>Brass, unlacquered</td><td>Plated steel</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section id="make">
+    <span class="eyebrow">5 · Make</span>
+    <h2>Things we can't buy, and how to make them</h2>
+    <p>Each item lists what it does, materials, steps, and who should help. SVG cut files, the wiring diagram and the code are prepared separately and shared with whoever makes that piece. All measurements come from the real case once it arrives.</p>
+
+    <div class="make">
+      <h3>5.1 The walnut base</h3>
+      <p><b>Job:</b> carry the case on its posts, hold the toggle, indicator, seam, controller and wiring. <b>Size:</b> the C8's footprint (≈303 × 464 mm), 9 cm tall. <b>No holes:</b> the gap above it handles airflow.</p>
+      <ol>
+        <li><b>Frame:</b> 12 mm birch plywood box (bottom plate, top, four sides) with internal blocking under each post position.</li>
+        <li><b>Walnut skins:</b> 3 mm walnut plywood on the top and four sides. Each side skin is cut as two horizontal bands with a 6 mm gap at 3.6 cm from the bottom, for the brass line.</li>
+        <li><b>Inside:</b> a shelf for the controller, an LED channel behind the seam, a pocket in the front for the ray module, and a wire path from the controller to the back-right post.</li>
+        <li><b>Bottom:</b> removable panel on screws or magnets; felt feet.</li>
+        <li><b>Finish:</b> hardwax oil on the walnut before sanding the brass flush.</li>
+      </ol>
+      <p class="small">Cut at a makerspace laser or via an online service. Test-cut in MDF first. Tools: clamps, wood glue, two-part epoxy, sandpaper. ≈$100–200 in materials and cutting.</p>
+    </div>
+
+    <div class="make">
+      <h3>5.2 Brass posts (the float)</h3>
+      <ol>
+        <li>Four 4 cm lengths of ~2.2 cm (7/8") brass: three solid round bar, one thick-wall tube for the wires. Face both ends square (a metal shop or a lathe at a makerspace).</li>
+        <li>Drill and tap each end: the bottom takes a bolt up through the base's blocking; the top takes a bolt through the case's foot mounting holes (remove the C8's stock feet).</li>
+        <li>The hollow post lines up with a hole in the base top and a grommeted hole in the case floor (rear chamber), so the switch and lighting wires pass straight up.</li>
+        <li>Small brass washers under each post; leave unlacquered.</li>
+        <li><b>Keep the gap clear:</b> nothing on the base top under the case. The bottom filter must still slide out.</li>
+      </ol>
+    </div>
+
+    <div class="make">
+      <h3>5.3 Brass inlay line, lit seam and cord clip</h3>
+      <ol>
+        <li>Flat brass bar ≈1.5 × 6 mm, set with epoxy into the 6 mm gap between skin bands, then sanded flush. Path: from the toggle, around the front-left corner, along the left side, around to the back, ending at the cord clip under the power supply's socket.</li>
+        <li>Directly below the brass, a 1.5 mm reveal is lit from inside by warm LEDs: the seam.</li>
+        <li>The cord clip is a brass half-ring with two small screwed flanges (a bent brass strip or a small brass pipe clamp works). The cord drops straight down from the socket, past the gap, into the clip.</li>
+      </ol>
+    </div>
+
+    <div class="make">
+      <h3>5.4 The brass toggle and the controller</h3>
+      <ul>
+        <li><b>Why a controller:</b> a PC wants a momentary press, but brass toggles latch. A small microcontroller reads the toggle and sends the PC a 0.2 s "press" through an <b>optocoupler</b> (e.g. PC817), keeping the PC electrically separate.</li>
+        <li><b>Wiring:</b>
+          <ul>
+            <li>Toggle → controller input.</li>
+            <li>Controller output → optocoupler → motherboard <b>PWR_SW</b> header, up through the hollow post.</li>
+            <li>Motherboard <b>power-LED header</b> → second optocoupler → controller input, so it knows on / asleep / off.</li>
+            <li>Rays (12 addressable LEDs), seam LEDs and edge strips (via a MOSFET module) → controller.</li>
+          </ul></li>
+        <li><b>Power:</b> a USB-C charger in the Extō keeps the controller alive while the PC sleeps (so the seam can breathe).</li>
+        <li><b>Software:</b> a small PC program reads CPU and graphics card power and sends watts over USB; 1 ray per 50 W. The fans and memory lighting are set from the PC (SignalRGB or OpenRGB), default gold.</li>
+        <li><b>The C8's own power button</b> still works; ignore it or hide it.</li>
+      </ul>
+      <p class="small">Low voltage only. Arduino-level skills.</p>
+    </div>
+
+    <div class="make">
+      <h3>5.5 Dead-front ray indicator</h3>
+      <p>Thin walnut veneer (~0.6 mm) laser-drilled with ~0.3 mm holes along 12 ray lines around the toggle, over 3 mm opal acrylic and a light-blocking grid (one cell per ray), with the 12 LEDs behind. Drops into the pocket in the base front. Test hole size on scrap veneer.</p>
+    </div>
+
+    <div class="make">
+      <h3>5.6 The reeded wrap</h3>
+      <ul>
+        <li>Reeded film on the inside face of the curved glass, reeds running vertically, so the film only bends in one direction around the corner. Apply wet with a felt squeegee, working from the middle of the curve outward.</li>
+        <li>A light bronze tint film under it if you want the warmer veil.</li>
+        <li>Buy extra; the first attempt on a curve may need a redo.</li>
+      </ul>
+    </div>
+
+    <div class="make">
+      <h3>5.7 Fans and lighting setup</h3>
+      <ul>
+        <li>3 × 120 mm bottom (intake through the gap), 3 × side (intake), 3 × top on the radiator (exhaust), 1 × rear (exhaust).</li>
+        <li>Daisy-chain lighting and power where the fans allow; connect to the motherboard's 5 V addressable headers or a SATA-powered hub.</li>
+        <li>Default: steady gold. Slow breathe as an option. Set the memory's light bar the same.</li>
+        <li>Warm edge strips in channels along the top and bottom front edges and the back corner, as fill.</li>
+        <li>Gold mirror strips on the divider in front of the motherboard to bounce light.</li>
+      </ul>
+    </div>
+
+    <div class="make">
+      <h3>5.8 Lit cord</h3>
+      <p>The stock power cord (never cut) inside a translucent orange braided sleeve with a side-glow fiber, lit from a small LED at the clip and set by the controller to match the seam.</p>
+    </div>
+  </section>
+
+  <section id="safety">
+    <span class="eyebrow">6 · Safety</span>
+    <h2>Safety and serviceability rules</h2>
+    <ul>
+      <li><b>Mains:</b> never cut, splice or re-sleeve a mains cord's insulation. Sleeves go over certified cords.</li>
+      <li><b>12V-2x6:</b> push the graphics card's power connector in until it clicks with no gap; check it after the first gaming session.</li>
+      <li><b>The gap is an air intake:</b> keep it clear; clean the bottom filter every few months.</li>
+      <li><b>Posts:</b> bolt them through solid blocking; check the case can't tip (the case is taller than wide).</li>
+      <li><b>Conductive materials:</b> mirror film edges stay off circuit boards and pins.</li>
+      <li><b>LED voltage:</b> 5 V addressable parts only on 5 V headers.</li>
+      <li><b>Static:</b> touch the case frame before handling parts.</li>
+    </ul>
+  </section>
+
+  <section id="sequence">
+    <span class="eyebrow">7 · Sequence</span>
+    <h2>Build order and timeline</h2>
+    <div class="tw"><table class="t">
+      <thead><tr><th>When</th><th>What</th></tr></thead>
+      <tbody>
+        <tr><td>Now</td><td>Order the Extō (2–3 week lead). Confirm the C8 Curve's top radiator support and wood. Buy a roll of reeded film to test.</td></tr>
+        <tr><td>Black Friday</td><td>Buy the parts: case, fans, CPU, board, card, memory, storage, cooler, power supply.</td></tr>
+        <tr><td>When parts arrive</td><td>Test the board, CPU, one memory stick and cooler outside the case; update the BIOS. Measure the case and its foot holes; finalize the base and post drawings; MDF test cut.</td></tr>
+        <tr><td>Build weekend</td><td>Build the PC in the C8, fit fans and amber cables, set lighting. Apply the reeded film. Make the base and posts, set the brass, wire the toggle through the hollow post.</td></tr>
+        <tr><td>Later</td><td>Dead-front rays, lit cord, breathing and power-draw code.</td></tr>
+      </tbody></table></div>
+  </section>
+
+  <section id="helpers">
+    <span class="eyebrow">8 · Helpers</span>
+    <h2>Who helps with what</h2>
+    <ul>
+      <li><b>Woodworker or makerspace:</b> the base, the brass inlay channel, test cuts.</li>
+      <li><b>Metal shop or lathe:</b> facing, drilling and tapping the brass posts.</li>
+      <li><b>Electronics friend:</b> controller, optocouplers, LEDs, the wire run through the hollow post.</li>
+      <li><b>Builder:</b> the PC itself, fans and lighting software, film, finishing.</li>
+    </ul>
+  </section>
+
+  <section id="open">
+    <span class="eyebrow">9 · Open</span>
+    <h2>Open decisions</h2>
+    <ul>
+      <li><b>Graphics card:</b> wood, gold, or plain dark (the reeds hide most of it; a plain card saves nothing much at current prices but widens availability).</li>
+      <li><b>Fan line:</b> pick one programmable 120 mm fan line with good reviews and daisy-chaining.</li>
+      <li><b>C8 Curve top radiator support:</b> confirm before buying the cooler.</li>
+      <li><b>C8 wood:</b> solid walnut or a finish (check in person or ask Antec).</li>
+    </ul>
+  </section>
+
+  <section id="planb">
+    <span class="eyebrow">Appendix</span>
+    <h2>Plan B: the same idea in the Fractal North XL</h2>
+    <p>If the C8 doesn't work out, the build translates to the Fractal Design North XL (walnut slat front, flat glass side, power supply at the bottom). <a href="https://claude.ai/artifact/EfDpe1dekWnbuGb4foMizL" target="_blank" rel="noopener">See the North XL model</a> (a separate page; may require access).</p>
+    <ul>
+      <li><b>Reeded flat side</b> instead of the curved wrap.</li>
+      <li><b>No float:</b> the case sits directly on the base, which breathes for the power supply through vertical slots at the back and the rear half of each side, on the same column grid as the front slats.</li>
+      <li><b>Walnut slat cap</b> over brass mesh on the top; brass mesh behind the front slats.</li>
+      <li><b>Lighting:</b> plain fans, light from warm edge strips (or swap to programmable fans).</li>
+      <li><b>Back:</b> stock or a perforated black steel or brass plate if the stock back is solid.</li>
+      <li>Everything else (toggle, rays, brass line, seam, clip, Extō, board, memory) carries over.</li>
+    </ul>
+  </section>
+
+  <section id="credits">
+    <span class="eyebrow">Notes</span>
+    <h2>About this project</h2>
+    <p class="small">A free, for-fun design shared as-is. Product names belong to their makers; nothing here is sponsored. Prices and availability are from November 2026. If you build one, check every part against your own case and parts, and follow the safety rules above.</p>
+  </section>
+  </article>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script>
+(function(){
+var stage=document.getElementById('stage'),canvas=document.getElementById('c');
+if(!window.THREE){stage.insertAdjacentHTML('beforeend','<div class="fail">The 3D library didn\'t load. Reload the page to try again.</div>');return;}
+var renderer;try{renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});}catch(e){stage.insertAdjacentHTML('beforeend','<div class="fail">This browser can\'t show 3D right now (WebGL is off).</div>');return;}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
+var scene=new THREE.Scene();scene.background=new THREE.Color(0x121010);
+try{var pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new THREE.RoomEnvironment(),0.04).texture;}catch(e){}
+var PARENT=scene;var camera=new THREE.PerspectiveCamera(30,1,1,1000);var controls=new THREE.OrbitControls(camera,canvas);
+controls.enableDamping=true;controls.dampingFactor=.08;controls.enablePan=false;controls.minDistance=22;controls.maxDistance=260;controls.maxPolarAngle=Math.PI*.62;
+
+var W=30.3,H=47.6,D=46.4,BH=9,PX=32,TOG={u:5.2,v:3.6};
+function cnv(w,h){var c=document.createElement('canvas');c.width=w;c.height=h;return c;}
+function tex(c,srgb,rx,ry){var t=new THREE.CanvasTexture(c);if(srgb)t.encoding=THREE.sRGBEncoding;t.anisotropy=8;if(rx){t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rx,ry||rx);}return t;}
+function rnd(i){var x=Math.sin(i*127.1)*43758.5453;return x-Math.floor(x);}
+function add(o,parent){(parent||scene).add(o);return o;}
+function box(sx,sy,sz,x,y,z,m,parent){var o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);o.position.set(x,y,z);return add(o,parent);}
+function cyl(r,h,x,y,z,m,axis,parent,seg){var o=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,seg||40),m);if(axis==='x')o.rotation.z=Math.PI/2;if(axis==='z')o.rotation.x=Math.PI/2;o.position.set(x,y,z);return add(o,parent);}
+function tube(pts,r,m){var cv=new THREE.CatmullRomCurve3(pts.map(function(p){return new THREE.Vector3(p[0],p[1],p[2]);}));return add(new THREE.Mesh(new THREE.TubeGeometry(cv,60,r,12,false),m));}
+
+/* ---------- procedural textures ---------- */
+function walnutC(w,h,vert){var c=cnv(w,h),g=c.getContext('2d');g.fillStyle='#5a3821';g.fillRect(0,0,w,h);var n=vert?w:h;
+  for(var i=0;i<n;i++){var v=Math.sin(i*.07)*.5+Math.sin(i*.013+2)*.5+Math.sin(i*.31)*.25,l=Math.round(30+v*10+Math.random()*6);g.fillStyle='rgba('+(l+52)+','+(l+22)+','+(l+2)+',.35)';if(vert)g.fillRect(i,0,1,h);else g.fillRect(0,i,w,1);}
+  for(i=0;i<160;i++){g.strokeStyle='rgba(40,22,10,'+(.08+Math.random()*.18)+')';g.lineWidth=.6+Math.random()*1.6;g.beginPath();var p=Math.random()*n;
+    if(vert){g.moveTo(p,0);g.bezierCurveTo(p+Math.random()*10-5,h*.33,p+Math.random()*10-5,h*.66,p+Math.random()*8-4,h);}else{g.moveTo(0,p);g.bezierCurveTo(w*.33,p+Math.random()*10-5,w*.66,p+Math.random()*10-5,w,p+Math.random()*8-4);}g.stroke();}return c;}
+function brushedC(base){var c=cnv(256,256),g=c.getContext('2d');g.fillStyle=base;g.fillRect(0,0,256,256);for(var i=0;i<1400;i++){var y=Math.random()*256,a=Math.random()*.05;g.fillStyle=Math.random()<.5?'rgba(255,255,255,'+a+')':'rgba(0,0,0,'+a+')';g.fillRect(0,y,256,.6+Math.random());}return c;}
+function linesC(a,b,period,width,vertical){var c=cnv(64,64),g=c.getContext('2d');g.fillStyle=a;g.fillRect(0,0,64,64);g.fillStyle=b;for(var i=0;i<64;i+=period){if(vertical)g.fillRect(i,0,width,64);else g.fillRect(0,i,64,width);}return c;}
+function pcbC(){var c=cnv(512,640),g=c.getContext('2d');g.fillStyle='#101114';g.fillRect(0,0,512,640);g.strokeStyle='rgba(60,64,72,.35)';g.lineWidth=1;
+  for(var i=0;i<220;i++){var x=Math.random()*512,y=Math.random()*640,l=20+Math.random()*90;g.beginPath();g.moveTo(x,y);if(Math.random()<.5){g.lineTo(x+l,y);g.lineTo(x+l+10,y+10);}else{g.lineTo(x,y+l);g.lineTo(x+10,y+l+10);}g.stroke();}
+  g.fillStyle='rgba(120,124,132,.35)';for(i=0;i<120;i++)g.fillRect(Math.random()*512,Math.random()*640,4+Math.random()*10,2+Math.random()*4);return c;}
+function braidC(col){var c=cnv(64,32),g=c.getContext('2d');g.fillStyle=col||'#d9531a';g.fillRect(0,0,64,32);g.strokeStyle='rgba(90,25,0,.45)';g.lineWidth=2;for(var i=-32;i<96;i+=6){g.beginPath();g.moveTo(i,0);g.lineTo(i+16,32);g.stroke();}return c;}
+function hexC(){var c=cnv(128,128),g=c.getContext('2d');g.fillStyle='#1c1c1f';g.fillRect(0,0,128,128);g.fillStyle='#050505';for(var y=0,r=0;y<140;y+=11,r++)for(var x=(r%2)*6.5;x<140;x+=13){g.beginPath();for(var k=0;k<6;k++){var a=Math.PI/3*k+Math.PI/6;g.lineTo(x+Math.cos(a)*5,y+Math.sin(a)*5);}g.fill();}return c;}
+function slotsC(){var c=cnv(256,64),g=c.getContext('2d');g.fillStyle='#141416';g.fillRect(0,0,256,64);g.fillStyle='#050506';for(var x=10;x<246;x+=9)g.fillRect(x,14,4,36);return c;}
+
+/* ---------- materials ---------- */
+var walnut=new THREE.MeshStandardMaterial({map:tex(walnutC(512,512,false),true),roughness:.55,envMapIntensity:.35});
+var walnutV=new THREE.MeshStandardMaterial({map:tex(walnutC(64,512,true),true),roughness:.5,envMapIntensity:.35});
+var woodPanel=new THREE.MeshStandardMaterial({map:walnut.map,color:0x8a6648,roughness:.45,envMapIntensity:.5});
+var brass=new THREE.MeshStandardMaterial({color:0xb8924f,metalness:1,roughness:.38,envMapIntensity:1});
+var brassB=new THREE.MeshStandardMaterial({color:0xdcb56a,metalness:1,roughness:.2,envMapIntensity:1.2});
+var charcoal=new THREE.MeshStandardMaterial({map:tex(brushedC('#1a1918'),true,2),metalness:.6,roughness:.5,envMapIntensity:.3});
+var gun=new THREE.MeshStandardMaterial({map:tex(brushedC('#4b4b52'),true,2),metalness:.9,roughness:.3,envMapIntensity:.9});
+var gunDark=new THREE.MeshStandardMaterial({map:tex(brushedC('#2b2b30'),true,2),metalness:.85,roughness:.35,envMapIntensity:.8});
+var finMat=new THREE.MeshStandardMaterial({map:tex(linesC('#3a3a40','#0b0b0d',4,2,true),true,30,1),metalness:.8,roughness:.4,envMapIntensity:.7});
+var finMatH=new THREE.MeshStandardMaterial({map:tex(linesC('#45454c','#0e0e10',4,2,false),true,1,6),metalness:.85,roughness:.35,envMapIntensity:.8});
+var fanFrame=new THREE.MeshStandardMaterial({color:0x0c0c0d,roughness:.75,metalness:.05,envMapIntensity:.2});
+var bladeMat=new THREE.MeshStandardMaterial({color:0x111113,roughness:.55,metalness:.05,side:THREE.DoubleSide,envMapIntensity:.3});
+var hubMat=new THREE.MeshStandardMaterial({color:0x26262a,roughness:.4,metalness:.3});
+var pcbMat=new THREE.MeshStandardMaterial({map:tex(pcbC(),true),roughness:.7,envMapIntensity:.2});
+var plastic=new THREE.MeshStandardMaterial({color:0x0e0e10,roughness:.6});
+var cordBraidMap=tex(braidC('#d9531a'),true,30,1); // the outside cord stays orange
+var CABLE={orange:'#d9531a',amber:'#c4801c',cream:'#d6cab2',black:'#1b1816'};
+var braid=new THREE.MeshStandardMaterial({map:tex(braidC(CABLE.amber),true,30,1),roughness:.75});
+function setCables(v){var o=braid.map;braid.map=tex(braidC(CABLE[v]),true,30,1);braid.needsUpdate=true;if(o)o.dispose();}
+var tubeMat=new THREE.MeshStandardMaterial({map:tex(linesC('#141416','#08080a',6,2,false),true,1,40),roughness:.8});
+var psuMat=new THREE.MeshStandardMaterial({map:tex(hexC(),true,4,3),metalness:.6,roughness:.5,envMapIntensity:.5});
+var ventMat=new THREE.MeshStandardMaterial({map:tex(slotsC(),true,3,1),metalness:.7,roughness:.4,envMapIntensity:.6});
+var mirror=new THREE.MeshStandardMaterial({color:0xd9a246,metalness:1,roughness:.07,envMapIntensity:1.3});
+var ringMat=new THREE.MeshBasicMaterial({color:0xffc35a,toneMapped:false});
+var ledMat=new THREE.MeshBasicMaterial({color:0xffd2a0,toneMapped:false});
+var channelMat=new THREE.MeshStandardMaterial({color:0xb9b9be,metalness:.9,roughness:.35});
+
+/* ---------- ground ---------- */
+var gc=cnv(256,256),gg=gc.getContext('2d'),gr=gg.createRadialGradient(128,128,10,128,128,128);gr.addColorStop(0,'#2a231d');gr.addColorStop(1,'#121010');gg.fillStyle=gr;gg.fillRect(0,0,256,256);
+var ground=add(new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshStandardMaterial({map:tex(gc,true),roughness:.9,envMapIntensity:.05})));ground.rotation.x=-Math.PI/2;ground.position.y=-BH-.01;
+
+/* ---------- fan builder (axis +z) ---------- */
+var fanBlades=[],ringMeshes=[];
+function makeFan(size,parent){var g=new THREE.Group();add(g,parent);var R=size*.47,s=size/2,r=1.2;
+  var sh=new THREE.Shape();sh.moveTo(-s+r,-s);sh.lineTo(s-r,-s);sh.quadraticCurveTo(s,-s,s,-s+r);sh.lineTo(s,s-r);sh.quadraticCurveTo(s,s,s-r,s);sh.lineTo(-s+r,s);sh.quadraticCurveTo(-s,s,-s,s-r);sh.lineTo(-s,-s+r);sh.quadraticCurveTo(-s,-s,-s+r,-s);
+  var hole=new THREE.Path();hole.absarc(0,0,R,0,Math.PI*2,true);sh.holes.push(hole);
+  var fg=new THREE.ExtrudeGeometry(sh,{depth:2.5,bevelEnabled:false,curveSegments:48});fg.translate(0,0,-1.25);g.add(new THREE.Mesh(fg,fanFrame));
+  var rot=new THREE.Group();g.add(rot);var n=9,hubR=size*.16;
+  for(var i=0;i<n;i++){var b=new THREE.Shape(),a0=-.32,a1=.3,sw=.42;b.moveTo(Math.cos(a0)*hubR,Math.sin(a0)*hubR);
+    for(var k=0;k<=8;k++){var t=k/8,a=a0+sw*t,rr=hubR+(R-.3-hubR)*t;b.lineTo(Math.cos(a)*rr,Math.sin(a)*rr);}
+    for(k=8;k>=0;k--){t=k/8;a=a1+sw*t*.9;rr=hubR+(R-.3-hubR)*t;b.lineTo(Math.cos(a)*rr,Math.sin(a)*rr);}
+    var bg=new THREE.ExtrudeGeometry(b,{depth:.18,bevelEnabled:false});var piv=new THREE.Group();piv.rotation.z=i/n*Math.PI*2;rot.add(piv);var bm=new THREE.Mesh(bg,bladeMat);bm.rotation.x=.38;piv.add(bm);}
+  var hub=new THREE.Mesh(new THREE.CylinderGeometry(hubR,hubR,2,32),hubMat);hub.rotation.x=Math.PI/2;g.add(hub);
+  var cap=new THREE.Mesh(new THREE.CircleGeometry(hubR*.8,32),new THREE.MeshStandardMaterial({color:0x101012,roughness:.3,metalness:.4}));cap.position.z=1.01;g.add(cap);
+  [0,1,2,3].forEach(function(q){var st=new THREE.Mesh(new THREE.BoxGeometry(.35,R-hubR,.3),fanFrame);var a=q*Math.PI/2+Math.PI/4;st.position.set(Math.cos(a)*(hubR+(R-hubR)/2),Math.sin(a)*(hubR+(R-hubR)/2),-1.05);st.rotation.z=a-Math.PI/2;g.add(st);});
+  var ring=new THREE.Mesh(new THREE.TorusGeometry(R-.05,.16,10,72),ringMat);ring.position.z=1.2;g.add(ring);ringMeshes.push(ring);
+  fanBlades.push(rot);return g;}
+
+/* ===================== C8 Curve Wood, floating on brass posts ===================== */
+var GAP=4,DIV=W/2-9.5,MX=(-W/2+DIV)/2;
+var C=new THREE.Group();C.position.y=GAP;scene.add(C);
+function add(o,parent){(parent||PARENT).add(o);return o;}
+function tubeP(pts,r,m,parent){var cv=new THREE.CatmullRomCurve3(pts.map(function(p){return new THREE.Vector3(p[0],p[1],p[2]);}));return add(new THREE.Mesh(new THREE.TubeGeometry(cv,60,r,12,false),m),parent);}
+var fanColor=new THREE.Color(0xffc35a);
+
+/* ---------- base: solid walnut block (no airflow job, so no holes) ---------- */
+var wBase=walnutC(1024,288,false);
+var FW=Math.round(W*PX),SW=Math.round(D*PX);
+var frontC=cnv(FW,288);frontC.getContext('2d').drawImage(wBase,0,0);
+var sideCv=cnv(SW,288),sg=sideCv.getContext('2d');sg.drawImage(wBase,0,0);sg.drawImage(wBase,1024,0);
+var backCv=cnv(FW,288);backCv.getContext('2d').drawImage(wBase,0,0);
+var rayC=cnv(FW,288),rg=rayC.getContext('2d'),rayTex=tex(rayC,true),NR=12;
+function drawRays(lv){rg.fillStyle='#000';rg.fillRect(0,0,FW,288);for(var i=0;i<NR;i++){var L=lv[i];if(L<=.003)continue;var a=Math.PI-(i/(NR-1))*Math.PI;for(var r=1.15;r<=3.9;r+=.17){var x=(TOG.u+Math.cos(a)*r)*PX,y=(9-(TOG.v+Math.sin(a)*r*.95))*PX,f=1-(r-1.15)/3.2*.45;rg.fillStyle='rgba(255,'+Math.round(196+30*L)+','+Math.round(100+40*L)+','+Math.min(1,L*f)+')';rg.beginPath();rg.arc(x,y,.07*PX,0,7);rg.fill();}}rayTex.needsUpdate=true;}
+var bFront=new THREE.MeshStandardMaterial({map:tex(frontC,true),emissive:0xffffff,emissiveMap:rayTex,emissiveIntensity:2.2,roughness:.5,envMapIntensity:.35});
+var bSide=new THREE.MeshStandardMaterial({map:tex(sideCv,true),roughness:.5,envMapIntensity:.35});
+var bBack=new THREE.MeshStandardMaterial({map:tex(backCv,true),roughness:.5,envMapIntensity:.35});
+box(W,BH,D,0,-BH/2,0,[bSide,bSide,walnut,walnut,bFront,bBack]);
+var ly=-BH+TOG.v,seamMat=new THREE.MeshBasicMaterial({color:0xffc35a,toneMapped:false});
+var EXITX=W/2-4.8,fl=TOG.u-.75,bl=(EXITX-1.62)+W/2;
+box(fl,.6,.06,-W/2+fl/2,ly,D/2+.02,brass);box(fl,.14,.05,-W/2+fl/2,ly-.48,D/2+.01,seamMat);
+box(.06,.6,D,-W/2-.02,ly,0,brass);box(.05,.14,D,-W/2-.01,ly-.48,0,seamMat);
+box(bl,.6,.06,-W/2+bl/2,ly,-D/2-.02,brass);box(bl,.14,.05,-W/2+bl/2,ly-.48,-D/2-.01,seamMat);
+var clip=add(new THREE.Mesh(new THREE.TorusGeometry(1.0,.22,10,32,Math.PI),brass));clip.rotation.x=-Math.PI/2;clip.position.set(EXITX,ly,-D/2-.02);
+box(.55,.8,.12,EXITX-1.35,ly,-D/2-.06,brass);box(.55,.8,.12,EXITX+1.35,ly,-D/2-.06,brass);
+var tg=new THREE.Group();tg.position.set(-W/2+TOG.u,ly,D/2);add(tg);
+var pl=new THREE.Mesh(new THREE.CylinderGeometry(.8,.8,.25,32),brass);pl.rotation.x=Math.PI/2;pl.position.z=.13;tg.add(pl);
+var bu=new THREE.Mesh(new THREE.CylinderGeometry(.42,.42,.7,24),brass);bu.rotation.x=Math.PI/2;bu.position.z=.6;tg.add(bu);
+var lever=new THREE.Group();lever.position.z=.95;tg.add(lever);var bat=new THREE.Mesh(new THREE.CylinderGeometry(.14,.24,2.1,20),brassB);bat.position.y=1.05;lever.add(bat);var tip=new THREE.Mesh(new THREE.SphereGeometry(.25,16,12),brassB);tip.position.y=2.1;lever.add(tip);
+
+/* ---------- the float: four brass posts; the back-right one is a hollow tube carrying the switch + lighting wires ---------- */
+[[-W/2+3,D/2-3],[W/2-3,D/2-3],[-W/2+3,-D/2+3],[W/2-3,-D/2+3]].forEach(function(p,i){cyl(1.1,GAP,p[0],GAP/2,p[1],brass);cyl(1.5,.25,p[0],.12,p[1],brass);
+  if(i===3){cyl(.55,GAP+.05,p[0],GAP/2,p[1],new THREE.MeshStandardMaterial({color:0x080808,roughness:.9}));}});
+var gapLight=add(new THREE.PointLight(0xffc35a,0,45,1.4));gapLight.position.set(MX,GAP*.45,0);
+
+/* ---------- case shell (in group C, y=0 is the case floor) ---------- */
+PARENT=C;
+var hc=cnv(64,56),hg=hc.getContext('2d');hg.fillStyle='#fff';hg.fillRect(0,0,64,56);hg.fillStyle='#000';[[16,14],[48,14],[0,42],[32,42],[64,42]].forEach(function(p){hg.beginPath();hg.arc(p[0],p[1],10,0,7);hg.fill();});
+function perf(rx,ry){var t=new THREE.CanvasTexture(hc);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(rx,ry);return new THREE.MeshStandardMaterial({color:0x1a1919,metalness:.6,roughness:.5,envMapIntensity:.3,alphaMap:t,alphaTest:.5,side:THREE.DoubleSide});}
+var floor=add(new THREE.Mesh(new THREE.PlaneGeometry(W-1.6,D-1),perf((W-1.6)/1.1,(D-1)/.96)));floor.rotation.x=-Math.PI/2;floor.position.set(-.8,.25,0);
+var top=add(new THREE.Mesh(new THREE.PlaneGeometry(W-1.6,D-1),perf((W-1.6)/1.1,(D-1)/.96)));top.rotation.x=-Math.PI/2;top.position.set(-.8,H-.3,0);
+box(W-1.6,.6,.8,-.8,H-.3,D/2-.6,charcoal);box(W-1.6,.6,.8,-.8,.3,D/2-.6,charcoal);box(.8,H,.8,-W/2+.4,H/2,-D/2+.4,charcoal); // thin top/bottom front rails + back-left post (front-left corner is pillarless)
+// right side: the C8's walnut panel
+var rightWood=box(.9,H,D,W/2-.45,H/2,0,new THREE.MeshStandardMaterial({map:tex(walnutC(512,512,true),true),roughness:.5,envMapIntensity:.35}));
+// divider between the main chamber and the rear (PSU/cable) chamber
+box(.3,H-1.2,D-4,DIV+.15,H/2,-2,new THREE.MeshStandardMaterial({color:0x0e0e10,roughness:.8}));
+// back panel: perforated, with I/O, 7 slots and PSU openings
+var SLOTY=[];for(var k=0;k<7;k++)SLOTY.push(25.6-4-2.03*k+2.03*0); // aligned with the card in the MB group (offset -4)
+var bs=new THREE.Shape();bs.moveTo(-W/2,0);bs.lineTo(W/2-.9,0);bs.lineTo(W/2-.9,H);bs.lineTo(-W/2,H);bs.closePath();
+function bh(x0,y0,x1,y1){var h=new THREE.Path();h.moveTo(x0,y0);h.lineTo(x0,y1);h.lineTo(x1,y1);h.lineTo(x1,y0);h.closePath();bs.holes.push(h);}
+bh(DIV-4.75,26.3,DIV-.35,42.2);bh(DIV-12.2,11.4,DIV-.5,25.7);bh(DIV+.6,1.2,W/2-1.6,16.6);
+var bpT=new THREE.CanvasTexture(hc);bpT.wrapS=bpT.wrapT=THREE.RepeatWrapping;bpT.repeat.set(1/1.1,1/.96);
+var backMat=new THREE.MeshStandardMaterial({color:0x1a1919,metalness:.6,roughness:.5,envMapIntensity:.3,alphaMap:bpT,alphaTest:.5,side:THREE.DoubleSide});
+var backP=add(new THREE.Mesh(new THREE.ExtrudeGeometry(bs,{depth:.08,bevelEnabled:false}),backMat));backP.position.z=-D/2;
+
+/* ---------- curved reeded glass: one panel wrapping the left side and the front ---------- */
+function glassGeo(){var R=7,pts=[],nrm=[];
+  for(var z=-D/2+1;z<=D/2-R;z+=1){pts.push([-W/2+.3,z]);nrm.push([-1,0]);}
+  for(var i=0;i<=24;i++){var a=Math.PI+i/24*(Math.PI/2);var cx=-W/2+.3+R,cz=D/2-.3-R;pts.push([cx+Math.cos(a)*R,cz-Math.sin(a)*R]);nrm.push([Math.cos(a),-Math.sin(a)]);}
+  for(var x=-W/2+.3+R+1;x<=W/2-1;x+=1){pts.push([x,D/2-.3]);nrm.push([0,1]);}
+  var Hh=H-1.2,pos=[],no=[],uv=[],idx=[],s=0;
+  pts.forEach(function(p,k){if(k>0)s+=Math.hypot(p[0]-pts[k-1][0],p[1]-pts[k-1][1]);
+    pos.push(p[0],0,p[1],p[0],Hh,p[1]);no.push(nrm[k][0],0,nrm[k][1],nrm[k][0],0,nrm[k][1]);uv.push(s,0,s,1);
+    if(k>0){var a=(k-1)*2,b=a+1,c=k*2,d=c+1;idx.push(a,c,b,b,c,d);}});
+  var g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(no,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);return g;}
+var flc=cnv(256,8),fg=flc.getContext('2d'),P=16;for(var xx=0;xx<256;xx++){var tt=((xx%P)+.5)/P*2-1,nx=tt*.85,nz=Math.sqrt(1-nx*nx);fg.fillStyle='rgb('+Math.round((nx*.5+.5)*255)+',128,'+Math.round((nz*.5+.5)*255)+')';fg.fillRect(xx,0,1,8);}
+var fluteN=new THREE.CanvasTexture(flc);fluteN.wrapS=fluteN.wrapT=THREE.RepeatWrapping;fluteN.repeat.set(1/16,1);
+var reeded=new THREE.MeshPhysicalMaterial({color:0xe2c49e,roughness:.07,transmission:1,thickness:1.2,ior:1.5,normalMap:fluteN,normalScale:new THREE.Vector2(1.2,1.2),specularIntensity:1,specularColor:new THREE.Color(0xffd8a8),envMapIntensity:1,attenuationColor:new THREE.Color(0xa87444),attenuationDistance:5,side:THREE.DoubleSide});
+var clearG=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:.02,transmission:1,thickness:.4,ior:1.5,specularIntensity:.6,envMapIntensity:.4,side:THREE.DoubleSide});
+var glass=add(new THREE.Mesh(glassGeo(),reeded));glass.position.y=.6;
+
+/* ---------- fans: 3 bottom (intake, through the floor and the gap), 3 side (intake from the rear chamber), 3 top on the radiator (exhaust), 1 rear (exhaust) ---------- */
+var BOT=[-13.5,-1,11.5].map(function(z){var f=makeFan(12,C);f.rotation.x=-Math.PI/2;f.position.set(MX,1.7,z);return f;});
+var SIDE=[11,24,37].map(function(y){var f=makeFan(12,C);f.rotation.y=-Math.PI/2;f.position.set(DIV-1.4,y,D/2-7.2);return f;});
+var radY=H-2.4;box(12,2.7,36.5,MX,radY,-1,finMat);box(12.2,2.9,2.2,MX,radY,-19.3,gunDark);box(12.2,2.9,2.2,MX,radY,17.3,gunDark);
+var TOP=[-13,-1,11].map(function(z){var f=makeFan(12,C);f.rotation.x=Math.PI/2;f.position.set(MX,radY-2.7,z);return f;});
+var REAR=makeFan(12,C);REAR.rotation.y=Math.PI;REAR.position.set(MX,36,-D/2+2);
+
+/* ---------- parts: Dark Wood board on the divider, card, memory, cooler, PSU in the rear chamber ---------- */
+var MB=new THREE.Group();MB.position.y=-4;C.add(MB);PARENT=MB;
+var BX=DIV-.1,BZ0=-D/2+1.5,BYC=31.25;
+/* ---------- motherboard (ATX 30.5 x 24.4), board plane at x=BX ---------- */
+
+box(.25,30.5,24.4,BX,BYC,BZ0+12.2,pcbMat);
+var woodParts=[];
+function hs(sx,sy,sz,x,y,z,woodFace){box(sx,sy,sz,x,y,z,finMatH);if(woodFace){var w=box(.1,sy*.9,sz*.9,x-sx/2-.05,y,z,woodPanel);woodParts.push(w);}}
+// matches Gigabyte's product photo: wood only on two vertical strips along the board's rear edge,
+// a brushed champagne-to-bronze VRM heatsink, small copper accent dots, everything else black
+hs(2.4,4,11,BX-1.3,44.2,BZ0+10,false); // top VRM: black
+var chc=cnv(64,256),chg=chc.getContext('2d'),chgr=chg.createLinearGradient(0,0,0,256);chgr.addColorStop(0,'#c9c4bb');chgr.addColorStop(.55,'#9a8a76');chgr.addColorStop(1,'#6e5338');chg.fillStyle=chgr;chg.fillRect(0,0,64,256);for(var ci=0;ci<500;ci++){chg.fillStyle='rgba(255,255,255,'+Math.random()*.06+')';chg.fillRect(Math.random()*64,0,.7,256);}
+var champ=new THREE.MeshStandardMaterial({map:tex(chc,true),metalness:.95,roughness:.28,envMapIntensity:1});
+box(2.6,12.5,3.4,BX-1.4,37.2,BZ0+5.4,champ); // the 'AERO' heatsink
+var copper=new THREE.MeshStandardMaterial({color:0xb87333,metalness:1,roughness:.3});
+box(3.2,16.5,3.5,BX-1.7,38.25,BZ0+1.75,gunDark);woodParts.push(box(.12,16.2,2.2,BX-3.36,38.25,BZ0+1.2,woodPanel)); // I/O shroud with its wood strip
+box(1.4,12.5,2.4,BX-.9,22.75,BZ0+1.2,gunDark);woodParts.push(box(.12,12.2,2.2,BX-1.66,22.75,BZ0+1.2,woodPanel)); // lower rear-edge strip
+cyl(.32,.15,BX-2.75,44.2,BZ0+15.2,copper,'x');cyl(.32,.15,BX-1.85,19.5,BZ0+22.5,copper,'x');
+// socket + pump
+var pump=cyl(3.2,3.6,BX-2,36,BZ0+10.5,gun,'x');cyl(2.75,.25,BX-3.95,36,BZ0+10.5,new THREE.MeshStandardMaterial({color:0x08080a,roughness:.12,metalness:.3}),'x');
+var pumpRing=add(new THREE.Mesh(new THREE.TorusGeometry(2.95,.12,8,60),ringMat));pumpRing.rotation.y=Math.PI/2;pumpRing.position.set(BX-3.95,36,BZ0+10.5);ringMeshes.push(pumpRing);
+// DIMM slots + two sticks
+[0,1,2,3].forEach(function(k){box(.7,13.6,.55,BX-.45,36,BZ0+16.3+k*.85,plastic);});
+// 32 GB = two 16 GB sticks in slots A2 + B2 (2nd and 4th from the CPU); two slots stay empty on purpose
+var goldRam=new THREE.MeshStandardMaterial({color:0xc48f2c,metalness:1,roughness:.16,envMapIntensity:1.1}),ramBar=new THREE.MeshBasicMaterial({color:0x8a6420,toneMapped:false}),ramMeshes=[],ramTops=[];
+[0,1,2,3].forEach(function(k){var z=BZ0+16.3+k*.85,a=box(3.1,13.3,.5,BX-1.9,36,z,gun),b=box(.22,13.3,.34,BX-3.5,36,z,gunDark);a.userData.k=b.userData.k=k;ramMeshes.push(a);ramTops.push(b);});
+var RAM={count:2,fin:'gold',lit:true,color:'#ffc35a'};
+var litBar=new THREE.MeshBasicMaterial({color:0xffc35a,toneMapped:false}),litBase=new THREE.Color(0xffc35a);
+function setRam(){ramMeshes.concat(ramTops).forEach(function(m){m.visible=RAM.count===4||m.userData.k%2===1;});
+  ramMeshes.forEach(function(m){m.material=RAM.fin==='gold'?goldRam:gun;});ramTops.forEach(function(m){m.material=RAM.lit?litBar:(RAM.fin==='gold'?ramBar:gunDark);});}
+setRam();
+// 24-pin on the front edge
+box(1.2,5.4,1.4,BX-.7,33,BZ0+23.6,plastic);
+// PCIe slots, M.2 shields, chipset
+[25.6,16.2,10.4].forEach(function(y){box(.8,1,8.9,BX-.5,y,BZ0+9.5,plastic);});
+box(.35,2.4,11,BX-.3,22.6,BZ0+13,gunDark);box(.35,2.4,11,BX-.3,13.4,BZ0+13,gunDark);
+hs(1.8,6,7,BX-1,19.5,BZ0+19.5,false);
+box(.18,2.4,.9,BX-1.5,11.2,BZ0+19.5,new THREE.MeshStandardMaterial({color:0x5a3a24,roughness:.85})); // leather pull tab
+
+
+/* ---------- graphics card: 33 x 13.5 x 6.5 (3-slot), fans facing down ---------- */
+var gx=BX-.6-6.75,gy=20.6,gz=BZ0+16.2;
+box(13.5,5.2,33,gx,gy+.4,gz,gun);                      // shroud
+box(13.1,1.4,32.4,gx,gy-2.6,gz,finMat);                // fin stack peeking below the shroud
+box(13.6,.3,33.2,gx,gy+3.15,gz,gunDark);               // backplate
+box(13,.05,30,gx,gy+3.32,gz,ventMat);                  // backplate vent slots
+box(.3,5.6,33,gx-6.8,gy+.3,gz,gunDark);                // outer edge frame
+woodParts.push(box(.25,3.6,27,gx-6.98,gy+.3,gz,woodPanel)); // Infinity Wood panel on the edge facing the glass
+[-10.5,0,10.5].forEach(function(z){var f=makeFan(9.5);f.rotation.x=Math.PI/2;f.position.set(gx,gy-3.4,gz+z);});
+box(1.2,.8,2,gx-2,gy+3.7,gz+4,plastic);                // 12V-2x6 connector
+
+
+
+// AIO tubes to the radiator
+tubeP([[BX-3.2,37.6,BZ0+8.6],[MX+4,42,BZ0+12],[MX+3,radY+4-1.5,10]],.55,tubeMat,MB);tubeP([[BX-3.2,37.6,BZ0+12.4],[MX+3,43.5,BZ0+16],[MX-1,radY+4-1.5,13]],.55,tubeMat,MB);
+// amber power cables entering through the divider
+tubeP([[BX-1.5,33,BZ0+24.2],[BX-2.8,33,BZ0+25.4],[BX-1.4,32,BZ0+27],[BX+.2,31,BZ0+28]],.85,braid,MB);
+tubeP([[gx-2,gy+4.1,gz+4],[gx-1,gy+6.5,gz+6],[BX-2,gy+5,BZ0+27],[BX+.2,gy+3,BZ0+28]],.62,braid,MB);
+PARENT=C;
+box(8.6,15,16,W/2-5.6,8.7,-D/2+9.2,new THREE.MeshStandardMaterial({map:gunDark.map,color:0x8a8a90,metalness:.8,roughness:.4})); // PSU, fan facing down
+box(.1,7,7,W/2-1.25,9,-D/2+9.2,psuMat);
+box(2.6,2,.4,EXITX,12.5,-D/2+1.0,plastic);box(1.4,1,.3,EXITX,9.6,-D/2+1.0,plastic); // C14 inlet + switch, seen through the PSU opening
+// gold mirror strips on the divider in front of the board
+for(var mi=0;mi<10;mi++){var mm=add(new THREE.Mesh(new THREE.BoxGeometry(.1,30,1.0),mirror));mm.position.set(DIV-.05,30,4+mi*1.02);mm.rotation.y=(rnd(mi+3)-.5)*.35;}
+// warm edge strips in channels: top-front, bottom-front, back-left vertical, top-left
+var strips=[];function strip(sx,sy,sz,x,y,z){box(sx+.25,sy+.25,sz+.25,x,y,z,channelMat);strips.push(box(sx,sy,sz,x,y,z,ledMat));}
+strip(DIV+W/2-2.5,.35,.35,(-W/2+DIV)/2,H-1.6,D/2-2.2);strip(DIV+W/2-2.5,.35,.35,(-W/2+DIV)/2,1.2,D/2-2.2);strip(.35,H-3,.35,-W/2+1.4,H/2,-D/2+1.4);strip(.35,.35,D-6,-W/2+1.4,H-1.6,-1);
+var inL=[[MX,40,8],[MX,12,8],[MX,26,-12]].map(function(p){var l=new THREE.PointLight(0xffd2a0,1,55,1.2);l.position.set(p[0],p[1],p[2]);return add(l);});
+var fanLights=[[MX,5,0],[DIV-5,24,D/2-8],[MX,H-8,0]].map(function(p){var l=new THREE.PointLight(0xffc35a,0,40,1.4);l.position.set(p[0],p[1],p[2]);return add(l);});
+PARENT=scene;
+// power cord: PSU inlet straight down the back, past the gap, into the brass clip
+var cordMat=new THREE.MeshStandardMaterial({map:cordBraidMap,emissive:0xff4400,emissiveIntensity:.1,roughness:.7});
+tubeP([[EXITX,GAP+12.5,-D/2+.4],[EXITX,GAP+12.5,-D/2-1.0],[EXITX,GAP,-D/2-1.0],[EXITX,ly,-D/2-1.0],[EXITX,-BH+1.4,-D/2-1.0],[EXITX+.3,-BH+.5,-D/2-3.5],[EXITX+3,-BH+.45,-D/2-30]],.45,cordMat);
+
+/* ---------- lighting ---------- */
+add(new THREE.HemisphereLight(0xffe6c8,0x120e0b,.18));
+var key=add(new THREE.DirectionalLight(0xffe2c0,.35));key.position.set(-80,90,100);
+var rimL=add(new THREE.DirectionalLight(0xc8d0ff,.12));rimL.position.set(80,60,-90);
+var rayGlow=add(new THREE.PointLight(0xffc04a,0,25,2));rayGlow.position.set(-W/2+TOG.u,ly+1,D/2+4);
+ringMeshes.forEach(function(r){r.material=ringMat;});
+
+/* ---------- state ---------- */
+var S={state:'on',load:380,inside:.6,fans:'on',effect:'static',side:'reeded',finish:'wood'};
+var loadEl=document.getElementById('load'),insideEl=document.getElementById('inside');
+function kelvin(v){return Math.round(2200+v*600);}
+loadEl.addEventListener('input',function(){S.load=+loadEl.value;document.getElementById('loadOut').textContent=S.load+' W';});
+insideEl.addEventListener('input',function(){S.inside=insideEl.value/100;document.getElementById('insideOut').textContent=kelvin(S.inside)+' K';});
+document.getElementById('fanColor').addEventListener('input',function(e){fanColor.set(e.target.value);});
+function apply(){glass.visible=S.side!=='off';glass.material=S.side==='clear'?clearG:reeded;woodParts.forEach(function(w){w.visible=S.finish==='wood';});lever.rotation.x=S.state==='on'?.5:Math.PI-.5;loadEl.disabled=S.state!=='on';}
+var VIEWS={hero:[[-80,40,100],[0,18,0]],left:[[-120,24,0],[0,20,0]],front:[[0,22,120],[0,20,0]],inside:[[-62,30,22],[0,24,-2]],back:[[78,38,-98],[0,16,0]],gap:[[-52,3,58],[0,1,8]]};
+var tween=null,tStart=0;function setView(v){tween={from:camera.position.clone(),to:new THREE.Vector3().fromArray(VIEWS[v][0]),tf:controls.target.clone(),tt:new THREE.Vector3().fromArray(VIEWS[v][1])};tStart=performance.now();}
+document.querySelectorAll('.seg').forEach(function(seg){seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+  seg.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});var k=seg.dataset.k,v=b.dataset.v;
+  if(k==='view')setView(v);else if(k==='cab')setCables(v);else{S[k]=v;apply();}});});
+setCables('amber');apply();camera.position.fromArray(VIEWS.hero[0]);controls.target.fromArray(VIEWS.hero[1]);
+var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches,lastTouch=-1e9;
+controls.addEventListener('start',function(){lastTouch=performance.now();tween=null;});controls.addEventListener('end',function(){lastTouch=performance.now();});
+function resize(){var w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w/h<1?40:30;camera.updateProjectionMatrix();}
+new ResizeObserver(resize).observe(stage);resize();
+var warm=new THREE.Color(0xffb444),white=new THREE.Color(0xffdcae),tmp=new THREE.Color(),fc=new THREE.Color();
+var clock=new THREE.Clock(),shown=new Array(NR).fill(0),lastKey='',stShown=0,inShown=0,fanShown=0;
+function loop(){var dt=Math.min(.05,clock.getDelta()),t=clock.elapsedTime;
+  if(tween){var e=Math.min(1,(performance.now()-tStart)/1100);e=1-Math.pow(1-e,3);camera.position.lerpVectors(tween.from,tween.to,e);controls.target.lerpVectors(tween.tf,tween.tt,e);if(e>=1)tween=null;}
+  else if(!reduce&&performance.now()-lastTouch>7000){controls.autoRotate=true;controls.autoRotateSpeed=Math.sin(t*.2)*.4;}else controls.autoRotate=false;
+  var breath=reduce?.6:(.5-.5*Math.cos(t*2*Math.PI/6)),target=new Array(NR).fill(0),stT=0,inT=0,fanT=0;
+  if(S.state==='on'){var L=Math.max(.3,S.load/50);for(var i=0;i<NR;i++)target[i]=Math.max(0,Math.min(1,L-i));stT=.35;inT=S.inside;fanT=S.fans==='on'?(S.effect==='breathe'?.25+.75*breath:1):0;}
+  else if(S.state==='sleep'){stT=.08+.3*breath;inT=.04+.08*breath;}
+  var k=1-Math.exp(-dt*3);for(i=0;i<NR;i++)shown[i]+=(target[i]-shown[i])*k;stShown+=(stT-stShown)*k;inShown+=(inT-inShown)*k;fanShown+=(fanT-fanShown)*Math.min(1,k*2);
+  var key2=shown.map(function(v){return Math.round(v*60);}).join(',');if(key2!==lastKey){drawRays(shown);lastKey=key2;}
+  rayGlow.intensity=shown.reduce(function(a,b){return a+b;},0)/NR*1.2;
+  seamMat.color.setRGB(1,.78,.38).multiplyScalar(.04+stShown*1.5);cordMat.emissiveIntensity=.03+stShown*.6;
+  tmp.copy(warm).lerp(white,S.inside);inL.forEach(function(l){l.color.copy(tmp);l.intensity=.9*inShown;});ledMat.color.copy(tmp).multiplyScalar(.1+inShown*1.0);
+  fc.copy(fanColor);ringMat.color.copy(fc).multiplyScalar(.02+fanShown*1.2);ringMeshes.forEach(function(r){r.visible=fanShown>.02;});
+  fanLights.forEach(function(l){l.color.copy(fc);l.intensity=fanShown*1.5;});gapLight.color.copy(fc);gapLight.intensity=fanShown*2.2;
+  if(typeof litBar!=='undefined'){litBar.color.copy(fc).multiplyScalar(S.state==='on'?1:.03);}
+  if(!reduce&&S.state==='on')fanBlades.forEach(function(b,j){b.rotation.z+=dt*(2.5+(j%3)*.3);});
+  controls.update();renderer.render(scene,camera);requestAnimationFrame(loop);}
+loop();
+})();
+
+</script>
+
+</body></html>
