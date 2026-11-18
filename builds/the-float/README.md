@@ -2,10 +2,20 @@
 
 A gaming and modding PC built as living-room furniture. An Antec C8 Curve Wood case, its curved glass wrapped in one reeded panel, floats 4 cm above a solid walnut block on four brass posts. Ten programmable fans glow gold behind the reeds, so you see the machine without quite seeing it. The bottom fans breathe through the gap, and their light spills out onto the walnut.
 
+![The Float from the corner: reeded glass over gold fan light, floating on brass posts above a walnut base. Concept render.](images/corner.png)
+
 **Status:** Designed November 2026, not yet built.
 **Principles applied:**
 - Legibility by anyone: a lit seam under a brass inlay shows on, asleep and off, and a hidden fan of 12 rays in the walnut shows power draw, 50 W per ray.
 - Dignity in design: every choice must be justified by airflow, touch or a named reference.
+
+## Renders
+
+Concept renders from the 3D model, not photos.
+
+| The gap | Inside | The back |
+|---|---|---|
+| ![The gap under the case, the brass posts and the toggle with its rays](images/the-gap.png) | ![Inside: Dark Wood board, amber cables, gold-ringed fans](images/inside.png) | ![The back: stock and industrial, the orange cord dropping to a brass clip](images/back.png) |
 
 ## Files
 

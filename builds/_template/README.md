@@ -2,6 +2,8 @@
 
 One sentence: what it does, for whom.
 
+![What it looks like. Label renders as renders.](images/hero.png)
+
 **Status:** Concept / Desk-tested / Prototype / In use
 **Principles applied:** Legibility by anyone, Dignity in design (name the specific ones, see [PRINCIPLES.md](../../PRINCIPLES.md))
 
@@ -12,7 +14,8 @@ What state it makes readable, and how a person or a machine reads it.
 ## Files
 
 - [SPEC.md](SPEC.md): how it works and how to build it
-- [render/](render/): concept renders, labelled as renders
+- [render/](render/): interactive concept renders, labelled as renders
+- `images/`: still pictures for this page (renders or photos, labelled)
 
 ## Desk test
 
