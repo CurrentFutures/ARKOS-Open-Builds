@@ -1,0 +1,41 @@
+Group,Item,Spec / model,Qty,Low $ each,High $ each,When to buy,Link,Notes
+PC parts,Case,Antec C8 Curve Wood (N82E16811129322),1,150,150,Black Friday,https://www.newegg.com/p/N82E16811129322,Confirm top 360 mm radiator support on the Curve version; check whether the wood is solid.
+PC parts,CPU,AMD Ryzen 7 9800X3D,1,399,430,Now,https://www.newegg.com/p/pl?d=Ryzen+7+9800X3D,At its 2026 low.
+PC parts,Motherboard,Gigabyte X870E AERO X3D Dark Wood,1,450,540,Black Friday,https://www.gigabyte.com/Motherboard/X870E-AERO-X3D-DARK-WOOD,Update BIOS before installing memory.
+PC parts,Graphics card,"RTX 5080: Aorus Infinity Wood, ASUS Astral Dhahab CORE (gold), or a plain dark 5080",1,1870,2300,Black Friday,https://www.newegg.com/p/pl?d=RTX+5080+Infinity+Wood,Open decision. Max length 440 mm.
+PC parts,Memory,"G.Skill Trident Z5 Royal Neo gold 2x32 GB DDR5-6000, F5-6000J2636H32GX2-TR5NG",1,800,1000,Black Friday,https://www.newegg.com/p/pl?d=F5-6000J2636H32GX2-TR5NG,Price est.; listings vary wildly. Match the exact model number.
+PC parts,Storage,WD_BLACK SN850X 4 TB (or similar PCIe 4.0/5.0 4 TB),1,240,650,Black Friday,https://www.newegg.com/p/pl?d=WD_BLACK+SN850X+4TB,Prices range hugely during the flash shortage; set an alert.
+PC parts,CPU cooler,Arctic Liquid Freezer III Pro 360 A-RGB (black),1,77,115,Black Friday,https://www.amazon.com/s?k=Arctic+Liquid+Freezer+III+Pro+360+A-RGB+black,Includes 3 ARGB fans for the radiator; lighting matches the case fans.
+PC parts,Case fans,"Arctic P12 Pro A-RGB 120 mm (3 bottom, 3 side, 1 rear)",7,15,16,Black Friday,https://www.amazon.com/s?k=Arctic+P12+Pro+A-RGB+120mm,Price per fan. Confirm chaining method. Premium alternative: Lian Li UNI FAN SL-INF (~$25-30/fan + controller).
+PC parts,ARGB hub,SATA-powered 5 V ARGB/PWM hub,1,15,30,Black Friday,,Only if fan count exceeds the board's headers.
+PC parts,Power supply,"Corsair RM1000x CP-9020271-NA (ATX 3.1, native 12V-2x6, 160 mm)",1,170,195,Black Friday,https://www.corsair.com/p/psu/cp-9020271-na/rmx-series-rm1000x-fully-modular-power-supply-cp-9020271-na,Fits the C8's 210 mm limit.
+PC parts,Power cable extensions,"CableMod ModFlex kit: 24-pin, CPU 8-pin, 12V-2x6, amber/gold-brown",1,60,120,Black Friday,https://usstore.cablemod.com/product/cablemod-pro-modflex-sleeved-12v-2x6-12vhpwr-stealthsense-cable-extension-kit/,Check available colors; pick the closest amber.
+PC parts,Windows 11,Retail license,1,139,139,Any time,https://www.microsoft.com/en-us/windows/get-windows-11,
+Desk setup,Monitor,"ASUS ROG Swift OLED PG27AQDP 27"" 1440p 480 Hz",1,799,799,Black Friday,https://www.newegg.com/p/pl?d=ASUS+PG27AQDP,Budget alternative: AOC Q27G4ZD ~$485.
+Desk setup,Keyboard,Keychron Q1 Max (or your pick),1,200,250,Any time,https://www.keychron.com,
+Desk setup,Mouse,Logitech G502 X Lightspeed (or your pick),1,120,150,Any time,https://www.logitechg.com,
+Power,Power box,"Conway Electric Extō, Pumpkin Orange, 12 ft",1,70,70,Now (2-3 week lead),https://conwaygoods.com/collections/conway-electric-exto,
+Power,Surge protector,"Compact surge tap, hidden",1,20,40,Any time,https://www.amazon.com/s?k=compact+surge+protector+outlet,The Extō has none.
+Power,PC power cord,"Orange C13 cord, 2-3 ft (C2G or Tripp Lite)",1,10,15,Any time,https://www.cablestogo.com/product/17482/2ft-18awg-power-cord-iec320c14-to-iec320c13-orange,
+Look,Reeded film,Velimax reeded glass window film,2,15,25,Now (test),https://www.amazon.com/s?k=Velimax+reeded+glass+window+film,Price per roll. Second roll for a redo on the curve.
+Look,Bronze tint film (optional),Light bronze window tint,1,15,25,Now (test),https://www.amazon.com/s?k=bronze+window+tint+film,
+Look,Gold mirror vinyl,Gold/amber mirror vinyl for strips on the divider,1,15,25,Any time,https://www.amazon.com/s?k=gold+mirror+vinyl+adhesive,
+Look,Edge strips,12 V 2700 K high-CRI COB strip (Superbright LEDs Even-Glow),1,40,60,Any time,https://www.superbrightleds.com/led-strips-and-bars/high-cri-led-strip-lights/5m-white-cob-led-strip-light-cob-series-led-tape-light-high-cri-12v-24v-ip20,Plus aluminum channel with opal diffuser (~$20) and a SATA-to-12 V lead (~$8).
+Brass,Brass bar for posts,"7/8"" C360 round bar, cut length 12"" (makes 4 posts + spare)",1,60,100,After case measured,https://www.onlinemetals.com/en/buy/brass/0-875-brass-round-bar-360-h02-extruded/pid/1268,Or order finished posts from Xometry (see custom).
+Brass,Brass strip for inlay,"Brass flat strip 0.064"" x 1/4"" (260), need ~80 cm total incl. one ≥50 cm piece",1,15,40,After case measured,https://www.amazon.com/s?k=brass+one+hole+strap+3%2F8/products/miniature-brass-sheets,Also McMaster 'Ultra-Formable 260 Brass Strips'. Buy a 2 ft length if available for the left side.
+Brass,Toggle switch,All-brass SPST ON-OFF bat toggle,1,10,20,Any time,https://www.delcity.net/store/switches/toggle-switches/die-cast-brass-toggles/all-brass-spst/,
+Brass,Cord clip,Small brass one-hole strap or pipe clamp for a ~9 mm cord,1,5,15,Any time,https://www.amazon.com/s?k=brass+one+hole+strap+3%2F8,
+Electronics,Controller,Pimoroni Plasma Stick 2040 W (Pico W + LED driver),1,12,15,Any time,https://www.amazon.com/s?k=Pimoroni+Plasma+Stick+2040+W,Drives 5 V addressable LEDs directly.
+Electronics,Optocouplers,PC817 (pack),1,5,8,Any time,https://www.amazon.com/s?k=PC817+optocoupler,
+Electronics,Addressable LEDs,"WS2812B strip, 60/m, 1 m (rays + seam)",1,10,15,Any time,,
+Electronics,MOSFET module,Logic-level MOSFET module for the 12 V edge strips,1,5,10,Any time,,
+Electronics,USB-C charger + cable,Small 5 V charger plugged into the Extō,1,10,20,Any time,,
+Electronics,Connectors and wire,"JST connectors, 22-26 AWG wire, heat-shrink, motherboard header extensions",1,15,25,Any time,,
+Lit cord,Sleeve + fiber,"Translucent orange braided sleeve + side-glow fiber (Adafruit 4 mm, 1 m)",1,15,25,Later,https://www.adafruit.com/products/4163,
+Wood,Walnut + birch plywood (if building the base yourself),"1/4"" PureBond walnut ply (free custom cut) + 1/2"" birch ply",1,60,120,After case measured,https://www.homedepot.com/p/Columbia-Forest-Products-1-4-in-x-2-ft-x-2-ft-PureBond-Walnut-Plywood-Project-Panel-Free-Custom-Cut-Available-2717/204771142,"Plus wood glue, two-part epoxy, hardwax oil, sandpaper."
+
+Custom work,Item,Who can make it,,,,,Link(s),Notes
+Custom,"Walnut base (box, brass inlay channel, toggle and ray pockets, post blocking)","Makerspace laser/CNC (cheapest, you learn), a custom woodworker on Etsy, or an online CNC/plywood shop",,,,,https://www.etsy.com/search?q=custom%20walnut%20riser ; https://cncking.com/custom-birch-plywood-boxes/,"Send the drawing; ask for walnut veneer ply over a birch frame, a 6 mm channel for the brass, and a removable bottom. Etsy walnut-riser makers already sell custom widths ($90–230 for standard risers); a custom base with inlay will cost more. $150–500 est."
+Custom,"Brass posts (4, one drilled through for wires)","Xometry (upload a simple CAD file, choose brass 360, instant quote) or any local machine shop",,,,,https://www.xometry.com/capabilities/cnc-machining-service/brass/,"Spec: 7/8"" (22 mm) dia × 40 mm, faces square, M6 or 1/4-20 tapped both ends, one with a 3/8"" through-hole. A local shop can do this from the 7/8"" bar in under an hour. $60–250 est."
+Custom,Dead-front ray panel (laser-drilled walnut veneer),"Makerspace laser, Ponoko (laser wood), or Cut Laser Cut (walnut-veneer MDF)",,,,,https://www.ponoko.com/laser-cutting/wood ; https://cutlasercut.com/materials/walnut-veneer-mdf/,Test hole size on scrap first; veneer can splinter. $20–60 est.
+Custom,Optional perforated brass back plate (plan B / North XL),"SendCutSend, 1 mm (0.040"") 260 brass",,,,,https://sendcutsend.com/brass,Only for the North XL version. $100–300 est.

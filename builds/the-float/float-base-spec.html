@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"></head><body style="margin:0">
+<title>Float Base Spec</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a shop drawing sheet. Title block, then dimensioned drawings, then the spec tables a woodworker quotes from. Light paper theme by choice (it gets printed and carried to the shop). */
+:root{color-scheme:light;--paper:#fbf8f3;--ink:#1f1b17;--dim:#6d6358;--line:#d9d0c4;--walnut:#6b4429;--brass:#a8822f;--light:#e8a33a;--blue:#2f5d8a;
+  --display:Georgia,"Times New Roman",serif;--body:"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;margin:0}
+.wrap{max-width:1000px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:32px 64px;display:flex;flex-direction:column;gap:22px}
+.tb{display:grid;grid-template-columns:2fr 1fr 1fr;border:1.5px solid var(--ink)}
+.tb div{padding:10px 14px;border-right:1px solid var(--ink);min-width:0}.tb div:last-child{border-right:none}
+.tb b{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:400}
+h1{font-family:var(--display);font-size:clamp(1.6rem,4vw,2.2rem);margin:0;line-height:1.1}
+h2{font-family:var(--display);font-size:1.3rem;margin:8px 0 0;border-bottom:1px solid var(--line);padding-bottom:4px}
+p{margin:0;max-width:72ch}
+.dim{color:var(--dim)}
+.draw{border:1px solid var(--line);background:#fff;border-radius:4px;padding:8px;overflow-x:auto}
+.draw svg{display:block;width:100%;min-width:560px;height:auto}
+.cap{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-top:4px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+.tw{overflow-x:auto}
+td,th{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#f1ebe2;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:400;color:var(--dim)}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbd{color:#9a4a10;font-weight:600}
+ul,ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two > *{min-width:0}
+svg text{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:9px;fill:#1f1b17}
+svg .lbl{font-size:10px;font-weight:600}
+@media (max-width:700px){.tb{grid-template-columns:1fr}.tb div{border-right:none;border-bottom:1px solid var(--ink)}.two{grid-template-columns:1fr}}
+</style>
+<div class="wrap">
+  <div class="tb">
+    <div><b>Project</b><h1>The Float · walnut base</h1><p class="dim">A solid walnut plinth for a PC that floats 40 mm above it on four brass posts.</p></div>
+    <div><b>Units</b>millimetres<br><b style="margin-top:8px">Rev</b>A · Nov 2026</div>
+    <div><b>Status</b><span class="tbd">For quote.</span> Final dimensions confirmed after the case arrives (items marked <span class="tbd">VERIFY</span>).</div>
+  </div>
+
+  <h2>What it is</h2>
+  <p>A closed, hollow walnut box, 303 × 464 × 90 mm, that sits on a desk and carries an Antec C8 Curve Wood PC case (about 15 kg loaded) on four 22 mm brass posts. The case floats 40 mm above the base; that gap is the PC's air intake, so <b>the base has no vents</b>. The top is visible through the gap and lit from above, so it's a show surface. The base also houses a brass toggle switch, a small electronics board, LED strips, and a brass inlay line with a thin lit reveal beneath it.</p>
+
+  <h2>Drawings</h2>
+  <div class="draw">
+    <svg viewBox="0 0 440 200" role="img" aria-label="Front elevation, 303 by 90 millimetres, with toggle, ray pocket, brass line and post positions">
+      <rect x="60" y="70" width="303" height="90" fill="#efe4d6" stroke="#1f1b17" stroke-width="1.2"/>
+      <rect x="60" y="111" width="44.5" height="6" fill="#d6b25e" stroke="#a8822f"/>
+      <rect x="60" y="117" width="44.5" height="1.5" fill="#e8a33a"/>
+      <rect x="70" y="74" width="84" height="52" fill="none" stroke="#2f5d8a" stroke-dasharray="4 3"/>
+      <circle cx="112" cy="124" r="6.5" fill="#d6b25e" stroke="#1f1b17"/>
+      <rect x="79" y="30" width="22" height="40" fill="none" stroke="#a8822f" stroke-dasharray="3 2"/><rect x="322" y="30" width="22" height="40" fill="none" stroke="#a8822f" stroke-dasharray="3 2"/>
+      <text x="76" y="24">post Ø22 (supplied)</text>
+      <line x1="60" y1="178" x2="363" y2="178" stroke="#1f1b17"/><line x1="60" y1="172" x2="60" y2="184" stroke="#1f1b17"/><line x1="363" y1="172" x2="363" y2="184" stroke="#1f1b17"/><text x="195" y="192">303</text>
+      <line x1="378" y1="70" x2="378" y2="160" stroke="#1f1b17"/><line x1="372" y1="70" x2="384" y2="70" stroke="#1f1b17"/><line x1="372" y1="160" x2="384" y2="160" stroke="#1f1b17"/><text x="386" y="118">90</text>
+      <line x1="60" y1="164" x2="112" y2="164" stroke="#2f5d8a"/><text x="70" y="172" style="fill:#2f5d8a">52 to toggle Ø</text>
+      <line x1="30" y1="124" x2="60" y2="124" stroke="#2f5d8a" stroke-dasharray="2 2"/><text x="2" y="121" style="fill:#2f5d8a">36 ↑</text>
+      <text x="160" y="96" class="lbl" style="fill:#2f5d8a">ray pocket 84 × 52 × 8 deep</text>
+      <text x="160" y="140" class="lbl" style="fill:#a8822f">brass line ends 7.5 short of toggle</text>
+      <text x="300" y="12" class="lbl">FRONT</text>
+    </svg>
+    <p class="cap">1 · Front elevation. Brass line runs from the left corner to the toggle. Posts are 30 mm in from each edge (centres).</p>
+  </div>
+
+  <div class="draw">
+    <svg viewBox="0 0 560 170" role="img" aria-label="Left side elevation, 464 by 90 millimetres, brass line and lit reveal full length">
+      <rect x="40" y="50" width="464" height="90" fill="#efe4d6" stroke="#1f1b17" stroke-width="1.2"/>
+      <rect x="40" y="91" width="464" height="6" fill="#d6b25e" stroke="#a8822f"/>
+      <rect x="40" y="97" width="464" height="1.5" fill="#e8a33a"/>
+      <line x1="40" y1="158" x2="504" y2="158" stroke="#1f1b17"/><line x1="40" y1="152" x2="40" y2="164" stroke="#1f1b17"/><line x1="504" y1="152" x2="504" y2="164" stroke="#1f1b17"/><text x="262" y="170">464</text>
+      <text x="44" y="40" class="lbl">← BACK</text><text x="450" y="40" class="lbl">FRONT →</text>
+      <text x="200" y="85" class="lbl" style="fill:#a8822f">brass 6 tall · centre 36 from bottom · full length</text>
+      <text x="200" y="112" class="lbl" style="fill:#c07a10">lit reveal 1.5 directly below the brass</text>
+      <text x="230" y="12" class="lbl">LEFT SIDE (faces the user)</text>
+    </svg>
+    <p class="cap">2 · Left side. The line wraps both corners continuously (miter or bend the brass at the corners).</p>
+  </div>
+
+  <div class="draw">
+    <svg viewBox="0 0 440 200" role="img" aria-label="Back elevation, brass line from the left-rear corner to a brass cord clip 48 millimetres from the right-rear corner">
+      <rect x="60" y="70" width="303" height="90" fill="#efe4d6" stroke="#1f1b17" stroke-width="1.2"/>
+      <rect x="124" y="111" width="239" height="6" fill="#d6b25e" stroke="#a8822f"/>
+      <rect x="124" y="117" width="239" height="1.5" fill="#e8a33a"/>
+      <path d="M98 114 a10 10 0 0 0 20 0" fill="none" stroke="#a8822f" stroke-width="3"/>
+      <line x1="108" y1="30" x2="108" y2="170" stroke="#d9531a" stroke-width="4" opacity=".7"/>
+      <line x1="60" y1="178" x2="108" y2="178" stroke="#2f5d8a"/><text x="66" y="192" style="fill:#2f5d8a">48 VERIFY</text>
+      <text x="170" y="98" class="lbl" style="fill:#a8822f">line from left-rear corner to clip</text>
+      <text x="114" y="26" class="lbl" style="fill:#d9531a">power cord drops from PSU socket</text>
+      <text x="240" y="12" class="lbl">BACK (seen from behind)</text>
+    </svg>
+    <p class="cap">3 · Back. Seen from behind, the clip is 48 mm from the left edge (the base's right-rear corner), directly under the PSU's power socket. <span class="tbd">VERIFY on the real case.</span> The clip is a small brass half-ring screwed into the wall; no hole through the base.</p>
+  </div>
+
+  <div class="two">
+    <div class="draw">
+      <svg viewBox="0 0 260 360" role="img" aria-label="Top plan with four post centres 30 millimetres from each edge and a 10 millimetre wire hole at the back-right post">
+        <rect x="40" y="20" width="151.5" height="232" fill="#efe4d6" stroke="#1f1b17" stroke-width="1.2" transform="scale(1)"/>
+        <circle cx="55" cy="35" r="5.5" fill="none" stroke="#a8822f" stroke-width="1.5"/><circle cx="176.5" cy="35" r="5.5" fill="none" stroke="#a8822f" stroke-width="1.5"/>
+        <circle cx="55" cy="237" r="5.5" fill="none" stroke="#a8822f" stroke-width="1.5"/><circle cx="176.5" cy="237" r="5.5" fill="none" stroke="#a8822f" stroke-width="1.5"/>
+        <circle cx="176.5" cy="35" r="2.5" fill="#1f1b17"/>
+        <text x="62" y="140" class="lbl">TOP · scale 1:2</text>
+        <text x="44" y="16">BACK</text><text x="44" y="266">FRONT</text>
+        <text x="130" y="56" style="font-size:8px">Ø10 wire hole</text>
+        <line x1="40" y1="280" x2="191.5" y2="280" stroke="#1f1b17"/><text x="105" y="292">303</text>
+        <line x1="205" y1="20" x2="205" y2="252" stroke="#1f1b17"/><text x="210" y="140">464</text>
+        <text x="40" y="312" style="font-size:8.5px">Post centres 30 from each edge.</text>
+        <text x="40" y="326" style="font-size:8.5px">Ø6.5 through-holes for bolts</text>
+        <text x="40" y="340" style="font-size:8.5px">(M6 or 1/4"), heads inside.</text>
+      </svg>
+      <p class="cap">4 · Top plan. Show surface: it's seen and lit through the gap.</p>
+    </div>
+    <div class="draw">
+      <svg viewBox="0 0 260 360" role="img" aria-label="Wall section showing split wall, brass strip, lit reveal, opal acrylic backer and LED channel">
+        <rect x="70" y="30" width="19" height="140" fill="#c9a27a" stroke="#1f1b17"/>
+        <rect x="70" y="191" width="19" height="120" fill="#c9a27a" stroke="#1f1b17"/>
+        <rect x="70" y="170" width="19" height="12" fill="#d6b25e" stroke="#a8822f"/>
+        <rect x="70" y="182" width="19" height="9" fill="#ffe2a8" stroke="#e8a33a"/>
+        <rect x="89" y="150" width="6" height="60" fill="#f5f5f5" stroke="#9aa"/>
+        <rect x="98" y="170" width="14" height="22" fill="#cfd3d8" stroke="#667"/>
+        <text x="20" y="22" class="lbl">SECTION (not to scale)</text>
+        <text x="118" y="60">upper wall</text><text x="118" y="250">lower wall</text>
+        <text x="118" y="176" style="fill:#a8822f">brass 6 × 1.5</text>
+        <text x="118" y="190" style="fill:#c07a10">1.5 reveal</text>
+        <text x="118" y="206">3 mm opal acrylic</text><text x="118" y="217">backer, glued to both</text>
+        <text x="118" y="232">LED channel</text>
+        <text x="20" y="340" style="font-size:8.5px">outside ←   → inside</text>
+      </svg>
+      <p class="cap">5 · How the lit line works: the wall is split; the brass sits on the lower edge of the upper wall; a 1.5 mm gap below it is backed by opal acrylic with LEDs behind.</p>
+    </div>
+  </div>
+
+  <h2>Specification</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Item</th><th>Spec</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Overall size</td><td class="n">303 W × 464 D × 90 H</td><td>Footprint matches the case exactly (flush). <span class="tbd">VERIFY</span> against the case's real footprint.</td></tr>
+      <tr><td>Construction</td><td>Option A (preferred): solid walnut, 15–19 mm, mitered or dovetailed corners, top inset or glued.<br>Option B: walnut-veneer plywood over a birch-ply frame.</td><td>Woodworker's choice of joinery. Grain runs front to back on the top and wraps the sides if possible.</td></tr>
+      <tr><td>Top</td><td>Solid, no openings except 4 post holes and 1 wire hole</td><td>Show surface. Must not sag under ~15 kg on four points: add hardwood blocking under each post.</td></tr>
+      <tr><td>Post mounting</td><td>4 × Ø6.5 mm holes, centres 30 mm from each edge; 40 × 40 mm blocking beneath each</td><td>Posts (supplied) are Ø22 × 40 mm brass, tapped both ends; bolt up from inside.</td></tr>
+      <tr><td>Wire hole</td><td class="n">Ø10 at the back-right post</td><td>That post is hollow; switch and LED wires pass up through it into the case.</td></tr>
+      <tr><td>Split wall + brass line</td><td>All four walls split horizontally: brass strip 6 × 1.5 mm, centre 36 mm from the bottom; 1.5 mm reveal directly below; 3 mm opal acrylic strip glued inside across the split</td><td>Line path: front (left corner → toggle, stops 7.5 mm short), full left side, back (left-rear corner → clip). The right side and the rest of the front have no brass, but the split can run all round if simpler; then fill it with walnut.</td></tr>
+      <tr><td>LED channel</td><td>Small groove or ledge inside, behind the reveal</td><td>For a 5–10 mm wide LED strip (supplied).</td></tr>
+      <tr><td>Toggle hole</td><td>Front face, centre 52 mm from left, 36 mm from bottom</td><td>Drill to the supplied switch's bushing (likely 12–13 mm). <span class="tbd">VERIFY</span> with the switch. Thin the wall from inside if it's thicker than the bushing's thread allows.</td></tr>
+      <tr><td>Ray pocket</td><td class="n">84 × 52 × 8 deep</td><td>Front face, around the toggle (see drawing 1). A thin walnut-veneer panel drops in later; leave it open or fit a plain walnut cover for now.</td></tr>
+      <tr><td>Cord clip</td><td>Back face, 48 mm from the right-rear corner, at line height</td><td>Brass half-ring (supplied), two small screws. <span class="tbd">VERIFY</span> position under the PSU socket.</td></tr>
+      <tr><td>Inside</td><td>Shelf about 90 × 70 mm near the back-left for a small circuit board; a clear path from it to the wire hole</td><td>No ventilation needed (electronics draw a few watts).</td></tr>
+      <tr><td>Bottom</td><td>Removable panel, 6 mm ply, screws or magnets; 4 felt pads</td><td>Access to bolts and electronics.</td></tr>
+      <tr><td>Finish</td><td>Hardwax oil (e.g. a matte or satin oil), applied <b>before</b> the brass is sanded flush</td><td>Keeps brass dust out of the grain. Brass left unlacquered (it's meant to age).</td></tr>
+      <tr><td>Tolerances</td><td class="n">±1 mm overall; ±0.5 mm on post holes and toggle</td><td>The case must sit square on the posts.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="two">
+    <div>
+      <h2>Supplied by the owner</h2>
+      <ul>
+        <li>4 brass posts, Ø22 × 40 mm, tapped both ends (one drilled through)</li>
+        <li>Brass flat strip, about 1.5 × 6 mm, ~80 cm total</li>
+        <li>Brass toggle switch</li>
+        <li>Brass cord clip</li>
+        <li>LED strips and the circuit board (fitted later by the owner)</li>
+        <li>Optional: the walnut-veneer ray panel (later)</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Questions for the woodworker</h2>
+      <ul>
+        <li>Solid walnut or veneer ply, and the price difference?</li>
+        <li>Can you set the brass inlay, or would you rather we do it after?</li>
+        <li>Preferred finish and how it ages next to brass?</li>
+        <li>Lead time? (The case arrives around early December; final measurements follow.)</li>
+        <li>Would you cut the ray panel too, or should a laser shop?</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Verify before cutting</h2>
+  <ol>
+    <li>Case footprint and the positions of its foot screw holes (the posts bolt into them).</li>
+    <li>PSU power socket position, which sets the cord clip location.</li>
+    <li>Toggle bushing diameter and thread length.</li>
+    <li>That the case's bottom dust filter slides out with the posts in place.</li>
+  </ol>
+  <p class="dim">Part of "The Float", a free, for-fun PC furniture design. Dimensions in millimetres unless noted.</p>
+</div>
+
+</body></html>

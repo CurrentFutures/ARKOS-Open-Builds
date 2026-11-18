@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- The meter: the only door from the agent box to the model. -->
+<plist version="1.0"><dict>
+  <key>Label</key><string>org.sandtable.meter</string>
+  <key>UserName</key><string>meter</string>
+  <key>ProgramArguments</key><array>
+    <string>/usr/bin/python3</string><string>/Users/meter/meter.py</string>
+  </array>
+  <key>EnvironmentVariables</key><dict>
+    <key>SANDTABLE_SERIAL</key><string>/dev/cu.usbserial-0001</string>
+  </dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardErrorPath</key><string>/Users/meter/meter.log</string>
+</dict></plist>

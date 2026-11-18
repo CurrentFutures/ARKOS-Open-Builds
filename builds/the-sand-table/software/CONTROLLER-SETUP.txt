@@ -1,0 +1,29 @@
+CONTROLLER SETUP: Raspberry Pi Pico in the tray
+
+1. Arduino IDE (https://www.arduino.cc/en/software).
+   File > Preferences > Additional boards manager URLs:
+     https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+   Tools > Board > Boards Manager: install "Raspberry Pi Pico/RP2040" (Earle Philhower).
+   Tools > Board: "Raspberry Pi Pico" (not Pico W).
+
+2. Open sandtable-controller/sandtable-controller.ino.
+   Before the first upload, check MAX_DRIVE against your desk-test notes (start low: 0.3).
+   Hold BOOTSEL on the Pico, plug in USB, Upload.
+
+3. Choose your figure (the setup ritual, about 20 minutes, in a quiet room)
+   Sand on the plate, glass off, everyone watching.
+   - Press SETUP once. The plate slowly sweeps from low notes to high and shows every
+     figure it can make, one after another.
+   - When you see one you like, press SETUP. It now searches just around that note,
+     back and forth, slowly.
+   - Press SETUP again at the moment the figure is crispest. That note is saved; the
+     plate rings once to confirm. That is your figure from now on.
+   - Hold SETUP for 3 seconds at any time to cancel.
+   Or by laptop over the Pico's USB (Arduino Serial Monitor, 115200, newline):
+     f 312.5     hold the plate at 312.5 Hz
+     save 312.5  make it your figure
+     test 90     play a verdict at 90 (settled); try 30 to see unsettled
+     thresh 50   below this a task also counts on the UNSETTLED counter
+     show        print the saved settings
+
+4. The counters only ever count up. Nothing in the firmware can turn them back.

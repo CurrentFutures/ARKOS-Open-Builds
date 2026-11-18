@@ -1,0 +1,277 @@
+<title>Sand Table Model</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: the same product studio as the lantern. Object alone on a dark sweep, controls below like a spec sheet. Single dark theme by choice. */
+:root{
+  color-scheme:dark;
+  --room:#141312; --wall:#1d1b19; --line:#34302b; --ink:#efe9e1; --dim:#aaa196; --brass:#c9a25a;
+  --display:"Fraunces",Georgia,"Times New Roman",serif; --body:"Instrument Sans","Helvetica Neue",Arial,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--room);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:28px 64px;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 28px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(2rem,4.6vw,3rem);margin:0;line-height:1}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+p{margin:0;max-width:66ch}
+.stage{position:relative;width:100%;aspect-ratio:16/11;max-width:100%;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--room)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage .hint{position:absolute;left:14px;bottom:12px;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--dim);pointer-events:none}
+.stage .fail{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--dim)}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 28px}
+.group{display:flex;flex-direction:column;gap:8px;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font:inherit;font-size:.85rem;color:var(--ink);background:var(--wall);border:1px solid var(--line);border-radius:99px;padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{border-color:var(--brass);color:#e9cf98;background:#2a2214}
+.seg button.act{border-color:var(--brass)}
+.swatch{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;color:var(--dim);padding-left:4px}.swatch input{width:34px;height:26px;border:1px solid var(--line);border-radius:6px;background:none;padding:0;cursor:pointer}.slider{display:grid;grid-template-columns:auto 1fr 6.5em;gap:10px;align-items:center;font-size:.85rem;color:var(--dim)}.slider output{font-family:var(--mono);font-size:.78rem;text-align:right;color:var(--ink)}input[type=range]{accent-color:var(--brass);width:100%;min-width:90px}input[type=range]:focus-visible{outline:2px solid var(--brass);outline-offset:2px}.seg button:focus-visible,.swatch input:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.note{background:var(--wall);border:1px solid var(--line);border-radius:6px;padding:14px 18px;display:flex;flex-direction:column;gap:4px}
+.note b{font-family:var(--display);font-weight:500;font-size:1.05rem}
+.parts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 28px;margin:0;padding:0;list-style:none;font-size:.9rem;color:var(--dim)}
+.parts li{border-top:1px solid var(--line);padding:6px 0;min-width:0}.parts b{color:var(--ink);font-weight:500}
+@media (max-width:900px){.opts{grid-template-columns:1fr 1fr}.stage{aspect-ratio:4/5}}
+@media (max-width:560px){.opts,.parts{grid-template-columns:1fr}}
+</style>
+<div class="wrap">
+  <header>
+    <div style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">ARKOS · the agent and its honest face · one principle: honesty</span><h1>The sand table</h1></div>
+    <p style="color:var(--dim);max-width:58ch">The agent's computer in a concrete body below; a tray of sand floating 4 cm above it on four brass posts. When a task ends, the plate rings for a moment and the sand jumps into a figure: crisp if the agent was sure, blurred if it guessed. The tone you hear is the brass itself ringing. The figure stays until the next task.</p>
+  </header>
+  <div class="stage" id="stage">
+    <canvas id="c" aria-label="3D render of a low walnut object: a compute body below and a glass-covered tray of sand floating on brass posts above, the sand formed into a symmetric figure. Drag to orbit."></canvas>
+    <span class="hint">DRAG TO ORBIT · SCROLL TO ZOOM</span>
+  </div>
+  <div class="opts">
+    <div class="group"><span class="eyebrow">Finish a task</span>
+      <div class="seg"><button type="button" id="runSure" class="act">Agent was sure</button><button type="button" id="runUnsure" class="act">Agent was guessing</button></div>
+      <div class="seg" data-k="sound"><button type="button" id="s-on" data-v="on" aria-pressed="true">Tone on</button><button type="button" id="s-off" data-v="off" aria-pressed="false">Tone off</button></div></div>
+    <div class="group"><span class="eyebrow">Light</span>
+      <div class="seg" data-k="light"><button type="button" id="l-rake" data-v="rake" aria-pressed="true">Raking light, dark room</button><button type="button" id="l-day" data-v="day" aria-pressed="false">Daylight</button></div></div>
+    <div class="group"><span class="eyebrow">Open it up</span>
+      <div class="seg" data-k="open"><button type="button" id="o-closed" data-v="closed" aria-pressed="true">Closed</button><button type="button" id="o-xray" data-v="xray" aria-pressed="false">See through the body</button><button type="button" id="o-lift" data-v="lift" aria-pressed="false">Lift the top</button></div></div>
+    <div class="group"><span class="eyebrow">Body</span>
+      <div class="seg" data-k="mat"><button type="button" id="b-concrete" data-v="concrete" aria-pressed="true">Concrete</button><button type="button" id="b-walnut" data-v="walnut" aria-pressed="false">Walnut veneer</button></div></div>
+    <div class="group"><span class="eyebrow">Gap light (the machine's state)</span>
+      <div class="seg" data-k="gap"><button type="button" id="g-on" data-v="on" aria-pressed="true">On</button><button type="button" id="g-sleep" data-v="sleep" aria-pressed="false">Asleep</button><button type="button" id="g-off" data-v="off" aria-pressed="false">Off</button></div>
+      <div class="seg" data-k="gapvis"><button type="button" id="gv-show" data-v="show" aria-pressed="true">Light on</button><button type="button" id="gv-hide" data-v="hide" aria-pressed="false">Turn the light off</button></div></div>
+    <div class="group"><span class="eyebrow">Brass, over time</span>
+      <div class="slider"><label for="age">Unlacquered brass</label><input id="age" type="range" min="0" max="100" step="1" value="0"><output id="ageO" for="age">New</output></div></div>
+    <div class="group"><span class="eyebrow">Plate</span>
+      <div class="seg" data-k="ptype"><button type="button" id="p-brass" data-v="brass" aria-pressed="true">Brass</button><button type="button" id="p-glass" data-v="glass" aria-pressed="false">Glass, lit from the gap</button></div></div>
+    <div class="group"><span class="eyebrow">Sand and plate</span>
+      <div class="seg"><label class="swatch" for="sandColor">Sand <input type="color" id="sandColor" value="#2b241e"></label><label class="swatch" for="plateColor">Plate <input type="color" id="plateColor" value="#9c7634"></label></div></div>
+    <div class="group" style="grid-column:1/-1"><span class="eyebrow">View</span>
+      <div class="seg" data-k="view"><button type="button" id="v-q" data-v="q" aria-pressed="true">Three-quarter</button><button type="button" id="v-top" data-v="top" aria-pressed="false">Looking down</button><button type="button" id="v-front" data-v="front" aria-pressed="false">Front</button><button type="button" id="v-low" data-v="low" aria-pressed="false">Low, into the gap</button><button type="button" id="v-back" data-v="back" aria-pressed="false">Back</button></div>
+      <div class="seg"><button type="button" id="resetAll">Reset everything</button></div></div>
+  </div>
+  <div class="note"><b>What you're seeing</b><p id="noteText"></p></div>
+  <ul class="parts">
+    <li><b>Size:</b> about 60 × 60 cm and 31 cm tall. An object for the floor or a sideboard, not a table.</li>
+    <li><b>Body:</b> glass-fiber reinforced concrete (about 20–25 kg), whose mass absorbs the verdict's vibration, holding a Mac Studio against the right wall, turned so it exhausts straight out the right vent through a short duct.</li>
+    <li><b>Brass vents on opposite sides:</b> perforated brass on the left (air in) and the right (air out), so air crosses straight through past the Mac. More air enters through the gap at the base.</li>
+    <li><b>Gap:</b> 4 cm on four brass posts with firm rubber isolators. The back-right post is hollow and carries the one-way meter wire.</li>
+    <li><b>Sand tray:</b> a thin brass plate on a vibration driver at its center, edges free, driven at resonance so it barely has to move. Sand: round glass microbeads, about 100–200 micrometers, one size, dry.</li>
+    <li><b>Dust cover:</b> thin glass, lifts off. It keeps out dust, humidity and cats.</li>
+    <li><b>Raking light:</b> a low LED strip along one inside edge, so every ridge of sand throws a shadow.</li>
+    <li><b>Front edge of the tray:</b> the key and four telltales, at hand height.</li>
+    <li><b>The tone is the plate:</b> no speaker. The brass rings at the resonance that draws the figure, so the sound and the sand can't disagree; uncertainty makes it sound grainy, and it rings down like a bell. Felt under the dust cover stops buzzing; the controller caps how hard it's driven.</li>
+    <li><b>Gap light:</b> the Float's state seam, around the top of the body under the tray. Steady gold when on, slow breathing when asleep, and when off a small heartbeat blink by the back-right post, so off never looks the same as broken. It can be turned off.</li>
+    <li><b>Brass ages:</b> unlacquered brass darkens to brown over a few years and can take a faint green in crevices over decades. The key, handled daily, stays brighter. Lacquered brass stays bright until the lacquer wears.</li>
+    <li><b>Honesty:</b> measured from the model's internals, one-way wire, radio-free controller, a mapping unique to the house and never seen by the agent.</li>
+  </ul>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/geometries/RoundedBoxGeometry.js"></script>
+<script>
+(function(){
+var stage=document.getElementById('stage'),canvas=document.getElementById('c');
+if(!window.THREE){stage.insertAdjacentHTML('beforeend','<div class="fail">The 3D library didn\'t load. Reload the page to try again.</div>');return;}
+var renderer;try{renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});}catch(e){stage.insertAdjacentHTML('beforeend','<div class="fail">This browser can\'t show 3D right now (WebGL is off).</div>');return;}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+var scene=new THREE.Scene();scene.background=new THREE.Color(0x141312);scene.fog=new THREE.Fog(0x141312,200,520);
+try{var pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new THREE.RoomEnvironment(),0.04).texture;}catch(e){}
+var camera=new THREE.PerspectiveCamera(30,1,5,1500),controls=new THREE.OrbitControls(camera,canvas);
+controls.enableDamping=true;controls.dampingFactor=.08;controls.enablePan=false;controls.minDistance=45;controls.maxDistance=300;controls.maxPolarAngle=Math.PI*.5;
+function cnv(w,h){var c=document.createElement('canvas');c.width=w;c.height=h;return c;}
+function add(o,p){(p||scene).add(o);return o;}
+function mesh(g,m,x,y,z,p){var o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;return add(o,p);}
+function box(sx,sy,sz,x,y,z,m,p){return mesh(new THREE.BoxGeometry(sx,sy,sz),m,x,y,z,p);}
+function rbox(sx,sy,sz,r,x,y,z,m,p){return mesh(new THREE.RoundedBoxGeometry(sx,sy,sz,3,r),m,x,y,z,p);}
+function cyl(r,h,x,y,z,m,p,seg){return mesh(new THREE.CylinderGeometry(r,r,h,seg||32),m,x,y,z,p);}
+// ---------- materials ----------
+function walnutC(){var c=cnv(1024,512),g=c.getContext('2d');g.fillStyle='#4f311d';g.fillRect(0,0,1024,512);for(var i=0;i<512;i++){var v=Math.sin(i*.05)*.5+Math.sin(i*.011+2)*.5,l=Math.round(26+v*10+Math.random()*6);g.fillStyle='rgba('+(l+50)+','+(l+22)+','+(l+4)+',.35)';g.fillRect(0,i,1024,1);}
+  for(i=0;i<170;i++){g.strokeStyle='rgba(34,18,8,'+(.06+Math.random()*.16)+')';g.lineWidth=.6+Math.random()*1.6;g.beginPath();var y=Math.random()*512;g.moveTo(0,y);for(var x=0;x<=1024;x+=32)g.lineTo(x,y+Math.sin(x*.01+i)*6);g.stroke();}return c;}
+var wT=new THREE.CanvasTexture(walnutC());wT.encoding=THREE.sRGBEncoding;wT.wrapS=wT.wrapT=THREE.RepeatWrapping;wT.anisotropy=8;
+var walnut=new THREE.MeshStandardMaterial({map:wT,roughness:.5,envMapIntensity:.45,transparent:true,opacity:1});
+var brass=new THREE.MeshStandardMaterial({color:0xc9a25a,metalness:1,roughness:.3,envMapIntensity:1.1});
+var dark=new THREE.MeshStandardMaterial({color:0x151413,roughness:.8});
+var alu=new THREE.MeshStandardMaterial({color:0xb8bcc0,metalness:.9,roughness:.35});var aluDark=new THREE.MeshStandardMaterial({color:0x2b2e31,metalness:.7,roughness:.45});
+var rubber=new THREE.MeshStandardMaterial({color:0x1b1b1b,roughness:.9});
+function concreteC(){var c=cnv(1024,1024),g=c.getContext('2d');g.fillStyle='#a9a59e';g.fillRect(0,0,1024,1024);
+  for(var i=0;i<70;i++){var x=Math.random()*1024,y=Math.random()*1024,r=80+Math.random()*220,gr=g.createRadialGradient(x,y,0,x,y,r);var d=Math.random()<.5;gr.addColorStop(0,d?'rgba(90,86,80,.16)':'rgba(205,200,192,.16)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(x-r,y-r,r*2,r*2);}
+  for(i=0;i<26000;i++){var px=Math.random()*1024,py=Math.random()*1024,pr=Math.random()*1.3+.2;g.fillStyle=Math.random()<.55?'rgba(55,52,48,'+(.15+Math.random()*.45)+')':'rgba(235,232,226,'+(Math.random()*.25)+')';g.beginPath();g.arc(px,py,pr,0,7);g.fill();}
+  for(i=0;i<240;i++){var bx=Math.random()*1024,by=Math.random()*1024,br=1.5+Math.random()*3.5;g.fillStyle='rgba(40,38,35,.55)';g.beginPath();g.arc(bx,by,br,0,7);g.fill();}return c;}
+var cC=concreteC();var cT=new THREE.CanvasTexture(cC);cT.encoding=THREE.sRGBEncoding;cT.wrapS=cT.wrapT=THREE.RepeatWrapping;cT.anisotropy=8;var cB=new THREE.CanvasTexture(cC);cB.wrapS=cB.wrapT=THREE.RepeatWrapping;
+var concM=new THREE.MeshStandardMaterial({map:cT,bumpMap:cB,bumpScale:.08,roughness:.93,envMapIntensity:.25,transparent:true,opacity:1});
+function uvWorld(o,s){var uv=o.geometry.attributes.uv,pos=o.geometry.attributes.position,n=o.geometry.attributes.normal;for(var i=0;i<uv.count;i++){var px=pos.getX(i)+o.position.x,py=pos.getY(i)+o.position.y,pz=pos.getZ(i)+o.position.z,nx=Math.abs(n.getX(i)),ny=Math.abs(n.getY(i));uv.setXY(i,(nx>.5?pz:px)/s,(ny>.5?pz:py)/s);}return o;}
+// ---------- floor ----------
+var floor=new THREE.Mesh(new THREE.PlaneGeometry(900,900),new THREE.MeshStandardMaterial({color:0x2a2724,roughness:.85,envMapIntensity:.1}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+// ---------- body ----------
+var W=60,BB=4,BT=19,GAP=4,TT=BT+GAP; // body top 19, tray bottom 23
+box(W-8,BB,W-8,0,BB/2,0,dark);
+var body=uvWorld(rbox(W,BT-BB,W,.4,0,BB+(BT-BB)/2,0,concM),60);
+// vent slots along the top edge (front, sides, back)
+var slotM=new THREE.MeshStandardMaterial({color:0x0b0a09,roughness:1});
+// back grille and hatch
+var gr=cnv(256,128),gg=gr.getContext('2d');gg.fillStyle='#2a2b2d';gg.fillRect(0,0,256,128);gg.fillStyle='#0c0c0d';for(var gx=8;gx<256;gx+=12)gg.fillRect(gx,10,6,108);
+var grT=new THREE.CanvasTexture(gr);grT.encoding=THREE.sRGBEncoding;
+var pf=cnv(1024,256),pg=pf.getContext('2d');pg.fillStyle='#c9a25a';pg.fillRect(0,0,1024,256);pg.fillStyle='#1a140b';for(var py=14;py<256;py+=18)for(var px=10+((py/18)%2)*9;px<1024;px+=18){pg.beginPath();pg.arc(px,py,5.2,0,7);pg.fill();}
+var pfT=new THREE.CanvasTexture(pf);pfT.encoding=THREE.sRGBEncoding;pfT.anisotropy=8;
+var perfM=new THREE.MeshStandardMaterial({map:pfT,color:0xffffff,metalness:.9,roughness:.32,envMapIntensity:1});
+var ventLeft=box(.25,10,50,-W/2-.05,BB+2+5.5,0,[brass,perfM,brass,brass,brass,brass]);
+var ventSide=box(.25,10,50,W/2+.05,BB+2+5.5,0,[perfM,brass,brass,brass,brass,brass]);
+// inside the body (see-through)
+var inside=new THREE.Group();scene.add(inside);inside.visible=false;
+rbox(19.7,9.5,19.7,1.4,W/2-13.5,5.3+4.75,0,new THREE.MeshStandardMaterial({color:0xc9ccd0,metalness:.85,roughness:.32}),inside);
+box(2.6,8,18,W/2-2,10,0,new THREE.MeshStandardMaterial({color:0x2a2b2d,roughness:.6}),inside); // duct
+box(8,1,6,-16,5,12,new THREE.MeshStandardMaterial({color:0x1d4a2c,roughness:.6}),inside);          // controller (no radio)
+box(18,3,4,-12,5.6,-18,new THREE.MeshStandardMaterial({color:0xe8e6e1,roughness:.6}),inside);     // power strip
+var wireM=new THREE.MeshBasicMaterial({color:0xd0442e});
+function tube(pts,r,m,p){var c=new THREE.CatmullRomCurve3(pts.map(function(q){return new THREE.Vector3(q[0],q[1],q[2]);}));return mesh(new THREE.TubeGeometry(c,40,r,8,false),m,0,0,0,p);}
+tube([[-16,6,12],[-8,7,0],[6,7,-16],[20,8,-23],[24,BT+2,-24]],.18,wireM,inside);
+// ---------- gap light: the Float's state seam, around the top of the body under the floating tray ----------
+var gapMat=new THREE.MeshBasicMaterial({color:0x000000,toneMapped:false});
+var gapRing=new THREE.Group();scene.add(gapRing);
+[[W-8,.25,.6,0,BT+.13,W/2-4],[W-8,.25,.6,0,BT+.13,-W/2+4],[.6,.25,W-8,W/2-4,BT+.13,0],[.6,.25,W-8,-W/2+4,BT+.13,0]].forEach(function(b){var o=box(b[0],b[1],b[2],b[3],b[4],b[5],gapMat,gapRing);o.castShadow=false;});
+var gapGlow=new THREE.PointLight(0xffc56a,0,60,1.6);gapGlow.position.set(0,BT+1.2,0);scene.add(gapGlow);
+var pilotMat=new THREE.MeshBasicMaterial({color:0x000000,toneMapped:false});var pilot=box(.6,.3,.6,20,BT+.15,-20,pilotMat);pilot.castShadow=false;
+// ---------- posts ----------
+var top=new THREE.Group();scene.add(top);
+var posts=[];[[-24,-24],[24,-24],[-24,24],[24,24]].forEach(function(p){posts.push(cyl(1.1,GAP,p[0],BT+GAP/2,p[1],brass));cyl(1.4,.5,p[0],BT+.25,p[1],rubber);});
+// ---------- the tray ----------
+var TF=1,TW=1.8,TH=7.5; // floor, wall, height
+var trayFloor=uvWorld(box(W,TF,W,0,TT+TF/2,0,walnut,top),60);
+var openFloor=new THREE.Group();top.add(openFloor);
+[[W,TF,3.6,0,TT+TF/2,W/2-1.8],[W,TF,3.6,0,TT+TF/2,-W/2+1.8],[3.6,TF,W-7.2,W/2-1.8,TT+TF/2,0],[3.6,TF,W-7.2,-W/2+1.8,TT+TF/2,0]].forEach(function(b){uvWorld(box(b[0],b[1],b[2],b[3],b[4],b[5],walnut,openFloor),60);});
+var bridgeM=new THREE.MeshStandardMaterial({color:0x2c2e31,metalness:.6,roughness:.4});
+// glass mode: the driver clamps the plate at the middle of its back edge, so nothing blocks the light
+var edgeDrv=new THREE.Group();top.add(edgeDrv);box(8,3.2,4,0,TT+TF+1.6,-W/2+TW+2.6,bridgeM,edgeDrv);box(6,.6,3,0,TT+TF+3.4,-W/2+TW+3.2,alu,edgeDrv);edgeDrv.visible=false;
+openFloor.visible=false;
+// light in the gap: a diffuser panel on top of the body, shining up through the glass plate
+var glowMat=new THREE.MeshBasicMaterial({color:0x000000,toneMapped:false});
+var diffuser=box(W-6,.2,W-6,0,BT+.15,0,glowMat);diffuser.castShadow=false;diffuser.visible=false;
+var gapLight=new THREE.PointLight(0xffe2b8,0,70,1.4);gapLight.position.set(0,BT+1.5,0);scene.add(gapLight);
+var upLight=new THREE.SpotLight(0xffe2b8,0,60,Math.PI/2.2,.6,1);upLight.position.set(0,BT+.5,0);upLight.target.position.set(0,BT+20,0);scene.add(upLight);scene.add(upLight.target);
+[[W,TH-TF,TW,0,TT+TF+(TH-TF)/2,W/2-TW/2],[W,TH-TF,TW,0,TT+TF+(TH-TF)/2,-W/2+TW/2],[TW,TH-TF,W-2*TW,W/2-TW/2,TT+TF+(TH-TF)/2,0],[TW,TH-TF,W-2*TW,-W/2+TW/2,TT+TF+(TH-TF)/2,0]].forEach(function(b){uvWorld(box(b[0],b[1],b[2],b[3],b[4],b[5],walnut,top),60);});
+var drv=cyl(3,2.2,0,TT+TF+1.1,0,new THREE.MeshStandardMaterial({color:0x2c2e31,metalness:.6,roughness:.4}),top); // driver
+var drvPost=cyl(.6,1.2,0,TT+TF+2.8,0,alu,top);
+var PL=W-2*TW-2.4,PY=TT+TF+3.5;
+var plateM=new THREE.MeshStandardMaterial({color:0x9c7634,metalness:.9,roughness:.42,envMapIntensity:.7});
+var glassPlateM=new THREE.MeshPhysicalMaterial({color:0xeef3f2,transparent:true,opacity:.35,roughness:.12,metalness:0,envMapIntensity:.6,emissive:0x000000,depthWrite:false});
+var plate=box(PL,.15,PL,0,PY,0,plateM,top);
+// sand texture on the plate
+var SN=1024,sandC=cnv(SN,SN),sg=sandC.getContext('2d'),bumpC=cnv(SN,SN),bg=bumpC.getContext('2d');
+var sandT=new THREE.CanvasTexture(sandC);sandT.encoding=THREE.sRGBEncoding;sandT.anisotropy=8;var bumpT=new THREE.CanvasTexture(bumpC);
+var sandM=new THREE.MeshStandardMaterial({map:sandT,bumpMap:bumpT,bumpScale:.35,roughness:.95,metalness:0,envMapIntensity:.25,transparent:true,alphaTest:.05,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2});
+var sand=new THREE.Mesh(new THREE.PlaneGeometry(PL,PL),sandM);sand.rotation.x=-Math.PI/2;sand.position.y=PY+.35;sand.receiveShadow=true;sand.renderOrder=3;top.add(sand);
+// house-specific figure: pick a mode pair from a tested set (generated once per house on the controller; here, fixed for the demo)
+var MODE=[2,5];
+function field(u,v){var m=MODE[0],n=MODE[1];return Math.cos(m*Math.PI*u)*Math.cos(n*Math.PI*v)-Math.cos(n*Math.PI*u)*Math.cos(m*Math.PI*v);}
+function rnd(i){var x=Math.sin(i*127.1+311.7)*43758.5453;return x-Math.floor(x);}
+// order: 0 = scattered, 1 = fully formed. blur: 0 = crisp, 1 = guessing
+var sandCol=new THREE.Color('#2b241e'),plateCol='#9c7634';
+function paintSand(order,blur,seed){sg.clearRect(0,0,SN,SN);bg.fillStyle='#000';bg.fillRect(0,0,SN,SN);
+  var N=52000,thr=.045+blur*.1;
+  for(var i=0;i<N;i++){var u=rnd(i*1.31+seed),v=rnd(i*2.77+seed*1.7);
+    var f=Math.abs(field(u,v)),onLine=f<thr*(1+rnd(i*5.1)*.6);
+    var keep=onLine?1:(1-order)*.9+order*blur*.05;
+    if(rnd(i*9.7+seed)>keep)continue;
+    var jx=(rnd(i*3.3)-.5)*(1-order)*.002+(rnd(i*7.7)-.5)*blur*.03,jy=(rnd(i*4.4)-.5)*blur*.03;
+    var x=(u+jx)*SN,y=(v+jy)*SN,s=1.6+rnd(i*6.6)*1.8;
+    var sh=.78+rnd(i*8.8)*.3;sg.fillStyle='rgb('+Math.min(255,Math.round(sandCol.r*255*sh))+','+Math.min(255,Math.round(sandCol.g*255*sh))+','+Math.min(255,Math.round(sandCol.b*255*sh))+')';sg.fillRect(x,y,s,s);
+    bg.fillStyle='rgba(255,255,255,.55)';bg.fillRect(x-.5,y-.5,s+1,s+1);}
+  sandT.needsUpdate=true;bumpT.needsUpdate=true;}
+// raking light strip along the left inside wall
+var stripMat=new THREE.MeshBasicMaterial({color:0xfff1d6,toneMapped:false});
+var strip=box(.3,.3,PL,-W/2+TW+.2,PY+1.2,0,stripMat,top);strip.castShadow=false;
+var rake=new THREE.SpotLight(0xfff0d8,0,90,Math.PI/2.6,.4,1.2);rake.position.set(-W/2+TW+.5,PY+1.3,0);rake.target.position.set(W/2,PY-1.5,0);rake.castShadow=true;rake.shadow.mapSize.set(2048,2048);rake.shadow.bias=-.0004;top.add(rake);top.add(rake.target);
+// dust cover
+var glassM=new THREE.MeshPhysicalMaterial({color:0xdfe8e8,transparent:true,opacity:.14,roughness:.04,metalness:0,envMapIntensity:.9,depthWrite:false});
+var cover=box(W-2*TW+.6,.5,W-2*TW+.6,0,TT+TH+.25,0,glassM,top);cover.castShadow=false;cover.renderOrder=5;
+// front edge of the tray: key and telltales
+var keyBrass=brass.clone();var keyPlate=box(5,3.4,.2,19,TT+TH/2+.3,W/2+.1,keyBrass,top);
+cyl(1,.6,19,TT+TH/2+.3,W/2+.45,new THREE.MeshStandardMaterial({color:0xd8dadc,metalness:1,roughness:.25}),top).rotation.x=Math.PI/2;
+var keyBlade=box(.3,1.6,.4,19,TT+TH/2+.3,W/2+.9,new THREE.MeshStandardMaterial({color:0xd8dadc,metalness:1,roughness:.25}),top);
+var tells=[];for(var t2=0;t2<4;t2++){tells.push(box(1.6,.5,.12,4+t2*2.6,TT+TH/2+.3,W/2+.08,new THREE.MeshBasicMaterial({color:0x000000,toneMapped:false}),top));}
+// ---------- lights ----------
+var hemi=add(new THREE.HemisphereLight(0xfff1e0,0x1a1612,.22));
+var key=add(new THREE.DirectionalLight(0xfff0de,.85));key.position.set(70,120,90);key.castShadow=true;key.shadow.mapSize.set(2048,2048);var sc=key.shadow.camera;sc.left=-60;sc.right=60;sc.top=60;sc.bottom=-30;key.shadow.radius=6;key.shadow.bias=-.0005;
+var rim=add(new THREE.DirectionalLight(0xdfe8ff,.3));rim.position.set(-80,70,-90);
+// ---------- state ----------
+var DEF={gap:'on',gapvis:'show',ptype:'brass',light:'rake',open:'closed',sound:'on',mat:'concrete',sand:'#2b241e',plate:'#9c7634'},S={};
+var NOTES={gapon:' The gap glows steady gold: the machine is on.',gapsleep:' The gap breathes slowly: the machine is asleep.',gapoff:' The machine is off. The gap is dark except a small heartbeat blink by the back-right post, so off never looks the same as broken.',gaphide:' The gap light is turned off.',glass:' The plate is glass, lit from below by a panel on top of the concrete body: the sand reads as a dark drawing on glowing glass, and the gap glows. The driver clamps the glass at the middle of its back edge, so nothing at the center blocks the light.',sure:'The last task ended with the agent sure of itself: the figure came out crisp, thin clean lines with bare metal between them.',unsure:'The last task ended with the agent guessing: the same figure, but smeared and scattered. You can see the doubt from across the room.',
+ rake:' The room is dark; the raking light along the left edge makes every ridge of sand throw a shadow.',day:' Daylight: the figure reads by color, flatter but still clear.',
+ xray:' The body is shown see-through: the Mac Studio against the right wall with its duct to the right vent, the radio-free controller, the power strip, and the one-way wire running up the hollow back-right post.',lift:' The top is lifted off its posts: the driver sits at the center of the tray floor, under a plate whose edges are free.'};
+var last='sure',order=1,blur=0,target={order:1,blur:0},seed=3.7,anim=null;
+function setPressed(k,v){document.querySelectorAll('.seg[data-k="'+k+'"] button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===v?'true':'false');});}
+function note(){document.getElementById('noteText').textContent=NOTES[last]+(S.gapvis==='hide'?NOTES.gaphide:NOTES['gap'+S.gap])+(S.ptype==='glass'?NOTES.glass:NOTES[S.light])+(NOTES[S.open]||'');}
+function apply(){var x=S.open==='xray';walnut.opacity=x?.2:1;walnut.depthWrite=!x;concM.opacity=x?.2:1;concM.depthWrite=!x;body.material=S.mat==='concrete'?concM:walnut;inside.visible=x;
+  var gl=S.ptype==='glass';plate.material=gl?glassPlateM:plateM;trayFloor.visible=!gl;openFloor.visible=gl;diffuser.visible=gl;drv.visible=!gl;drvPost.visible=!gl;edgeDrv.visible=gl;note();}
+var AGE=0;
+var NEW=new THREE.Color(0xc9a25a),OLD=new THREE.Color(0x5e4628),VERD=new THREE.Color(0x4f6b55);
+function agedColor(base,a){var c=base.clone().lerp(OLD,Math.min(1,a*1.1));if(a>.6)c.lerp(VERD,(a-.6)*.35);return c;}
+function applyAge(){var a=AGE;
+  brass.color.copy(agedColor(NEW,a));brass.roughness=.3+a*.35;brass.metalness=1-a*.25;
+  keyBrass.color.copy(agedColor(NEW,a*.35));keyBrass.roughness=.3+a*.12;   // handled every day: stays brighter
+  perfM.color.copy(agedColor(new THREE.Color(1,1,1),a).multiplyScalar(1));perfM.roughness=.32+a*.35;perfM.metalness=.9-a*.25;
+  plateM.color.copy(agedColor(new THREE.Color(S.plate||'#9c7634'),a*.9));plateM.roughness=.42+a*.35;plateM.metalness=.9-a*.45;plateM.envMapIntensity=.7-a*.45;
+  var lbl=a<.05?'New':a<.25?'About 6 months':a<.5?'About 2 years':a<.8?'About 10 years':'Decades';document.getElementById('ageO').textContent=lbl;}
+document.getElementById('age').addEventListener('input',function(e){AGE=e.target.value/100;applyAge();});
+function setColors(){sandCol.set(S.sand);plateCol=S.plate;plateM.color.set(S.plate);applyAge();if(S.ptype==='glass')glassPlateM.color.set(S.plate).lerp(new THREE.Color(1,1,1),.75);paintSand(anim?order:1,last==='unsure'?1:0,seed);}
+document.getElementById('sandColor').addEventListener('input',function(e){S.sand=e.target.value;setColors();});
+document.getElementById('plateColor').addEventListener('input',function(e){S.plate=e.target.value;setColors();});
+var actx=null;
+function tone(unsure){if(S.sound!=='on')return;try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();var t=actx.currentTime,f0=233,out=actx.createGain();out.gain.value=.5;out.connect(actx.destination);
+  // the plate's own ring: a driven tone, then a bell-like decay with inharmonic partials, as brass plates have
+  [[1,.22,4.5],[2.32,.08,2.8],[4.25,.045,1.8],[6.8,.02,1.1]].forEach(function(p){var o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=f0*p[0];
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(p[1],t+.12);g.gain.setValueAtTime(p[1],t+1.6);g.gain.exponentialRampToValueAtTime(.0001,t+1.6+p[2]);o.connect(g);g.connect(out);o.start(t);o.stop(t+1.7+p[2]);});
+  if(unsure){var len=Math.floor(actx.sampleRate*2),buf=actx.createBuffer(1,len,actx.sampleRate),d=buf.getChannelData(0);for(var k=0;k<len;k++)d[k]=(Math.random()*2-1);var ns=actx.createBufferSource(),ng=actx.createGain(),bp=actx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=f0;bp.Q.value=6;ns.buffer=buf;ng.gain.setValueAtTime(0,t);ng.gain.linearRampToValueAtTime(.35,t+.15);ng.gain.setValueAtTime(.35,t+1.5);ng.gain.exponentialRampToValueAtTime(.0001,t+2);ns.connect(bp);bp.connect(ng);ng.connect(out);ns.start(t);ns.stop(t+2.05);}}catch(e){}}
+function run(unsure){last=unsure?'unsure':'sure';seed=Math.random()*100;anim={t0:performance.now(),unsure:unsure};tone(unsure);note();}
+document.getElementById('runSure').addEventListener('click',function(){run(false);});
+document.getElementById('runUnsure').addEventListener('click',function(){run(true);});
+var VIEWS={q:[[105,80,130],[0,17,0]],top:[[4,150,30],[0,24,0]],front:[[0,26,118],[0,20,0]],low:[[52,14,70],[0,20,0]],back:[[-60,40,-96],[0,14,0]]};
+var tween=null,tw0=0,lastTouch=-1e9;function setView(v){tween={from:camera.position.clone(),to:new THREE.Vector3().fromArray(VIEWS[v][0]),tf:controls.target.clone(),tt:new THREE.Vector3().fromArray(VIEWS[v][1])};tw0=performance.now();lastTouch=performance.now();}
+document.querySelectorAll('.seg').forEach(function(seg){seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b||!seg.dataset.k)return;var k=seg.dataset.k,v=b.dataset.v;setPressed(k,v);if(k==='view'){setView(v);return;}S[k]=v;if(k==='open'&&v==='xray')setView('back');if(k==='ptype'){setColors();}apply();});});
+function resetAll(){S={gap:DEF.gap,gapvis:DEF.gapvis,ptype:DEF.ptype,light:DEF.light,open:DEF.open,sound:DEF.sound,mat:DEF.mat,sand:DEF.sand,plate:DEF.plate};['gap','gapvis','ptype','light','open','sound','mat'].forEach(function(k){setPressed(k,S[k]);});setPressed('view','q');document.getElementById('sandColor').value=S.sand;document.getElementById('plateColor').value=S.plate;last='sure';order=1;blur=0;anim=null;seed=3.7;sandCol.set(S.sand);plateCol=S.plate;plateM.color.set(S.plate);paintSand(1,0,3.7);AGE=0;document.getElementById('age').value=0;applyAge();apply();setView('q');}
+document.getElementById('resetAll').addEventListener('click',resetAll);
+resetAll();camera.position.fromArray(VIEWS.q[0]);controls.target.fromArray(VIEWS.q[1]);
+var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+controls.addEventListener('start',function(){lastTouch=performance.now();tween=null;});controls.addEventListener('end',function(){lastTouch=performance.now();});
+function resize(){var w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w/h<1?40:30;camera.updateProjectionMatrix();}
+new ResizeObserver(resize).observe(stage);resize();
+var clock=new THREE.Clock(),lift=0,rk=1,lastPaint=0,glowAmt=0,gapAmt=0;
+function loop(){var dt=Math.min(.12,clock.getDelta()),t=clock.elapsedTime,now=performance.now();
+  if(tween){var e=Math.min(1,(now-tw0)/1200);e=1-Math.pow(1-e,3);camera.position.lerpVectors(tween.from,tween.to,e);controls.target.lerpVectors(tween.tf,tween.tt,e);if(e>=1)tween=null;}
+  else if(!reduce&&now-lastTouch>7000){controls.autoRotate=true;controls.autoRotateSpeed=.45;}else controls.autoRotate=false;
+  // verdict animation: scatter, then settle into the figure over ~3 s
+  if(anim){var a=(now-anim.t0)/3000;if(reduce)a=1;var tb=anim.unsure?1:0;
+    if(a<.25){order=Math.max(0,1-a/.25);}else{order=Math.min(1,(a-.25)/.75);}
+    blur=tb;var shake=a<1?.12*Math.sin(now*.09)*(1-a):0;plate.position.y=PY+shake*.05;sand.position.y=PY+.35+shake*.05;
+    if(now-lastPaint>90||a>=1){paintSand(order,blur,seed);lastPaint=now;}
+    if(a>=1){anim=null;plate.position.y=PY;sand.position.y=PY+.35;}}
+  var k=1-Math.exp(-dt*3);
+  var breath=.5-.5*Math.cos(t*2*Math.PI/6),gt=S.gapvis==='hide'?0:(S.gap==='on'?.75:S.gap==='sleep'?.05+.3*breath:0);if(reduce&&S.gap==='sleep'&&S.gapvis!=='hide')gt=.2;
+  gapAmt+=(gt-gapAmt)*(S.gap==='sleep'?.5:k);gapMat.color.setRGB(1,.74,.36).multiplyScalar(gapAmt*1.5);gapGlow.intensity=gapAmt*1.3;
+  var pl=(S.gap==='off'&&S.gapvis!=='hide')?((t%10)<.25?1:0):0;pilotMat.color.setRGB(1,.74,.36).multiplyScalar(pl*1.2);
+  var gk=(S.ptype==='glass'?1:0);glowAmt+=(gk-glowAmt)*k;glowMat.color.setRGB(1,.9,.74).multiplyScalar(glowAmt*1.4);gapLight.intensity=glowAmt*1.6;upLight.intensity=glowAmt*3;glassPlateM.emissive.setRGB(1,.92,.8).multiplyScalar(glowAmt*.18);
+  rk+=((S.light==='rake'?1:0)-rk)*k;rake.intensity=rk*2.6;stripMat.color.setRGB(1,.95,.84).multiplyScalar(.15+rk*1.2);
+  key.intensity=.95-rk*.72;hemi.intensity=.05+(1-rk)*.2;rim.intensity=.1+(1-rk)*.25;
+  lift+=((S.open==='lift'?1:0)-lift)*k;top.position.y=lift*16;
+  tells.forEach(function(m,i){var c=m.material.color;if(i===0){c.setRGB(1,.75,.4).multiplyScalar(.25+.25*Math.max(0,Math.sin(t*2.2)));}else if(i===1){c.setRGB(.4,.8,.5).multiplyScalar(.5);}else c.setRGB(0,0,0);});
+  controls.update();renderer.render(scene,camera);requestAnimationFrame(loop);}
+loop();
+})();
+</script>
