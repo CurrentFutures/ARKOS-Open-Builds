@@ -17,6 +17,8 @@ ARKOS asks one question: **how do we live and work with technology when it's eve
 | Build | What it is | Status |
 |---|---|---|
 | [Living Light Wall](builds/living-light-wall/) | Wall tiles that grow food from waste heat and show the health of the system that heats them | Concept and desk tests |
+| [Living Indicator Tiles](builds/living-indicator-tiles/) | Backlit algae tiles that light a corridor and report on the habitat's thermal loop | Concept study |
+| [The Lantern](builds/lantern/) | A silent home media server built as furniture, in glass and concrete | Build book complete |
 
 ## How to read a build
 
