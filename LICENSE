@@ -1,0 +1,20 @@
+CC0 1.0 Universal (public domain dedication)
+
+To the extent possible under law, Current Futures Group has waived all
+copyright and related or neighboring rights to ARKOS Open Builds: the
+designs, drawings, guides, models, software and other files in this
+repository. This work is published from the United States.
+
+You can copy, modify, build, distribute and sell anything here, even
+commercially, without asking permission and without credit. Credit to
+"ARKOS Lab, Current Futures Group" is welcome but not required.
+
+Full legal text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+No warranty. These builds are experiments, provided as-is. Anything
+involving food, water, heat or mains power is built at your own risk;
+read each build's safety notes.
+
+Third-party code keeps its own license: three.js (MIT, Copyright 2010-2022
+three.js authors) is included in tools/vendor/ and inlined in the HTML
+pages; see tools/vendor/package/LICENSE.

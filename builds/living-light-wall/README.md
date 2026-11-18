@@ -2,6 +2,8 @@
 
 Grow food from waste heat, while monitoring the health of your systems in a way that's beautiful and natural.
 
+![The Living Light Wall by day: a band of flow tiles throwing moving light, with grow tiles of green culture above and below. Concept render.](images/hero.png)
+
 **Status:** Concept and desk tests. Nothing here has been built at full size yet.
 **Principles applied:**
 - Legibility by anyone: physics and biology show the state; no screens, no sensors.
@@ -18,10 +20,18 @@ Two tile types share one frame:
 
 Read together, the wall says: the heat is arriving, and it's sustaining life. Or it shows you which part isn't.
 
+## Renders
+
+Concept renders from the interactive model, not photos.
+
+| At night | Too hot: the grow tiles show it | Close on the grow tiles | Where the water goes |
+|---|---|---|---|
+| ![The wall at night, the flow tiles still moving](images/night.png) | ![Loop too hot for days: the grow tiles have gone dark while the flow tiles still move](images/warning.png) | ![Close on the grow tiles and their reference bands](images/grow.png) | ![The plumbing: harvest trough, strainer, reservoir and planter](images/water.png) |
+
 ## Files
 
 - [SPEC.md](SPEC.md): how it works, the plumbing, safety, and desk tests
-- [render/index.html](render/index.html): interactive concept render (three.js). Download it and open it in a browser. It's a render, not a photo.
+- [living-light-wall-model.html](living-light-wall-model.html): interactive concept render. Change the loop's flow, the last few days, day and night, and harvest a tile. Works offline. It's a render, not a photo.
 
 ## Desk tests
 

@@ -1,0 +1,18 @@
+# files the tools generate (the finished copies live in builds/)
+tools/lantern-unit.html
+tools/lantern-tool.html
+tools/lantern-build-guide.html
+tools/sand-object.html
+tools/sand-tool.html
+tools/sand-build-guide.html
+tools/sand-desk-test.html
+tools/*.pdf
+tools/reel/cap-*.html
+tools/reel/out/
+tools/teaser/tz-*.html
+tools/teaser/frames/
+tools/teaser/test*/
+tools/teaser/out/
+__pycache__/
+node_modules/
+.DS_Store

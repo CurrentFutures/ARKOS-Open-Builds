@@ -13,4 +13,4 @@ Thanks for building with us.
 - **Label honestly.** Renders are marked as renders. Untested claims are marked as untested.
 - **Safety first.** Anything involving food, water, mains power or pressure carries a safety note.
 - **Only contribute what you have the right to share.** Don't submit anything that belongs to an employer, a lab or a client, or that's under NDA or awaiting a patent.
-- **By contributing,** you agree your contribution is licensed under the same terms as the repository (see [LICENSE.md](LICENSE.md)).
+- **By contributing,** you agree to give your contribution away on the same terms as the rest of the repository: public domain, under [CC0](LICENSE).

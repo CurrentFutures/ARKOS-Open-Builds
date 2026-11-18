@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- The model runtime. Owned by the meter's user; listens on this Mac only. -->
+<plist version="1.0"><dict>
+  <key>Label</key><string>org.sandtable.model</string>
+  <key>UserName</key><string>meter</string>
+  <key>ProgramArguments</key><array>
+    <string>/opt/homebrew/bin/llama-server</string>
+    <string>-m</string><string>/Users/meter/models/MODEL.gguf</string>
+    <string>--host</string><string>127.0.0.1</string>
+    <string>--port</string><string>8081</string>
+    <string>-c</string><string>32768</string>
+    <string>--jinja</string>
+  </array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardErrorPath</key><string>/Users/meter/model.log</string>
+</dict></plist>

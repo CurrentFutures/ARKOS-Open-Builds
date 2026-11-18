@@ -1,0 +1,42 @@
+AGENT BOX SETUP: Raspberry Pi 5, where the agent lives
+
+1. System
+   Raspberry Pi Imager -> Raspberry Pi OS Lite (64-bit) on the microSD card (or an NVMe drive).
+   In the Imager's settings: your own admin user, SSH on. No Wi-Fi.
+
+2. No radio
+   Add to /boot/firmware/config.txt:
+     dtoverlay=disable-wifi
+     dtoverlay=disable-bt
+   Reboot. Check: ip link  (no wlan0).
+   The agent runs without admin rights (step 4), so it can't undo this. If you ever give
+   it admin rights, it could.
+
+3. Two wired networks
+   - Built-in Ethernet  -> the Mac. Fixed address 10.77.0.2/24, no router:
+       sudo nmcli con add type ethernet ifname eth0 con-name mac ipv4.method manual \
+         ipv4.addresses 10.77.0.2/24 ipv4.never-default yes
+   - USB Ethernet adapter (eth1) -> the key's network switch -> your router (DHCP, the default).
+     With the key in SEALED the switch has no power: the agent box has no internet.
+
+4. The agent's own account, without admin rights
+     sudo adduser agent           (do NOT add it to the sudo group)
+   Install your agent software as "agent", in its home folder. Point it at the meter:
+     base URL  http://10.77.0.1:8080/v1
+     API key   any text (the meter ignores it)
+     streaming OFF (the meter answers whole replies)
+
+5. The key's ACT position
+   At boot, set GPIO 17 as an input with pull-up (add to /etc/rc.local or a systemd unit):
+     pinctrl set 17 ip pu
+   Copy act-allowed.sh to /usr/local/bin/act-allowed (owned by root, not writable by agent).
+   Have the agent's tool policy run it before any action that changes something outside
+   its own folder, and refuse when it prints "no".
+   Honest limit: SEALED is enforced by hardware (the switch loses power). ACT is enforced by
+   the agent's software reading the key. Say so to anyone who asks.
+
+6. Checks
+     curl -s 10.77.0.1:8080/v1/models      -> lists the model
+     key to SEALED, then: ping -c1 1.1.1.1  -> fails
+     key to ONLINE: act-allowed            -> no
+     key to ACT:    act-allowed            -> yes

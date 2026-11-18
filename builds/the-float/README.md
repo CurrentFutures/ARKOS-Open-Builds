@@ -16,6 +16,8 @@ Concept renders from the 3D model, not photos.
 | The gap | Inside | The back |
 |---|---|---|
 | ![The gap under the case, the brass posts and the toggle with its rays](images/the-gap.png) | ![Inside: Dark Wood board, amber cables, gold-ringed fans](images/inside.png) | ![The back: stock and industrial, the orange cord dropping to a brass clip](images/back.png) |
+| **Asleep** | **Glass clear, to inspect** | |
+| ![Asleep: the fans dark, the seam breathing](images/asleep.png) | ![The glass shown clear: the whole build visible](images/clear.png) | |
 
 ## Files
 
@@ -24,7 +26,7 @@ Concept renders from the 3D model, not photos.
 | [the-float-build-book.html](the-float-build-book.html) | The build book with an interactive, to-scale 3D model: concept, design principles, parts list, swap checklist, how to make the custom pieces, safety, timeline |
 | [the-float-build-book.pdf](the-float-build-book.pdf) | The same book, printable, with renders |
 | [the-float-model.html](the-float-model.html) | The 3D model alone, with switches for the glass, fan colour and effect, power states and views |
-| [base-spec.html](base-spec.html) | Shop spec for the walnut base, with dimensioned drawings, to hand to a woodworker |
+| [float-base-spec.html](float-base-spec.html) | Shop spec for the walnut base, with dimensioned drawings, to hand to a woodworker |
 | [float-base-spec.pdf](float-base-spec.pdf) | The same base spec, printable |
 | [shopping-list.html](shopping-list.html) | Every part to buy, with prices, timing and links. Tick items as you buy them |
 | [shopping-list.csv](shopping-list.csv) | The same list as a spreadsheet |

@@ -1,0 +1,57 @@
+MAC STUDIO SETUP: the model and the meter, nothing else
+
+1. Accounts
+   - Your own admin account, used only for setup and updates.
+   - A standard (not admin) account named "meter":
+       System Settings > Users & Groups > Add User... > Standard, name "meter".
+   - There is no account for the agent.
+
+2. Close every other door
+   - Wi-Fi off. Bluetooth off.
+   - System Settings > General > Sharing: everything off (File Sharing, Screen Sharing,
+     Remote Login, Remote Management, Media Sharing, AirPlay Receiver).
+   - The Mac has one network cable: to the agent box. It has no internet in normal use.
+     For updates, plug it into your router by hand, update, unplug.
+
+3. The link to the agent box
+   System Settings > Network > the Ethernet port wired to the agent box >
+   Details > TCP/IP: Configure IPv4 Manually, IP 10.77.0.1, Subnet 255.255.255.0, no router.
+   Find that port's name (en0, en1...):  networksetup -listallhardwareports
+
+4. Model runtime (llama.cpp)
+   brew install llama.cpp          (needs Homebrew: https://brew.sh, while on the internet)
+   Put the model file (.gguf) in /Users/meter/models/ and set its name in
+   org.sandtable.model.plist. Choose a model that supports tool calls.
+   Check that it gives word probabilities (run as meter, with the model started):
+     curl -s 127.0.0.1:8081/v1/chat/completions -H 'Content-Type: application/json' \
+       -d '{"messages":[{"role":"user","content":"Say hi"}],"logprobs":true,"top_logprobs":10}' \
+       | python3 -m json.tool | grep -c top_logprobs
+   A number above 0 means it works. If it prints 0, update llama.cpp.
+
+5. Meter
+   pip3 install --user pyserial      (as meter)
+   Copy meter.py to /Users/meter/meter.py
+   Plug in the USB-serial adapter (receive wire already cut) and find its name:
+     ls /dev/cu.usbserial*
+   Put that name in org.sandtable.meter.plist.
+
+6. Start both at boot, as the meter's user
+   sudo cp org.sandtable.model.plist org.sandtable.meter.plist /Library/LaunchDaemons/
+   sudo chown root:wheel /Library/LaunchDaemons/org.sandtable.*.plist
+   sudo launchctl bootstrap system /Library/LaunchDaemons/org.sandtable.model.plist
+   sudo launchctl bootstrap system /Library/LaunchDaemons/org.sandtable.meter.plist
+
+7. Firewall
+   Set LINK in pf-sandtable.conf to the port from step 3, then:
+     sudo cp pf-sandtable.conf /etc/pf.anchors/sandtable
+     sudo pfctl -nf /etc/pf.anchors/sandtable        (checks it; prints nothing if fine)
+   To load it at every boot, add these two lines to the end of /etc/pf.conf:
+     anchor "sandtable"
+     load anchor "sandtable" from "/etc/pf.anchors/sandtable"
+   then: sudo pfctl -ef /etc/pf.conf
+   macOS updates sometimes replace /etc/pf.conf: check it after each update.
+
+8. Check from the agent box (after its setup)
+     curl -s 10.77.0.1:8080/v1/models         -> works
+     curl -s 10.77.0.1:8081/health            -> must fail (the model itself is unreachable)
+     ssh 10.77.0.1                            -> must fail

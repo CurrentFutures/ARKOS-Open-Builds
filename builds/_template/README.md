@@ -13,8 +13,8 @@ What state it makes readable, and how a person or a machine reads it.
 
 ## Files
 
-- [SPEC.md](SPEC.md): how it works and how to build it
-- [render/](render/): interactive concept renders, labelled as renders
+- `build-name-model.html`: the interactive model, labelled as a render
+- [SPEC.md](SPEC.md) or a build guide: how it works and how to build it
 - `images/`: still pictures for this page (renders or photos, labelled)
 
 ## Desk test

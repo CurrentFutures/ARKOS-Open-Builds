@@ -1,7 +1,7 @@
 # House Build: Design
 
 *Date: 2026-11-15 · Status: draft for approval*
-*Companion render: https://claude.ai/artifact/9QYBKKpKmL3eyzpPGQm1CJ (see "Differences from the render" at the end)*
+*Companion render: an early study, not included here (see "Differences from the render" at the end)*
 
 ## 1. Intent
 
@@ -173,4 +173,3 @@ These override earlier sections where they conflict.
 - **Still open:**
   - Graphics card: Aorus RTX 5080 Infinity Wood (~$1,873–1,900) or ASUS ROG Astral RTX 5080 Dhahab CORE gold (~$1,899). Wanting either card makes full DIY (path C) about as cheap as path B.
   - Memory: 2×16 GB, 4×8 GB, 2×32 GB or 4×16 GB, in dark or gold.
-- Close-up render: https://claude.ai/artifact/EfDpe1dekWnbuGb4foMizL

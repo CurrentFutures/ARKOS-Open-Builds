@@ -2,6 +2,8 @@
 
 A thin layer of algae, warmed by a habitat's thermal loop and lit from behind. The tiles light a corridor and report on the loop at the same time: how much light gets through shows how much is growing, and the colour shows how it's doing.
 
+![Four tiles side by side: healthy, running warm, too hot and too cold, each beside its reference band.](images/hero.png)
+
 **Status:** Concept study. The colours are modelled, not measured.
 **Principles applied:**
 - Legibility by anyone: a person reads the colour against a printed reference band; an agent reads the same light with a simple sensor.
@@ -9,10 +11,14 @@ A thin layer of algae, warmed by a habitat's thermal loop and lit from behind. T
 
 ## Files
 
-- [render/index.html](render/index.html): interactive tile study. Move the loop temperature and days since harvest to see where a tile settles.
+- [living-indicator-tiles.html](living-indicator-tiles.html): interactive tile study. Move the loop temperature and days since harvest to see where a tile settles.
 - [concept-board.html](concept-board.html): the first concept board: a corridor render, mood, three directions (wall panels, floor path, lantern modules) and tile anatomy.
 
 Open them in a browser.
+
+## The concept board
+
+![A habitat corridor lit by algae tiles, one stretch yellowing where the loop runs warm. Concept render.](images/concept-board.png)
 
 ## How it reads
 
