@@ -7,7 +7,6 @@ A home media server you'd want in the living room: a silent, fanless computer an
 **Status:** Designed; build guide complete; not yet built.
 **Principles applied:**
 - Dignity in design: the computer is treated as furniture, silent and beautiful, made of honest materials (glass, concrete, felt, brushed metal). It opens from the back so drives can be pulled and parts repaired.
-- Legibility by anyone: the light shows the machine's state (off, lamp, evening, colour, asleep).
 
 ## Renders
 
@@ -23,6 +22,7 @@ Concept renders from the interactive model, not photos.
   - **Cut files:** DXF for the acrylic and aluminium shops, plus an order sheet.
   - **Print files:** the 17 pane prints at true size, plus print notes.
 - [the-lantern-build-guide.pdf](the-lantern-build-guide.pdf) / [.html](the-lantern-build-guide.html): step by step. Parts and sourcing links, drawings, glass, metal, concrete, electronics, software, assembly and tests.
+- [the-lantern-glass-block-version.pdf](the-lantern-glass-block-version.pdf) / [.html](the-lantern-glass-block-version.html): a cheaper sibling, about $300–650. Four glass blocks on a concrete base around a silent Raspberry Pi, with light glowing out through the rippled glass. Nothing to peel, bubble or warp.
 
 Every page works offline.
 
