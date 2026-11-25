@@ -71,7 +71,7 @@ void loop1() {
   float s = sine[phase >> 22] / 32768.0f;
   lp += 0.15f * (noise() - lp);                                              // softened noise
   float out = lvl * MAX_DRIVE * ((1.0f - 0.6f * u) * s + 0.6f * u * lp * 2.0f);
-  int16_t v = (int16_t)(constrain(out, -1.0f, 1.0f) * 32767);
+  int16_t v = (int16_t)(constrain(out, -MAX_DRIVE, MAX_DRIVE) * 32767);   // a real ceiling: noise peaks are clipped, never louder
   i2s.write16(v, v);
 }
 

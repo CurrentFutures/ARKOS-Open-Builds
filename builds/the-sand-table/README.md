@@ -22,7 +22,8 @@ Concept renders from the interactive model, not photos. The figures are idealise
 - [the-sand-table-desk-test.pdf](the-sand-table-desk-test.pdf) / [.html](the-sand-table-desk-test.html): **start here.** One afternoon at a kitchen table, about $150–300, with tables to fill in at the bench. It decides the plate size, driver, volume and whether the blur reads.
 - [the-sand-table-model.html](the-sand-table-model.html): the interactive 3D model, and the tool that makes the build files. Set the plate size from your desk test, then press:
   - **Cut files:** brass plate, glass, vents, divider, hatch, placard, plus an order sheet.
-  - **Software:** the meter, the controller firmware, and setup for the Mac and the agent box.
+  - **Software:** the meter, the controller firmware, setup for the Mac and the agent box, and the smaller versions.
+- [the-sand-table-small-versions.pdf](the-sand-table-small-versions.pdf) / [.html](the-sand-table-small-versions.html): two cheaper versions that keep the core. **Tier 1, the kitchen table** (about $120–220): one computer plays the plate itself, for classrooms, workshops and booths. **Tier 2, the honest version** (about $300–500): the agent on its own Raspberry Pi and a one-way wire to the plate. Each says what it gives up, with a placard to print.
 - [the-sand-table-build-guide.pdf](the-sand-table-build-guide.pdf) / [.html](the-sand-table-build-guide.html): step by step, starting with the desk test.
 - [software/](software/): the same software as plain files: the meter, the controller firmware, and step-by-step setup for each machine.
 - [WATER-VERSION.md](WATER-VERSION.md): a variant with water in a glass tray, projecting the pattern onto the ceiling.

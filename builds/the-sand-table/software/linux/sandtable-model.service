@@ -1,0 +1,13 @@
+# The model, run as the meter's own user. Copy to /etc/systemd/system/, set the model file, then:
+#   sudo systemctl enable --now sandtable-model sandtable-meter
+[Unit]
+Description=Sand Table model (llama-server, this computer only)
+After=network.target
+
+[Service]
+User=meter
+ExecStart=/usr/local/bin/llama-server -m /home/meter/models/your-model.gguf --host 127.0.0.1 --port 8081
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

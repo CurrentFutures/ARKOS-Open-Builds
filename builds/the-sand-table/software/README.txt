@@ -19,6 +19,13 @@ Files
   sandtable-controller/            firmware for the Pico (Arduino IDE)
   MAC-SETUP.txt, AGENT-BOX-SETUP.txt, CONTROLLER-SETUP.txt   step by step
 
+Smaller versions (the-sand-table-small-versions.pdf)
+  KITCHEN-TABLE-SETUP.txt          Tier 1: one computer, no controller; the meter plays the plate
+  plate.py                         Tier 1: the plate's sound from the computer, and the setup sweep
+  HONEST-VERSION-SETUP.txt         Tier 2: the agent on a Raspberry Pi, your own computer as the meter
+  mac/pf-sandtable-link-only.conf  Tier 2: firewall for the cable only, on a Mac you also use daily
+  linux/                           Tier 2: the same firewall and the start-up files for Linux
+
 The number
   For every reply the model gives (a tool call or an answer), the meter looks at the
   shakiest 10% of its words: how spread the model's probability was over its top 10
