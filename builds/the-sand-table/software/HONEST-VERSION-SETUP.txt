@@ -1,0 +1,61 @@
+HONEST-VERSION SETUP: Tier 2, the agent on its own machine
+
+Everything in the kitchen-table version, plus the parts that make "measured, not reported"
+physical: the agent lives on a Raspberry Pi with no other way to the meter than one cable,
+and verdicts reach the plate down a one-way wire, through a controller nothing can talk back to.
+
+Your computer (macOS or Linux) runs the model and the meter. The Pi runs the agent.
+The plate is driven by the Pico controller, not by the computer's sound.
+
+1. Your computer: the meter's own account
+   macOS: MAC-SETUP.txt steps 1 (accounts), 4 (model), 5 (meter) and 6 (start at boot).
+     Skip step 2: this computer keeps its Wi-Fi and its everyday use.
+   Linux: create a standard user "meter" (sudo adduser meter, not in the sudo group).
+     Install llama.cpp and put the model in /home/meter/models/. As meter:
+       mkdir -p /home/meter/lib
+       python3 -m pip install --target /home/meter/lib pyserial
+     Copy meter.py to /home/meter/. Copy linux/sandtable-model.service and
+     linux/sandtable-meter.service to /etc/systemd/system/, set the model file name, then:
+       sudo systemctl enable --now sandtable-model sandtable-meter
+     Add meter to the group that owns the serial port (often dialout): sudo usermod -aG dialout meter
+
+2. One cable to the Pi
+   Most laptops need a USB Ethernet adapter for this. Give that port a fixed address:
+   10.77.0.1, subnet 255.255.255.0, no router (macOS: MAC-SETUP.txt step 3).
+   This cable carries nothing but the agent's requests to the meter.
+
+3. The firewall: only the cable is locked down
+   This firewall leaves your computer's own internet alone. On the cable to the Pi it lets the
+   agent reach the meter's port 8080, and nothing else in either direction.
+   macOS: set LINK in mac/pf-sandtable-link-only.conf, then follow MAC-SETUP.txt step 7 with
+     that file in place of pf-sandtable.conf.
+   Linux: set LINK in linux/sandtable.nft, then:  sudo nft -f linux/sandtable.nft
+     To keep it after a reboot, include it from /etc/nftables.conf and enable nftables.
+
+4. The Pi (the agent box)
+   AGENT-BOX-SETUP.txt steps 1, 2 and 4, with these differences:
+   - Only the built-in Ethernet, to your computer (10.77.0.2). No USB adapter, no switch, no key:
+     the Pi has no internet. If your agent needs the web, that's the full build.
+   - Skip step 5 (the key).
+
+5. The controller
+   CONTROLLER-SETUP.txt as written: the same firmware, the same setup ritual.
+   Build only part of the board: the Pico, the PCM5102A DAC, the 24 to 5 V buck module,
+   two logic-level MOSFETs with a diode across each counter coil, and the one-way wire into GP1.
+   The amplifier and both counters run from one 24 V supply. Leave the light and
+   telltale pins unconnected: the firmware doesn't need them.
+   On the computer, find the USB-serial cable's name (macOS: ls /dev/cu.usbserial*;
+   Linux: ls /dev/ttyUSB*) and set it in the meter's start-up file.
+
+6. Checks, from the Pi
+     curl -s 10.77.0.1:8080/v1/models     -> lists the model
+     curl -s 10.77.0.1:8081/health        -> must fail (the model itself is unreachable)
+     ssh 10.77.0.1                        -> must fail
+     ping -c1 1.1.1.1                     -> must fail (no internet)
+   Then run a task: the TASKS counter clicks, and below 50 so does UNSETTLED.
+
+What it gives up, compared with the full build
+   Your computer is shared with your everyday life, not a machine that does nothing else, so
+   its security is only as good as its settings. There is no key (the agent never goes online or
+   acts in the world), no lights, and no case that hides the wiring. The isolation itself is real:
+   the agent's only path is one cable, and the table can't talk back.

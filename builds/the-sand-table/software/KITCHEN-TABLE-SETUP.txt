@@ -1,0 +1,64 @@
+KITCHEN-TABLE SETUP: Tier 1, one computer, no controller
+
+Everything runs on one computer you already own (macOS, Linux or Windows): the model,
+the meter, and the agent. The meter plays each verdict to the plate through a USB sound
+adapter. Read "What it gives up" at the end before you show it to anyone.
+
+1. The plate on the table
+   Do the desk test's setup (the-sand-table-desk-test.pdf): plate on the driver through its
+   centre hole, edges free, over a tray; amplifier gain all the way down.
+   Plug the USB sound adapter into the computer and run its output to the amplifier's input.
+   Use this adapter for the plate and nothing else. In the computer's sound settings, set
+   the adapter's volume to 100% once, and keep your normal speakers as the default output,
+   so notifications and videos never shake the sand.
+
+2. The model (llama.cpp)
+   macOS:   brew install llama.cpp
+   Linux / Windows: download a release from https://github.com/ggml-org/llama.cpp/releases
+   A small model that supports tool calls is enough (1 to 8 billion parameters runs on an
+   ordinary laptop). Start it on this computer only:
+     llama-server -m your-model.gguf --host 127.0.0.1 --port 8081
+   Check it gives word probabilities:
+     curl -s 127.0.0.1:8081/v1/chat/completions -H 'Content-Type: application/json' \
+       -d '{"messages":[{"role":"user","content":"Say hi"}],"logprobs":true,"top_logprobs":10}' \
+       | python3 -m json.tool | grep -c top_logprobs
+   A number above 0 means it works. Most hosted AI services don't give word probabilities,
+   so the table can't read them: it needs a model you run yourself.
+
+3. The plate's sound
+   python3 -m pip install sounddevice        (Linux: also sudo apt install libportaudio2)
+   In the software folder:
+     python3 plate.py devices                (find the USB adapter's name)
+     python3 plate.py use USB                (any part of its name)
+     python3 plate.py drive 0.3              (the loudness ceiling; start here)
+   Choose your figure (about 15 minutes, sand on the plate, ear protection on):
+     python3 plate.py sweep
+   Press Enter when you see a figure you like; it searches around it. Press Enter again at
+   the crispest moment. If your desk test already found a good note: python3 plate.py save 312
+   Then turn the amplifier up until a test verdict forms the figure in about 3 seconds:
+     python3 plate.py test 95                (settled)
+     python3 plate.py test 30                (unsettled: the figure should smear)
+   Raise "drive" only if the amplifier is at its limit. The amplifier's knob and "drive" are
+   the only loudness limits in this version: note both.
+
+4. The meter
+   macOS / Linux:
+     SANDTABLE_OUTPUT=audio SANDTABLE_LISTEN=127.0.0.1 python3 meter.py
+   Windows (PowerShell):
+     $env:SANDTABLE_OUTPUT="audio"; $env:SANDTABLE_LISTEN="127.0.0.1"; python meter.py
+   It says: meter listening on 127.0.0.1:8080, verdicts to the plate (audio).
+
+5. The agent
+   Point your agent software at the meter, never at the model directly:
+     base URL  http://127.0.0.1:8080/v1
+     API key   any text (the meter ignores it)
+     streaming OFF
+   Give it a task. When it finishes, the plate plays the verdict. The log is
+   sandtable-log.csv in your home folder, with a column to mark whether each task was right.
+
+What it gives up
+   The agent, the model and the meter share one computer. "The agent can't reach the meter"
+   is a software promise here, not a physical one: anything running on the computer could
+   read the meter's numbers, call the model directly without being measured, or play sounds
+   of its own. There are no counters and no
+   controller-held loudness limit. That's fine for a demo, as long as the placard says so.

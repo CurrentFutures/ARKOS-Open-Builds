@@ -22,15 +22,21 @@ node make-pdf.js lantern-build-guide.html lantern-build-guide.pdf
 ## The Sand Table
 
 ```bash
+python3 sandguide/sync_software.py
 python3 sandguide/patch_sand.py
 python3 sandguide/build_sand_guide.py
 python3 sandguide/build_desk.py
 python3 sandguide/test_meter.py
+python3 sandguide/test_plate.py
+python3 sandguide/build_small.py
 node make-pdf.js sand-build-guide.html sand-build-guide.pdf
 ```
 
+- `sync_software.py` copies the files in `builds/the-sand-table/software/` into the model page's Software download. Edit the software there, never in `sand-export.js`.
 - `patch_sand.py` adds the cut-file and software exports (`sandguide/sand-export.js`) to the model. It writes `sand-tool.html`, the copy in `builds/the-sand-table/`.
 - `build_sand_guide.py` and `build_desk.py` write the build guide and the desk test. The desk test goes straight into `builds/the-sand-table/`.
+- `build_small.py` writes the small-versions document (Tier 1 and Tier 2) into `builds/the-sand-table/`; print it with `make-pdf.js`.
+- `test_plate.py` checks the kitchen-table plate sound (`software/plate.py`) without a sound card.
 - `test_meter.py` checks the meter in `builds/the-sand-table/software/` against a fake model server.
 
 ## Reel and teaser

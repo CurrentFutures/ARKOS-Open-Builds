@@ -61,6 +61,7 @@ S.append('''
 <div class="timeline"><div><b>Week 1</b>Desk test. Decide the plate size and driver.</div><div><b>Weeks 2–3</b>Order parts. Set up the Mac and agent box. Write files.</div><div><b>Weeks 3–5</b>Mold and cast the body. Woodworker makes the tray.</div><div><b>Weeks 5–6</b>Controller on the bench. Cure and seal the body.</div><div><b>Weeks 7–8</b>Fit out tray and body. Assemble.</div><div><b>Week 9</b>Choose the figure. Tests.</div></div>
 <h3>Tools</h3>
 <ul><li>Soldering iron, wire strippers, multimeter, heat-shrink.</li><li>Drill with metal bits; M5 and M6 taps; files.</li><li>A laptop with the Arduino IDE, and a USB cable for the Pico.</li><li>For the body: saw for melamine, clamps, bucket and paddle mixer, scale, level, gloves, eye protection, dust mask.</li><li>Ear protection and a phone sound-meter app for the plate tests.</li></ul>
+<div class="tip"><b>Want something smaller first?</b> <code>the-sand-table-small-versions.pdf</code> has two cheaper versions that keep the core: a kitchen-table one (one computer plays the plate) and an honest one (the agent on its own Raspberry Pi, a one-way wire to the plate). Each says plainly what it gives up.</div>
 <div class="warn"><b>Sand:</b> use the round glass microbeads only. Fine silica sand can carry dust that's harmful to breathe; don't use it, even for the test. Keep the bead bag closed and away from small children.</div>
 <div class="warn"><b>Mains:</b> the only mains parts are factory-made: the Mac, the power strip, and the enclosed 24 V supply. Don't open them. Everything you wire yourself is 24 V or less.</div>
 <div class="warn"><b>Wet concrete is caustic:</b> gloves and eye protection when mixing and casting.</div>
@@ -102,7 +103,7 @@ S.append(f'''
 {fig(D.system(), 'Not to scale. Three machines, three jobs. Blue: network. Red: the one-way wire.')}
 <ol class="steps">
 <li><b>Set up the Mac as the measurer.</b> Follow <code>MAC-SETUP.txt</code>: a standard account called <i>meter</i> that owns the model and the meter; no account for the agent; Wi-Fi, Bluetooth and every kind of sharing off; one cable to the agent box with a fixed address; llama.cpp installed with Homebrew; both programs started at boot as the meter's user; the firewall that lets the agent box reach the meter's port and nothing else.</li>
-<li><b>Check the model gives word probabilities.</b> The setup sheet has a one-line test. If it fails, update llama.cpp before going further: without probabilities the meter has nothing to measure. (The meter asks for OpenAI-style <code>logprobs</code>, which llama-server supports in recent versions.)</li>
+<li><b>Check the model gives word probabilities.</b> The setup sheet has a one-line test. If it fails, update llama.cpp before going further: without probabilities the meter has nothing to measure. (The meter asks for OpenAI-style <code>logprobs</code>, which llama-server supports in recent versions.) The meter also sets every sampling setting itself and takes only the conversation, the tools and a length limit from the agent, so the agent can't sharpen the probabilities it is measured by.</li>
 <li><b>Set up the agent box.</b> Follow <code>AGENT-BOX-SETUP.txt</code>: Raspberry Pi OS Lite; Wi-Fi and Bluetooth switched off in its boot settings; the built-in Ethernet to the Mac and a USB Ethernet adapter to the key's network switch; the agent in its own account without admin rights, pointed at <code>http://10.77.0.1:8080/v1</code> with streaming off.</li>
 <li><b>Make the one-way wire.</b>
 {fig(D.wire(), 'Cut the receive wire, insulate both ends, and trim the far end so it can never be reconnected by accident.', 'sm')}
@@ -180,6 +181,7 @@ S.append('''
 <div class="tbl"><table><thead><tr><th>Test</th><th>How</th><th>Pass</th></tr></thead><tbody>
 <tr><td>Separation</td><td>From the agent box: the meter's port; the model's port; SSH; file sharing.</td><td>Only the meter answers.</td></tr>
 <tr><td>Key</td><td>SEALED, ONLINE, ACT; ping out and run act-allowed in each.</td><td>No internet in SEALED; act-allowed says yes only in ACT; telltales match.</td></tr>
+<tr><td>Agent can't shape the reading</td><td>On any computer with Python, run <code>tools/sandguide/test_meter.py</code>.</td><td>It ends with OK: a request carrying the agent's own temperature, logit bias or grammar reaches the model exactly like a plain one, with the same verdict.</td></tr>
 <tr><td>Probabilities hidden</td><td>Look at a reply on the agent box.</td><td>No logprobs in it.</td></tr>
 <tr><td>Range</td><td>Ask the agent something trivial, then something it can't know.</td><td>The first comes out crisp; the second visibly smeared.</td></tr>
 <tr><td>Counters</td><td>Ten tasks.</td><td>TASKS went up by ten; UNSETTLED by the number below 50.</td></tr>
@@ -193,7 +195,8 @@ S.append('''
 <h2>13 · Living with it</h2>
 <ul>
 <li><b>The counters</b> are the long record: over months, unsettled ÷ tasks is an honest picture of how the agent does in your house. They can't be reset; that's the point.</li>
-<li><b>The log</b> is in the meter's home folder on the Mac (<code>sandtable-log.csv</code>). Now and then, mark in its last column whether tasks were actually right. That's the start of calibration.</li>
+<li><b>The log</b> is in the meter's home folder on the Mac (<code>sandtable-log.csv</code>). Now and then, mark in its last column whether tasks were actually right. That's the start of calibration. Also watch the <code>tool_calls</code> column: the fixed parts of a tool call are forced by its format, so if tool-heavy tasks come out crisper than they deserve, note it.</li>
+<li><b>Updates</b> to the Mac follow step 9 of <code>MAC-SETUP.txt</code>: the agent box is unplugged before the firewall goes off, and plugged back in only after it's on again.</li>
 <li><b>Sand:</b> brush what's in the dish back onto the plate every few weeks; top up from the bag.</li>
 <li><b>Brass:</b> unlacquered, it darkens over a few years; the key, handled daily, stays bright. Wipe with a dry cloth only.</li>
 <li><b>The key</b> stays in SEALED unless the agent needs the web; ACT only when you mean it.</li>

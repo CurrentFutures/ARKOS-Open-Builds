@@ -9,6 +9,7 @@
   </array>
   <key>EnvironmentVariables</key><dict>
     <key>SANDTABLE_SERIAL</key><string>/dev/cu.usbserial-0001</string>
+    <key>PYTHONPATH</key><string>/Users/meter/lib</string>
   </dict>
   <key>RunAtLoad</key><true/>
   <key>KeepAlive</key><true/>

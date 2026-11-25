@@ -1,0 +1,158 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Sand Table, Small Versions</title><style>
+:root{--paper:#f6f2ea;--card:#fffdf8;--ink:#1f1b16;--dim:#5e564c;--line:#d9d1c3;--accent:#8a6a2c;--warn:#9a3b1f;--warnbg:#f8e9df;--tip:#eef1e7;
+ --part:#1f1b16;--fillA:#e6e0d4;--fillB:#cfd8d6;--fillC:#c9bfae;--glass:#bfe3dc;--led:#e7b552;--mains:#b4442a;--earth:#2f7d3b;--dc:#1f1b16;--data:#2d5f9a;
+ --display:Georgia,"Times New Roman",serif;--body:"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#171513;--card:#201d1a;--ink:#ece6dc;--dim:#a99f92;--line:#3a342d;--accent:#d8b36a;--warn:#f0a585;--warnbg:#3a231a;--tip:#232a20;
+ --part:#ece6dc;--fillA:#2f2b26;--fillB:#2b3836;--fillC:#3d362d;--glass:#2c5a52;--led:#c99a3a;--mains:#e0755a;--earth:#69b878;--dc:#ece6dc;--data:#7fa9df;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#171513;--card:#201d1a;--ink:#ece6dc;--dim:#a99f92;--line:#3a342d;--accent:#d8b36a;--warn:#f0a585;--warnbg:#3a231a;--tip:#232a20;
+ --part:#ece6dc;--fillA:#2f2b26;--fillB:#2b3836;--fillC:#3d362d;--glass:#2c5a52;--led:#c99a3a;--mains:#e0755a;--earth:#69b878;--dc:#ece6dc;--data:#7fa9df;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:900px;margin:0 auto;padding:40px max(16px,env(safe-area-inset-left,0px)) 80px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.02;margin:6px 0 14px;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:1.75rem;margin:56px 0 6px;padding-top:14px;border-top:2px solid var(--ink);text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:1.2rem;margin:30px 0 6px}
+p,li{max-width:70ch}p{margin:8px 0}
+.eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.lede{font-size:1.1rem;color:var(--dim)}
+a{color:var(--accent);text-underline-offset:3px;word-break:break-word}
+code,kbd,.mono{font-family:var(--mono);font-size:.86em}
+pre{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 14px;overflow-x:auto;font-size:.82rem;line-height:1.45;max-width:100%}
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin:20px 0}
+.hero img{width:100%;border-radius:6px;display:block;background:#111}
+.facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:18px 0}
+.facts div{background:var(--card);padding:10px 12px}.facts b{display:block;font-family:var(--display);font-size:1.25rem;font-weight:600}.facts span{font-size:.8rem;color:var(--dim)}
+main{counter-reset:st}ol.steps{list-style:none;padding:0;margin:0}
+ol.steps>li{counter-increment:st;position:relative;padding:14px 0 14px 52px;border-top:1px solid var(--line);max-width:none}
+ol.steps>li::before{content:counter(st);position:absolute;left:0;top:14px;width:36px;height:36px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font-family:var(--display);font-weight:600}
+ol.steps>li>b:first-child{font-family:var(--display);font-size:1.08rem}
+ol.sub{margin:6px 0;padding-left:1.2em}ol.sub li{margin:4px 0}
+.timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:14px 0;font-size:.78rem}
+.timeline div{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:6px 8px}.timeline b{display:block;font-size:.85rem}
+.warn,.tip,.check{border-radius:0 6px 6px 0;padding:10px 14px;margin:12px 0;font-size:.94rem;max-width:72ch}
+.warn{background:var(--warnbg);border-left:4px solid var(--warn)}.warn b:first-child{color:var(--warn)}
+.tip{background:var(--tip);border-left:4px solid var(--earth)}
+.check{background:var(--card);border-left:4px solid var(--accent)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px;margin:12px 0;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{text-align:left;vertical-align:top;padding:7px 10px;border-top:1px solid var(--line)}
+thead th{border-top:0;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);font-weight:500}
+td.n{white-space:nowrap;font-variant-numeric:tabular-nums}
+tr.g td{background:var(--paper);font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.ok{color:var(--earth);font-weight:700}
+figure.dg{margin:16px 0;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px}
+figure.dg svg{width:100%;height:auto;display:block;max-height:440px}
+figure.dg.sm svg{max-height:300px}
+figcaption{font-size:.82rem;color:var(--dim);margin-top:6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.photo{margin:14px 0}.photo img{width:100%;border-radius:6px;display:block;background:#111}
+.toc{columns:2;gap:28px;padding-left:1.2em;font-size:.95rem}
+svg .part,svg .plate{fill:var(--fillA);stroke:var(--part);stroke-width:1}
+svg .conc{fill:var(--fillC);stroke:var(--part);stroke-width:1}
+svg .hole,svg .csk{fill:var(--paper);stroke:var(--part);stroke-width:.8}svg .csk{stroke-dasharray:2 1}
+svg .hole2,svg .win,svg .cut{fill:var(--paper);stroke:var(--part);stroke-width:.9}
+svg .win{fill:var(--glass)}
+svg .slot{fill:var(--paper);stroke:var(--part);stroke-width:.6}
+svg .band{fill:var(--paper);stroke:none;opacity:.85}svg .fade{stroke:var(--dim);stroke-dasharray:3 2;fill:none;stroke-width:.6}
+svg .ps{fill:var(--fillB);stroke:var(--part);stroke-width:.5}svg .pw{fill:var(--glass);stroke:var(--part);stroke-width:.5}
+svg .ring{fill:var(--paper);stroke:var(--part);stroke-width:.5}
+svg .rod{stroke:var(--part);stroke-width:1.6}svg .nut{fill:var(--fillC);stroke:var(--part);stroke-width:.7}
+svg .led{fill:var(--led);opacity:.75;stroke:none}svg .pc{fill:none;stroke:var(--dim);stroke-dasharray:4 3}
+svg .zone{fill:var(--glass);opacity:.35;stroke:none}
+svg .air,svg .vault,svg .void{fill:var(--paper);stroke:var(--part);stroke-width:.8}
+svg .gasket{fill:var(--ink)}svg .lid,svg .bp{fill:var(--fillB);stroke:var(--part);stroke-width:.6}
+svg .psu,svg .ctl,svg .inl{fill:var(--fillB);stroke:var(--part);stroke-width:.8}svg .btn{fill:var(--led);stroke:var(--part);stroke-width:.6}
+svg .sled{fill:none;stroke:var(--part);stroke-width:1;stroke-dasharray:5 3}svg .felt{fill:var(--ink);opacity:.75}
+svg .mold{fill:var(--fillA);stroke:var(--part);stroke-width:1}svg .core,svg .core2{fill:var(--glass);stroke:var(--part);stroke-width:.8}
+svg .insert{fill:var(--ink)}svg .bolt{stroke:var(--part);stroke-width:2}svg .ledge{fill:var(--ink)}
+svg .frame{fill:var(--fillA);stroke:var(--part)}svg .drive{fill:var(--fillB);stroke:var(--part);stroke-width:.8}svg .cord{stroke:var(--ink);stroke-width:.8}svg .run{fill:var(--ink)}
+svg .blk{fill:var(--card);stroke:var(--part);stroke-width:1}svg .mains{fill:var(--warnbg);stroke:var(--mains);stroke-width:1.4}
+svg .acw{stroke:var(--mains);stroke-width:2}svg .earth{stroke:var(--earth);stroke-width:2}svg .dc{stroke:var(--dc);stroke-width:1.6}
+svg .usb{stroke:var(--data);stroke-width:1.6;fill:none}svg .sig{stroke:var(--data);stroke-width:1.2;stroke-dasharray:4 2}
+svg .thin{stroke:var(--part);stroke-width:.6}svg .dim{stroke:var(--dim);stroke-width:.6}svg .arh{fill:var(--dim)}
+svg .ldr{stroke:var(--dim);stroke-width:.5}svg .dot{fill:var(--dim)}
+svg text{fill:var(--ink);font-family:var(--body)}svg .s{font-size:7px;fill:var(--dim)}svg .d{font-size:7.5px;fill:var(--dim);font-family:var(--mono)}svg .m{font-size:8.5px;font-weight:600}
+@media (max-width:700px){.hero,.two{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:1fr 1fr 1fr}.toc{columns:1}}
+@media print{:root{--paper:#fff;--card:#fff}body{font-size:10.5pt}.wrap{max-width:none;padding:0}h2{break-before:page;margin-top:0}figure,table,.warn,.tip,.check,ol.steps>li{break-inside:avoid}a{color:var(--ink)}}
+
+.decide{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--card)}
+.decide div{padding:9px 12px;border-top:1px solid var(--line)}.decide div:nth-child(-n+2){border-top:0}.decide div:nth-child(odd){color:var(--dim);font-size:.9rem}
+.placard{border:2px solid var(--ink);border-radius:4px;padding:18px 22px;margin:14px 0;break-inside:avoid;font-family:Georgia,serif;max-width:34em}
+.placard h4{margin:12px 0 2px;font-size:1.02rem}.placard h4:first-child{margin-top:0}.placard p{margin:0}
+.placard .tier{font-family:inherit;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+table.cmp td:first-child{color:var(--dim);white-space:nowrap}
+h2{break-before:auto;margin-top:28px}h2.pg{break-before:page;margin-top:0}
+ol.steps{counter-reset:st}
+</style></head><body><main class="wrap">
+<span class="eyebrow">The Sand Table · smaller versions</span>
+<h1>The Sand Table, Small Versions</h1>
+<p class="lede">The desk test already holds the core of the object: a brass plate, a driver, an amplifier and beads, plus a computer that turns a number into a settled or smeared figure. Everything else in the full build exists to make it beautiful, permanent and hard to tamper with. These versions keep the core and say plainly what they give up.</p>
+<div class="facts"><div><b>Tier 1</b><span>kitchen table, about $120–220</span></div><div><b>Tier 2</b><span>honest version, about $300–500</span></div><div><b>One afternoon</b><span>for Tier 1, in a workshop</span></div><div><b>Plus</b><span>a computer you already own</span></div></div>
+
+<h2>What every version keeps</h2>
+<ul>
+<li><b>The figure:</b> crisp means settled, smeared means unsettled. The sound and the figure are the same vibration.</li>
+<li><b>Measured, not reported:</b> the number comes from the model's own word probabilities, never from the agent describing itself.</li>
+<li><b>The worst moment counts:</b> one torn step in a task can't hide inside a confident answer.</li>
+<li><b>Settled isn't right:</b> the figure shows how the model behaved, not whether its work was correct. The log has a column to mark that.</li>
+</ul>
+
+<h2 class="pg">The three versions side by side</h2>
+<div class="tbl"><table class="cmp"><thead><tr><th></th><th>Tier 1 · Kitchen table</th><th>Tier 2 · Honest version</th><th>Full build</th></tr></thead><tbody>
+<tr><td>Parts</td><td>About $120–220</td><td>About $300–500</td><td>Several thousand, with the Mac</td></tr>
+<tr><td>Computers</td><td>One you own runs everything</td><td>One you own for the model and meter; a Raspberry Pi for the agent</td><td>A Mac that does nothing else, and a Pi</td></tr>
+<tr><td>Plays the plate</td><td>The computer, through a USB sound adapter</td><td>A Pico controller, down a one-way wire</td><td>The same controller</td></tr>
+<tr><td>Agent can't reach the meter</td><td>A software promise</td><td>Physical: one cable, one port</td><td>Physical, on a dedicated machine</td></tr>
+<tr><td>Loudness ceiling</td><td>Amplifier knob and a setting on the computer</td><td>Amplifier knob and the controller's firmware</td><td>The same</td></tr>
+<tr><td>Long record</td><td>The log</td><td>The log and two counters</td><td>The same, in brass and walnut</td></tr>
+<tr><td>Agent online or acting</td><td>However you set it up</td><td>Never: the Pi has no internet</td><td>Only by the key</td></tr>
+<tr><td>Who it's for</td><td>Classrooms, workshops, conference booths</td><td>Makers, labs, a longer installation</td><td>A home, a gallery</td></tr>
+</tbody></table></div>
+
+<h2>Start with the desk test</h2>
+<p>Both versions begin with the desk test (<b>the-sand-table-desk-test.pdf</b>): the same plate, amplifier and beads. It answers the question these versions depend on most: does your driver make clean figures, and does added noise visibly smear them? If you're choosing between the two cheap drivers below, test both.</p>
+
+<h2 class="pg">Tier 1 · The kitchen table</h2>
+<p>One computer runs the model, the meter and the agent. There's no controller: the meter plays each verdict to the plate itself, with the same sound the controller makes. Setup steps: <code>software/KITCHEN-TABLE-SETUP.txt</code>.</p>
+<div class="tbl"><table><thead><tr><th>Part</th><th>What to get</th><th>Qty</th><th>Where</th><th>Rough cost</th></tr></thead><tbody><tr><td>Brass plate</td><td>C260 brass, 1 mm, a 30 cm square with a 6.5 mm centre hole, edges deburred.</td><td class="n">1</td><td><a href="https://www.google.com/search?q=C260+brass+sheet+1mm+cut+to+size">search</a></td><td class="n">$25–50</td></tr><tr><td>Driver, option A</td><td>A 6.5" woofer with a rod from the centre of its cone to the plate's centre hole: the method most home-made Chladni plates use.</td><td class="n">1</td><td><span class=ok>✓</span> <a href="https://www.instructables.com/Easy-Chladni-Plate">Instructables: Easy Chladni Plate</a></td><td class="n">$20–40</td></tr><tr><td>Driver, option B</td><td>A small bass shaker (Dayton Audio TT25-8). Cheap, but rated for 20–80 Hz, below where most figures form: the desk test decides.</td><td class="n">1</td><td><span class=ok>✓</span> <a href="https://www.daytonaudio.com/product/1104/tt25-8-puck-tactile-transducer-mini-bass-shaker">Dayton Audio</a></td><td class="n">$25–30</td></tr><tr><td>Amplifier</td><td>Small class-D board, 2 × 50 W (TPA3116 type), with a 24 V supply.</td><td class="n">1</td><td><a href="https://www.google.com/search?q=TPA3116+amplifier+board+24V">search</a></td><td class="n">$25–45</td></tr><tr><td>USB sound adapter</td><td>Any small USB audio adapter with a headphone out. Used for the plate and nothing else.</td><td class="n">1</td><td><a href="https://www.google.com/search?q=USB+audio+adapter+headphone+out">search</a></td><td class="n">$8–15</td></tr><tr><td>Cable</td><td>3.5 mm to RCA, from the adapter to the amplifier.</td><td class="n">1</td><td><a href="https://www.google.com/search?q=3.5mm+to+RCA+cable">search</a></td><td class="n">$5–10</td></tr><tr><td>Glass microbeads</td><td>Round glass beads about 100–200 micrometres (sold as glass-bead blasting media, around #10–#11; check the supplier&#x27;s sieve range). 1 kg. No silica sand: fine silica dust is harmful to breathe.</td><td class="n">500 g</td><td><span class=ok>✓</span> <a href="https://www.mcmaster.com/products/blasting-media/">McMaster-Carr blasting media</a></td><td class="n">$15–30</td></tr><tr><td>Tray</td><td>A deep picture frame with its glass (a box frame), or a shallow wooden frame on a board, to catch the beads and keep dust off.</td><td class="n">1</td><td>craft or hardware store</td><td class="n">$10–30</td></tr><tr><td>Odds</td><td>M6 bolt with rubber and nylon washers, ear protection, a phone sound-meter app.</td><td class="n"></td><td>hardware store</td><td class="n">$10–20</td></tr></tbody></table></div>
+<p>A <span class="ok">✓</span> means the link was checked. Everything else is a search, because the right listing changes from week to week.</p>
+<ol class="steps">
+<li><b>Set up the plate</b> as in the desk test, in its tray. Run the USB sound adapter into the amplifier, with the amplifier turned all the way down.</li>
+<li><b>Install a model you run yourself</b> with llama.cpp. A small one that supports tool calls is enough. Most hosted AI services don't share word probabilities, so the table can't read them.</li>
+<li><b>Choose your figure</b> with <code>python3 plate.py sweep</code>, or save the note your desk test found. Set the amplifier so a test verdict forms the figure in about 3 seconds.</li>
+<li><b>Start the meter</b> in audio mode and point the agent at it, never at the model directly.</li>
+<li><b>Give the agent a task.</b> When it finishes, the plate plays the verdict.</li>
+</ol>
+<div class="warn"><b>What Tier 1 gives up: isolation.</b> The agent, the model and the meter share one computer, so "the agent can't reach the meter" is a software promise, not a physical one. Anything on that computer could read the meter's numbers, call the model directly, or play sounds of its own. There are no counters, and the loudness ceiling is a setting on the computer plus the amplifier's knob. That's fine for a demo, as long as the placard says so.</div>
+
+<h2 class="pg">Tier 2 · The honest version</h2>
+<p>Everything in Tier 1, plus the parts that make the honesty claim physical: the agent lives on a Raspberry Pi whose only way to the meter is one cable, and the plate is played by a controller that listens down a one-way wire and can't talk back. Setup steps: <code>software/HONEST-VERSION-SETUP.txt</code>.</p>
+<div class="tbl"><table><thead><tr><th>Part</th><th>What to get</th><th>Qty</th><th>Where</th><th>Rough cost</th></tr></thead><tbody><tr><td>Agent box</td><td>Raspberry Pi 5 (4 GB is enough), its 27 W USB-C supply, a 32 GB microSD card.</td><td class="n">1</td><td><a href="https://www.raspberrypi.com/products/raspberry-pi-5/">Raspberry Pi</a></td><td class="n">$85–120</td></tr><tr><td>Network</td><td>A USB Ethernet adapter for your computer (most laptops have no Ethernet port) and a short Ethernet cable.</td><td class="n">1</td><td><a href="https://www.google.com/search?q=USB+C+gigabit+ethernet+adapter">search</a></td><td class="n">$15–30</td></tr><tr><td>Controller</td><td>Raspberry Pi Pico (the plain one, not the Pico W: no radio), with headers.</td><td class="n">1</td><td><a href="https://www.raspberrypi.com/products/raspberry-pi-pico/">Raspberry Pi</a></td><td class="n">$5–8</td></tr><tr><td>DAC</td><td>PCM5102A I2S DAC board.</td><td class="n">1</td><td><a href="https://www.google.com/search?q=PCM5102A+I2S+DAC+board">search</a></td><td class="n">$8–12</td></tr><tr><td>One-way wire</td><td>USB to 3.3 V TTL serial cable (FTDI TTL-232R-3V3 or similar). You cut its receive wire.</td><td class="n">1</td><td><a href="https://www.google.com/search?q=FTDI+TTL-232R-3V3">search</a></td><td class="n">$15–25</td></tr><tr><td>Counters</td><td>Two electromechanical counters, non-resettable, 24 V DC, 5 or 6 digits. One counts tasks, one counts unsettled tasks.</td><td class="n">2</td><td><a href="https://www.google.com/search?q=electromagnetic+counter+24V+DC+non-resettable+5+digit">search</a></td><td class="n">$10–25 each</td></tr><tr><td>Board parts</td><td>Two logic-level MOSFETs (IRLZ44N or similar), two 1N4007 diodes, a 24 to 5 V buck module, perfboard, screw terminals.</td><td class="n"></td><td><a href="https://www.google.com/search?q=IRLZ44N+MOSFET+1N4007+diode+kit">search</a></td><td class="n">$10–20</td></tr></tbody></table></div>
+<ol class="steps">
+<li><b>Give the meter its own account</b> on your computer (macOS or Linux), owning the model and the meter. Your computer keeps its Wi-Fi and its everyday use.</li>
+<li><b>Run one cable</b> from your computer to the Pi, and switch on the firewall that locks down only that cable: the agent can reach the meter's one port, and nothing else, in either direction.</li>
+<li><b>Set up the Pi</b> with its Wi-Fi and Bluetooth off and the agent in an account without admin rights. It has no internet.</li>
+<li><b>Build the controller</b> with the full build's firmware: the Pico, the sound board, two counters and the one-way wire. The light and telltale pins stay unconnected.</li>
+<li><b>Check the separation</b> from the Pi: the meter answers; the model, SSH and the internet don't.</li>
+</ol>
+<div class="warn"><b>What Tier 2 gives up.</b> The meter shares a computer with your everyday life, so that computer's security is only as good as its settings. There's no key: the agent never goes online or acts in the world. No lights and no case. The isolation itself is real: the agent's only path is one cable, and the table can't talk back.</div>
+
+<h2>Running it as a workshop</h2>
+<ul>
+<li><b>Do the desk test once beforehand,</b> with the exact plate and driver everyone will use, and write down the notes that make clean figures. Then nobody has to sweep: each table saves a known note with <code>plate.py save</code>.</li>
+<li><b>Prepare the software in advance:</b> llama.cpp, a small model, and the software folder on each laptop. Downloads are the slowest part of the afternoon.</li>
+<li><b>A rough afternoon:</b> 30 minutes for the plate and tray, 30 for the software, 15 to save the note and set the loudness, then the rest giving the agent easy and impossible tasks and watching the difference.</li>
+<li><b>Safety:</b> glass microbeads only, never silica sand. Keep the bags closed and away from small children. Ear protection while setting the loudness. Start every amplifier turned all the way down.</li>
+</ul>
+
+<h2 class="pg">Placards</h2>
+<p>Print the one for your version and put it beside the plate. Saying plainly what the object can't do is part of the object.</p>
+<div class="placard"><span class="tier">Tier 1 · Kitchen table</span>
+<h4>What you're seeing</h4><p>How settled an AI agent was at its shakiest moment in its last task. A crisp figure: settled. A smeared figure: unsettled.</p>
+<h4>What it can't tell you</h4><p>Whether the work was right. Settled is not the same as correct.</p>
+<h4>What this version gives up</h4><p>The agent, the model and the meter share one computer. That the agent can't reach the meter is a software promise here, not a physical one.</p></div>
+<div class="placard"><span class="tier">Tier 2 · Honest version</span>
+<h4>What you're seeing</h4><p>How settled an AI agent was at its shakiest moment in its last task. A crisp figure: settled. A smeared figure: unsettled.</p>
+<h4>What it can't tell you</h4><p>Whether the work was right. Settled is not the same as correct.</p>
+<h4>Why it can't be faked</h4><p>The agent runs on its own small computer and reaches the model only through the meter, over one cable. The table hears the result down a one-way wire and can't talk back.</p></div>
+</main></body></html>

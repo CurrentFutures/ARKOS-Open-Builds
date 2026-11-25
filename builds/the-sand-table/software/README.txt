@@ -19,6 +19,13 @@ Files
   sandtable-controller/            firmware for the Pico (Arduino IDE)
   MAC-SETUP.txt, AGENT-BOX-SETUP.txt, CONTROLLER-SETUP.txt   step by step
 
+Smaller versions (the-sand-table-small-versions.pdf)
+  KITCHEN-TABLE-SETUP.txt          Tier 1: one computer, no controller; the meter plays the plate
+  plate.py                         Tier 1: the plate's sound from the computer, and the setup sweep
+  HONEST-VERSION-SETUP.txt         Tier 2: the agent on a Raspberry Pi, your own computer as the meter
+  mac/pf-sandtable-link-only.conf  Tier 2: firewall for the cable only, on a Mac you also use daily
+  linux/                           Tier 2: the same firewall and the start-up files for Linux
+
 The number
   For every reply the model gives (a tool call or an answer), the meter looks at the
   shakiest 10% of its words: how spread the model's probability was over its top 10
@@ -30,5 +37,14 @@ The number
   column for a person to mark whether each task was actually right; over months that
   shows what a crisp figure is worth in your house.
 
+  The agent can't shape what's measured. The meter takes only the conversation, the
+  tools and a length limit from the agent's request, and sets every sampling setting
+  itself (temperature, logit bias, grammar and format are dropped).
+
+  Worth watching: the fixed parts of a tool call (its brackets and field names) are
+  forced by the format, so they read as very settled. The shakiest-10% rule mostly
+  handles that, but check the log's tool_calls column: if tool-heavy tasks come out
+  crisper than they deserve, that's a calibration finding.
+
 Not tested on hardware yet: the meter was tested against a stand-in model server;
-the firmware has not been compiled. Do both on the bench (guide, section 8).
+the firmware has not been compiled. Do both on the bench (guide, section 7).

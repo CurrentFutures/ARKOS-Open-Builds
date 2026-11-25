@@ -1,0 +1,14 @@
+# The meter: the only door from the agent box to the model. Copy to /etc/systemd/system/.
+[Unit]
+Description=Sand Table meter
+After=network-online.target sandtable-model.service
+
+[Service]
+User=meter
+Environment=SANDTABLE_SERIAL=/dev/ttyUSB0
+Environment=PYTHONPATH=/home/meter/lib
+ExecStart=/usr/bin/python3 /home/meter/meter.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

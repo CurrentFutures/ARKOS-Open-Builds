@@ -1,0 +1,28 @@
+#!/usr/sbin/nft -f
+# Sand Table firewall for the honest version (Tier 2) on Linux.
+# It locks down only the cable to the agent box; the computer's other networks are untouched.
+# Set LINK to the port wired to the agent box (see: ip link), then:
+#   sudo cp sandtable.nft /etc/nftables.d/ (or include it from /etc/nftables.conf)
+#   sudo nft -f /etc/nftables.d/sandtable.nft
+define LINK = "eth1"
+define AGENT = 10.77.0.2
+
+table inet sandtable
+delete table inet sandtable
+table inet sandtable {
+  chain input {
+    type filter hook input priority -10; policy accept;
+    iifname $LINK ip saddr $AGENT tcp dport 8080 ct state new,established accept
+    iifname $LINK drop
+  }
+  chain output {
+    type filter hook output priority -10; policy accept;
+    oifname $LINK ct state established accept
+    oifname $LINK drop
+  }
+  chain forward {
+    type filter hook forward priority -10; policy accept;
+    iifname $LINK drop
+    oifname $LINK drop
+  }
+}

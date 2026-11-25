@@ -11,12 +11,14 @@ def top(ps):  # top_logprobs for one word
     return [{"token": "t%d" % i, "logprob": math.log(p)} for i, p in enumerate(ps)]
 
 SCRIPT = []   # replies the fake model gives, in order
+SEEN = []     # requests the fake model received, exactly
 class Fake(BaseHTTPRequestHandler):
     def log_message(self, *a): pass
     def do_GET(self):
         self.send_response(200); self.send_header("Content-Length", "2"); self.end_headers(); self.wfile.write(b"{}")
     def do_POST(self):
         req = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+        SEEN.append(req)
         assert req["logprobs"] is True and req["top_logprobs"] == 10 and req["stream"] is False
         words, tool = SCRIPT.pop(0)
         msg = {"role": "assistant", "content": "x"}
@@ -30,9 +32,10 @@ fake = ThreadingHTTPServer(("127.0.0.1", 0), Fake); threading.Thread(target=fake
 meter.MODEL_URL = "http://127.0.0.1:%d" % fake.server_port
 srv = ThreadingHTTPServer(("127.0.0.1", 0), meter.Handler); threading.Thread(target=srv.serve_forever, daemon=True).start()
 
-def ask():
+def ask(**extra):
+    body = dict({"messages": [{"role": "user", "content": "hi"}], "stream": True}, **extra)
     r = urllib.request.Request("http://127.0.0.1:%d/v1/chat/completions" % srv.server_port,
-        data=json.dumps({"messages": [{"role": "user", "content": "hi"}], "stream": True}).encode(),
+        data=json.dumps(body).encode(),
         headers={"Content-Type": "application/json"})
     return json.loads(urllib.request.urlopen(r).read())
 
@@ -50,6 +53,22 @@ print("sent:", sent)
 print("verdicts:", v)
 assert len(v) == 2 and int(v[0][1:]) > 85 and int(v[1][1:]) < int(v[0][1:]) - 20, v
 print(open(meter.LOG_PATH).read())
+# the agent can't shape what's measured: the same task sent with its own sampling settings
+# reaches the model exactly as a plain one does, and gives the same verdict
+TRICKS = {"temperature": 0.05, "logit_bias": {"15": 100}, "grammar": "root ::= \"yes\"", "top_k": 1,
+          "response_format": {"type": "json_object"}, "n_probs": 1, "post_sampling_probs": True}
+SEEN.clear(); SCRIPT += [([sure] * 36 + [torn] * 4, True), ([sure] * 40, False)]
+ask(); ask()
+plain = list(SEEN); SEEN.clear(); SCRIPT += [([sure] * 36 + [torn] * 4, True), ([sure] * 40, False)]
+ask(**TRICKS); ask(**TRICKS)
+assert SEEN == plain, ("agent settings reached the model", SEEN[0], plain[0])
+assert SEEN[0]["temperature"] == meter.SAMPLING["temperature"] and SEEN[0]["post_sampling_probs"] is False
+assert "logit_bias" not in SEEN[0] and "grammar" not in SEEN[0] and "response_format" not in SEEN[0]
+v = [s for s in sent if s.startswith("V")]
+assert len(v) == 4 and v[2] == v[3], v
+print("agent's own sampling settings ignored; verdicts", v[2], v[3])
+SCRIPT.append(([sure] * 40, False)); ask(max_tokens=10 ** 9)
+assert SEEN[-1]["max_tokens"] == meter.MAX_TOKENS, "a length limit is capped"
 # unknown paths are refused
 try:
     urllib.request.urlopen(urllib.request.Request("http://127.0.0.1:%d/props" % srv.server_port, data=b"{}"))
