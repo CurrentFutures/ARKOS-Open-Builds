@@ -20,7 +20,7 @@ What it does, in order:
 
 It is arithmetic only. No second model, nothing that reads the meaning of the text.
 
-Needs: Python 3.9+, and pyserial (pip install pyserial).
+Needs: Python 3.9+, and pyserial, installed where the start-up file looks (MAC-SETUP.txt, step 5).
 """
 import csv, json, math, os, sys, threading, time, urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -34,6 +34,15 @@ BAUD        = 9600
 TOP_K       = 10                     # alternatives per word the meter looks at
 SHAKY_SHARE = 0.10                   # a decision's score = mean of its shakiest 10% of words
 TASK_IDLE_S = 120                    # no model request for this long also ends a task
+MAX_TOKENS  = 8192                   # the longest reply the agent may ask for
+# The only fields taken from the agent's request. Everything else it sends is dropped.
+AGENT_FIELDS = ("messages", "tools", "tool_choice", "max_tokens")
+# How the model runs, set by the meter on every request so the agent can't sharpen the
+# probabilities it is measured by (no temperature, logit bias, grammar or format of its own).
+# These are llama-server's usual defaults, written out. post_sampling_probs False asks for
+# the model's own probabilities, before any sampling step.
+SAMPLING = {"temperature": 0.8, "top_k": 40, "top_p": 0.95, "min_p": 0.05,
+            "post_sampling_probs": False}
 LOG_PATH    = os.path.expanduser("~/sandtable-log.csv")
 
 # ---------------------------------------------------------------- the one-way wire
@@ -149,7 +158,17 @@ class Handler(BaseHTTPRequestHandler):
             req = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))))
         except Exception:
             return self._reply(400, {"error": "bad json"})
-        # The meter decides how the model runs; the agent only sends the conversation.
+        if not isinstance(req, dict) or not isinstance(req.get("messages"), list):
+            return self._reply(400, {"error": "messages required"})
+        # The meter decides how the model runs. From the agent it takes only the conversation,
+        # the tools it may call and a length limit; all sampling settings are the meter's own.
+        req = {k: req[k] for k in AGENT_FIELDS if k in req}
+        if "max_tokens" in req:
+            try:
+                req["max_tokens"] = max(1, min(MAX_TOKENS, int(req["max_tokens"])))
+            except (TypeError, ValueError):
+                del req["max_tokens"]
+        req.update(SAMPLING)
         req["stream"] = False
         req["logprobs"] = True
         req["top_logprobs"] = TOP_K

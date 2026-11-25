@@ -20,7 +20,7 @@
   Pins (all 3.3 V logic):
     GP1   one-way wire in (UART0 RX). GP0 is NOT connected.
     GP20  I2S BCK   GP21 I2S LRCK   GP22 I2S DIN     -> PCM5102A DAC -> amplifier -> driver
-    GP10  TASKS counter     (through a logic-level MOSFET to the 12 V counter coil)
+    GP10  TASKS counter     (through a logic-level MOSFET to the 24 V counter coil)
     GP11  UNSETTLED counter (same)
     GP12  WORKING telltale LED      GP13 TOOL telltale LED
     GP14  gap light (MOSFET, PWM)   GP15 raking light (MOSFET, PWM)
@@ -31,7 +31,7 @@
 #include <EEPROM.h>
 
 // ------------------------------------------------------------ limits set at the desk test
-const float MAX_DRIVE   = 0.55f;   // fraction of full scale. Also cap the amplifier's own gain.
+const float MAX_DRIVE   = 0.30f;   // fraction of full scale: start here, raise to match your desk test. Also cap the amplifier's own gain.
 const float F_LO = 80.0f, F_HI = 1200.0f;
 const uint32_t RATE = 32000;
 
