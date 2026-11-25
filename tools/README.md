@@ -33,6 +33,15 @@ node make-pdf.js sand-build-guide.html sand-build-guide.pdf
 - `build_sand_guide.py` and `build_desk.py` write the build guide and the desk test. The desk test goes straight into `builds/the-sand-table/`.
 - `test_meter.py` checks the meter in `builds/the-sand-table/software/` against a fake model server.
 
+## The Lantern, glass block version
+
+```bash
+python3 lantern/build_glass_block.py
+node make-pdf.js ../builds/the-lantern/the-lantern-glass-block-version.html ../builds/the-lantern/the-lantern-glass-block-version.pdf
+```
+
+The script draws the plan and section to scale and writes the guide straight into `builds/the-lantern/`.
+
 ## Reel and teaser
 
 These need the Lantern and Sand Table steps above to have run first. They render on the CPU, which is slow: about 2 to 5 seconds per frame at 1080p.
