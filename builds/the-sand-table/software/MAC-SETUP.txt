@@ -11,7 +11,7 @@ MAC STUDIO SETUP: the model and the meter, nothing else
    - System Settings > General > Sharing: everything off (File Sharing, Screen Sharing,
      Remote Login, Remote Management, Media Sharing, AirPlay Receiver).
    - The Mac has one network cable: to the agent box. It has no internet in normal use.
-     For updates, plug it into your router by hand, update, unplug.
+     For updates, follow step 9: the firewall blocks them while it is on.
 
 3. The link to the agent box
    System Settings > Network > the Ethernet port wired to the agent box >
@@ -29,7 +29,11 @@ MAC STUDIO SETUP: the model and the meter, nothing else
    A number above 0 means it works. If it prints 0, update llama.cpp.
 
 5. Meter
-   pip3 install --user pyserial      (as meter)
+   Install pyserial into a fixed folder the meter's start-up file points to (as meter):
+     mkdir -p /Users/meter/lib
+     /usr/bin/python3 -m pip install --target /Users/meter/lib pyserial
+   Check it is found the way it will be at boot:
+     PYTHONPATH=/Users/meter/lib /usr/bin/python3 -c "import serial; print('ok')"
    Copy meter.py to /Users/meter/meter.py
    Plug in the USB-serial adapter (receive wire already cut) and find its name:
      ls /dev/cu.usbserial*
@@ -55,3 +59,14 @@ MAC STUDIO SETUP: the model and the meter, nothing else
      curl -s 10.77.0.1:8080/v1/models         -> works
      curl -s 10.77.0.1:8081/health            -> must fail (the model itself is unreachable)
      ssh 10.77.0.1                            -> must fail
+
+9. Updates (macOS, llama.cpp, the model)
+   The firewall blocks everything except the agent box's one port, updates included.
+   So the agent box is never connected while the firewall is off:
+     a. Unplug the agent box's cable from the Mac.
+     b. Switch the firewall off:  sudo pfctl -d
+     c. Plug the Mac into your router, update (Software Update; brew upgrade llama.cpp), unplug.
+     d. Check /etc/pf.conf still ends with the two sandtable lines from step 7 (updates can
+        replace it), then switch the firewall back on:  sudo pfctl -ef /etc/pf.conf
+     e. Check it is on:  sudo pfctl -s info | head -1   -> "Status: Enabled"
+     f. Plug the agent box back in, and run the checks in step 8.

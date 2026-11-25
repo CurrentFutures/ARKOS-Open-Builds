@@ -46,6 +46,8 @@ The front edge has a key (sealed, online, act), four telltales, and two counters
 - **Settled isn't the same as right.** The figure shows how the model behaved, not whether its work was correct. The meter's log has a column for a person to mark whether each task was actually right.
 - Loudness is the biggest livability question.
 - Whether the blur reads clearly from across a room is untested.
+- Tool calls may read too settled: their fixed parts (brackets, field names) are forced by the format. The shakiest-10% rule should handle it; the log's `tool_calls` column shows whether tool-heavy tasks come out crisper than they deserve.
+- The meter is tested against a stand-in model server, not yet a real one; the firmware hasn't been compiled yet.
 
 ## Feedback wanted
 

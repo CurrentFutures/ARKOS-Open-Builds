@@ -30,5 +30,14 @@ The number
   column for a person to mark whether each task was actually right; over months that
   shows what a crisp figure is worth in your house.
 
+  The agent can't shape what's measured. The meter takes only the conversation, the
+  tools and a length limit from the agent's request, and sets every sampling setting
+  itself (temperature, logit bias, grammar and format are dropped).
+
+  Worth watching: the fixed parts of a tool call (its brackets and field names) are
+  forced by the format, so they read as very settled. The shakiest-10% rule mostly
+  handles that, but check the log's tool_calls column: if tool-heavy tasks come out
+  crisper than they deserve, that's a calibration finding.
+
 Not tested on hardware yet: the meter was tested against a stand-in model server;
-the firmware has not been compiled. Do both on the bench (guide, section 8).
+the firmware has not been compiled. Do both on the bench (guide, section 7).
