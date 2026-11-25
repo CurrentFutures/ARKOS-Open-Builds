@@ -10,6 +10,7 @@ h2{break-before:auto;margin-top:28px}h2.pg{break-before:page;margin-top:0}
 ol.steps{counter-reset:st}
 table.cmp td:first-child{color:var(--dim);white-space:nowrap}
 svg .gb{fill:var(--glass);stroke:var(--part);stroke-width:1}
+svg .cordp{stroke:var(--ink);stroke-width:1.3;fill:none}
 svg .airf{stroke:var(--dim);stroke-width:1.2;fill:none;stroke-dasharray:5 3}
 figure.big svg text{font-size:12px}figure.big svg text.d{font-size:11px}
 .tbl table.parts{break-inside:auto}.tbl table.parts tr{break-inside:avoid}
@@ -26,17 +27,25 @@ def plan():   # from above: four blocks in a pinwheel around the open middle
     b += R(v0, v0, VOID - J, VOID - J, 'void') + R(v0 + 22, v0 + 33, 33, 18, 'pc')
     for x, y in ((v0 + 4, v0 + 4), (v1 - 8, v0 + 4), (v0 + 4, v1 - 8), (v1 - 8, v1 - 8)): b += R(x, y, 4, 4, 'led')
     b += dh(0, o, -24, f'about {o}') + dv(o + 26, v0, v1, f'{VOID}', 1)
-    b += lead(B / 2, TH / 2, B / 2, -50, 'End block: its finished end faces out at the corner', 'middle')
+    b += lead(o - 4, o - TH / 2, o + 60, o - 30, 'End blocks: each finished end faces out at a corner')
     b += lead(v0 + 38, v0 + 42, o + 60, v0 + 20, 'Raspberry Pi, standing on its short end') + lead(v1 - 6, v1 - 6, o + 60, v1 + 20, 'LED strip in each inside corner')
+    for x, y in ((18, 18), (o - 18, 18), (18, o - 18), (o - 18, o - 18)): b += C(x, y, 25, 'pc')
+    b += C(o - 18, 18, 22, 'pc')
     b += lead(-12, o + 6, -20, o + 30, 'concrete base, 320 square', 'end')
+    b += lead(o - 18, 18 - 12, o + 60, -40, 'brass posts (dashed, under the base);') + T(o + 62, -27, 'the back-right one is a tube for the cords', 'start')
+    b += T(o / 2, o + 30, 'FRONT', 'middle', 'm') + T(o / 2, -60, 'BACK', 'middle', 'm')
     return svg((-200, -80, o + 560, o + 130), DEFS + b, 'Plan view: four glass blocks in a pinwheel around a 99 millimetre square open middle, on a concrete base')
 
 def section():   # side section through the middle, air rising through it. h = height above the floor.
-    W, BH, FT, ox = 320, 50, 15, 12
+    W, BH, FT, ox = 320, 50, 43, 12      # FT: 40 mm brass post + 3 mm felt pad
     gy = FT + BH + 3; top = gy + B + 6; Y = lambda h: top - h        # svg y runs down
     def box(x, h0, w, hh, c): return R(x, Y(h0 + hh), w, hh, c)
     hx = (W - 88) / 2; b = ''
-    for x in (20, W - 40): b += box(x, 0, 20, FT, 'felt')
+    b += box(18, 0, 25, 3, 'felt') + box(18, 3, 25, 40, 'nut')                      # solid post
+    hp = W - 43                                                                     # hollow post: walls, bore, notch at the foot
+    b += box(hp, 0, 25, 3, 'felt') + box(hp, 3, 1.6, 40, 'nut') + box(hp + 23.4, 18, 1.6, 25, 'nut')
+    b += P(f'M{W / 2 + 10},{Y(FT + BH - 2)} L{W / 2 + 10},{Y(FT + 3)} L{hp + 9},{Y(FT + 3)} L{hp + 9},{Y(9)} L{W + 40},{Y(9)}', 'cordp')
+    b += P(f'M{W / 2 + 15},{Y(FT + BH - 2)} L{W / 2 + 15},{Y(FT + 6)} L{hp + 14},{Y(FT + 6)} L{hp + 14},{Y(12)} L{W + 40},{Y(12)}', 'cordp')
     b += box(0, FT, hx, BH, 'conc') + box(hx + 88, FT, W - hx - 88, BH, 'conc')
     b += box(ox, FT + BH, TH, 3, 'felt') + box(ox + B + J, FT + BH, TH, 3, 'felt')
     b += box(ox, gy, TH, B, 'gb') + box(ox + B + J, gy, TH, B, 'gb') + box(ox, gy + B, OUTER, 6, 'frame')
@@ -52,8 +61,11 @@ def section():   # side section through the middle, air rising through it. h = h
     b += lead(ox + TH + 8, Y(FT + BH + 1), -40, Y(FT + BH + 30), 'perforated aluminium plate', 'end')
     b += lead(ox + 40, Y(FT + BH + 1.5), -40, Y(FT + BH + 70), '3 mm wool felt under each block', 'end')
     b += lead(ox + 30, Y(top - 3), -40, Y(top - 20), 'top frame, 100 square opening', 'end')
-    b += lead(W - 30, Y(FT / 2), W + 50, Y(-14), '15 mm felt feet')
-    return svg((-300, -60, W + 560, top + 110), DEFS + b, 'Section through the middle: felt feet, concrete base with a square hole, two glass blocks on felt, the Pi standing on a perforated plate, LED strips, top frame, and air rising through')
+    b += dv(W + 50, Y(FT), Y(0), '43', 1)
+    b += lead(30, Y(25), -40, Y(40), '40 mm brass posts on felt pads', 'end')
+    b += lead(hp + 24, Y(32), W + 70, Y(70), 'hollow back post: the cords run down it,')
+    b += T(W + 72, Y(70) + 14, 'and out of a notch at its foot', 'start')
+    return svg((-300, -60, W + 620, top + 110), DEFS + b, 'Section through the middle: brass posts on felt pads, concrete base with a square hole, two glass blocks on felt, the Pi standing on a perforated plate, LED strips, top frame, and air rising through')
 
 def a(url, t): return f'<a href="{html.escape(url)}">{t}</a>'
 def G(q): return 'https://www.google.com/search?q=' + q.replace(' ', '+')
@@ -75,8 +87,9 @@ PARTS = [
  ('Light controller', 'A small ESP32 board made for WLED (free light software): colour, brightness and scenes from a phone.', '1', '$15–25', 'WLED', 'https://kno.wled.ge/', False),
  ('LED strip', '5 V RGBW addressable strip (SK6812), about 0.8 m: four 18 cm pieces, one in each inside corner. A 5 V 3 A supply.', '1', '$20–35', 'search', G('SK6812 RGBW 5V LED strip 60 per meter'), False),
  ('Concrete', 'About 12 kg made up, for a 320 × 320 × 50 mm base: GFRC mix as in the full Lantern, or a bagged countertop mix. Matte penetrating sealer.', '', '$40–80', 'search', G('concrete countertop mix bag'), False),
- ('Mold', 'Melamine board offcut, XPS foam for the square hole and the cable channel, silicone caulk, release agent.', '', '$20–35', 'hardware store', '', False),
- ('Felt and glue', '3 mm wool felt (under each block), four 15 mm felt feet, clear 100% silicone for the block joints.', '', '$20–30', 'hardware or craft store', '', False),
+ ('Mold', 'Melamine board offcut, XPS foam for the square hole, the cord channel and the hollow post\'s socket, silicone caulk, release agent.', '', '$20–35', 'hardware store', '', False),
+ ('Brass posts', 'Four 40 mm posts, 25 mm (1\") across, unlacquered. Three cut from round bar, drilled and tapped M6 at the top. One cut from 1\" tube with a thin wall (about a 22 mm bore) for the cords, with a 15 mm notch at its foot. Three M6 studs and three M6 cast-in inserts.', '4', '$30–80', 'metal supplier, or a machine shop to cut and tap them', G('brass round bar 1 inch'), False),
+ ('Felt and glue', '3 mm wool felt (under each block, and a pad under each post), clear 100% silicone for the block joints, two-part epoxy for the hollow post.', '', '$20–35', 'hardware or craft store', '', False),
  ('Top frame and plate', 'Top frame: 6 mm walnut ply or 3 mm brass, 300 square with a 100 square opening. Pi plate: 2 mm perforated aluminium, 96 × 96.', '', '$20–50', 'laser shop or hardware store', '', False),
  ('Peak-hold label', 'Irreversible temperature label, 40–60 °C: records the hottest it ever got inside.', '1', '$15', 'search', G('irreversible temperature label 40-60 C'), False),
 ]
@@ -85,18 +98,18 @@ body = f'''
 <span class="eyebrow">The Lantern · glass block version</span>
 <h1>The Lantern, Glass Block Version</h1>
 <p class="lede">An object for the home first, a media player second. Four glass blocks stand on a concrete base around an open middle; inside, a silent Raspberry Pi plays films to the TV, and light glows out through the rippled glass. Real glass, concrete and felt: nothing to peel, bubble or warp, and every part from a hardware store or a maker's shop.</p>
-<div class="facts"><div><b>30 × 30 cm</b><span>about 27 cm tall</span></div><div><b>About $300–650</b><span>depending on blocks and storage</span></div><div><b>Silent</b><span>nothing in it moves</span></div><div><b>One weekend</b><span>plus a week for the concrete</span></div></div>
+<div class="facts"><div><b>30 × 30 cm</b><span>about 30 cm tall</span></div><div><b>About $320–750</b><span>depending on blocks and storage</span></div><div><b>Silent</b><span>nothing in it moves</span></div><div><b>One weekend</b><span>plus a week for the concrete</span></div></div>
 
 <h2>What it keeps, and what it changes</h2>
 <div class="tbl"><table class="cmp"><thead><tr><th></th><th>The full Lantern</th><th>Glass block version</th></tr></thead><tbody>
 <tr><td>Body</td><td>17 cut and printed acrylic panes on rods</td><td>Four glass blocks, bonded at their edges</td></tr>
 <tr><td>Colour and texture</td><td>Printed tint, darker toward the centre</td><td>The wave pattern in the glass, and the light's own colour</td></tr>
-<tr><td>Base</td><td>Cast concrete with a sealed drive vault</td><td>A plain cast concrete slab with a square hole for air and cables</td></tr>
+<tr><td>Base</td><td>Cast concrete with a sealed drive vault</td><td>A plain cast concrete slab on four brass posts, with a square hole for air</td></tr>
 <tr><td>Computer</td><td>MINIX fanless mini PC</td><td>Raspberry Pi 5 in a fanless case</td></tr>
 <tr><td>Storage</td><td>Two 8 TB hard drives, mirrored</td><td>A small USB SSD, or the library kept elsewhere</td></tr>
 <tr><td>Silence</td><td>Fanless computer; drives quieted in the vault</td><td>Nothing moves: no fan, no drives</td></tr>
-<tr><td>Size</td><td>About 21 × 20 cm, 40 cm tall</td><td>About 30 × 30 cm, 27 cm tall</td></tr>
-<tr><td>Rough cost</td><td>About $2,000 and up</td><td>About $300–650</td></tr>
+<tr><td>Size</td><td>About 21 × 20 cm, 40 cm tall</td><td>About 30 × 30 cm, 30 cm tall, floating 4 cm up</td></tr>
+<tr><td>Rough cost</td><td>About $2,000 and up</td><td>About $320–750</td></tr>
 </tbody></table></div>
 <p><b>Principle it applies: dignity in design.</b> A computer treated as furniture: silent, made of honest materials, and easy to repair. The Pi lifts straight out through the top.</p>
 
@@ -105,8 +118,9 @@ body = f'''
 <figure class="dg big">{section()}<figcaption>Through the middle, to scale. The tower is a chimney: cool air comes in under the base, through the hole, past the Pi, and out of the open top. The hollow blocks hold heat in, so the air path does the cooling.</figcaption></figure>
 <ul>
 <li><b>Light:</b> glass blocks are sealed and hollow, so the light can't go inside them. Four short LED strips stand in the inside corners and shine out through all four blocks, rippled by the wave pattern. Colour is chosen for the room, not to report anything.</li>
-<li><b>Felt:</b> under each block it cushions glass on stone and keeps the joints even; the felt feet lift the base so air can get under it, and stop it scratching furniture.</li>
-<li><b>Concrete:</b> weight that keeps a heavy glass tower steady, a hole for air and cables, and the stone that frames the glass.</li>
+<li><b>Brass posts:</b> as on the Float, they lift the base 4 cm so air can get under it, and the light spilling down through the hole glows in the gap. They carry the weight, and the back one carries the cords: every part earns its brass.</li>
+<li><b>Felt:</b> under each block it cushions glass on stone and keeps the joints even; under each post it protects the furniture.</li>
+<li><b>Concrete:</b> weight that keeps a heavy glass tower steady, a hole for air, a channel for the cords, and the stone that frames the glass.</li>
 </ul>
 
 <h2>Try the look first</h2>
@@ -118,12 +132,13 @@ body = f'''
 
 <h2 class="pg">Make it</h2>
 <ol class="steps">
-<li><b>Make the mold.</b> A melamine box 320 × 320 mm inside, 50 mm deep. Glue an 88 mm square XPS block in the centre (the hole), and a 30 × 15 mm XPS strip from it to the back edge on the floor of the mold (the cable channel, under the base). Seal the seams with silicone; coat with release agent.</li>
+<li><b>Make the mold.</b> A melamine box 320 × 320 mm inside, 50 mm deep. Glue an 88 mm square XPS block in the centre (the hole), a 30 × 15 mm XPS strip from it to the back-right corner on the floor of the mold (the cord channel, under the base), and a 26 mm XPS disc, 5 mm thick, where that strip ends, 30 mm in from both edges (the hollow post's socket). Screw three M6 cast-in inserts up through the mold floor at the other three corners, also 30 mm in. Seal the seams with silicone; coat with release agent.</li>
 <li><b>Cast the base.</b> Mix and pour, following the mix's instructions; vibrate out the bubbles by tapping the mold. Cover and keep it damp for a week. Unmold, dig out the foam, and seal it.</li>
 <li><b>Set up the Pi.</b> Flash LibreELEC for the Raspberry Pi 5 onto the card ({a('https://libreelec.tv/downloads/', 'libreelec.tv')}), put the Pi in its passive case, and connect it to the TV to set up Kodi and the library.</li>
 <li><b>Set up the light.</b> Install WLED on the light controller from a browser ({a('https://kno.wled.ge/', 'kno.wled.ge')}). Cut four 18 cm pieces of strip, wire them in a chain, and set WLED's current limit to suit the supply (2.5 A for a 3 A supply).</li>
-<li><b>Seat the blocks.</b> Felt feet under the base. A strip of 3 mm felt where each block will stand. Stand the blocks in the pinwheel, End blocks with their finished ends at the corners. Check the middle is square, then run clear silicone down each vertical joint, inside and out. Leave a day.</li>
-<li><b>Fit the inside.</b> Stick the LED strips in the four inside corners, facing out. Lay the perforated plate over the hole, stand the Pi on its short end on the plate, and run every cable down through the hole and out along the channel. The power supplies stay outside, so their heat does too.</li>
+<li><b>Posts.</b> Screw the three solid posts into the inserts. Epoxy the hollow post into its socket with the notch facing back. A felt pad under each. Stand the base up.</li>
+<li><b>Seat the blocks.</b> A strip of 3 mm felt where each block will stand. Stand the blocks in the pinwheel, End blocks with their finished ends at the corners. Check the middle is square, then run clear silicone down each vertical joint, inside and out. Leave a day.</li>
+<li><b>Fit the inside.</b> Stick the LED strips in the four inside corners, facing out. Lay the perforated plate over the hole, stand the Pi on its short end on the plate, and thread the cords one at a time, largest plug first: down through the hole, along the channel, down the hollow post, and out of its notch at the back. Micro-HDMI, the Pi's USB-C power and the light's power fit together. The power supplies stay outside, so their heat does too.</li>
 <li><b>Top frame.</b> Bed it on dabs of clear silicone across the block tops. The 100 mm opening stays open: that's where warm air leaves and where the Pi comes out for repair.</li>
 </ol>
 
@@ -132,6 +147,7 @@ body = f'''
 <tr><td>Heat</td><td>Stick the peak-hold label on the Pi's plate. Play a 2-hour 4K film with the light on. Check the Pi's temperature in LibreELEC's system information near the end.</td><td>The label stays below about 55 °C; the Pi stays below about 70 °C and never slows down.</td></tr>
 <tr><td>Silence</td><td>In a quiet room, ear close to the open top, during a film.</td><td>Nothing to hear.</td></tr>
 <tr><td>Steady</td><td>Push gently on the top frame from each side.</td><td>No rocking; the tower and base move as one.</td></tr>
+<tr><td>Glow</td><td>Light on, room dark.</td><td>The gap under the base glows, and no cord shows except where it leaves the back post.</td></tr>
 <tr><td>Repair</td><td>Lift the Pi out through the top.</td><td>It comes out without taking anything apart.</td></tr>
 </tbody></table></div>
 

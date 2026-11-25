@@ -22,7 +22,7 @@ Concept renders from the interactive model, not photos.
   - **Cut files:** DXF for the acrylic and aluminium shops, plus an order sheet.
   - **Print files:** the 17 pane prints at true size, plus print notes.
 - [the-lantern-build-guide.pdf](the-lantern-build-guide.pdf) / [.html](the-lantern-build-guide.html): step by step. Parts and sourcing links, drawings, glass, metal, concrete, electronics, software, assembly and tests.
-- [the-lantern-glass-block-version.pdf](the-lantern-glass-block-version.pdf) / [.html](the-lantern-glass-block-version.html): a cheaper sibling, about $300–650. Four glass blocks on a concrete base around a silent Raspberry Pi, with light glowing out through the rippled glass. Nothing to peel, bubble or warp.
+- [the-lantern-glass-block-version.pdf](the-lantern-glass-block-version.pdf) / [.html](the-lantern-glass-block-version.html): a cheaper sibling, about $320–750. Four glass blocks on a concrete base floating on brass posts, around a silent Raspberry Pi, with light glowing out through the rippled glass. Nothing to peel, bubble or warp.
 
 Every page works offline.
 
