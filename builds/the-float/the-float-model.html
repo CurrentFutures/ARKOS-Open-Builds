@@ -1538,7 +1538,8 @@ box(1.2,.8,2,gx-2,gy+3.7,gz+4,plastic);                // 12V-2x6 connector
 tubeP([[BX-3.2,37.6,BZ0+8.6],[MX+4,42,BZ0+12],[MX+3,radY+4-1.5,10]],.55,tubeMat,MB);tubeP([[BX-3.2,37.6,BZ0+12.4],[MX+3,43.5,BZ0+16],[MX-1,radY+4-1.5,13]],.55,tubeMat,MB);
 // amber power cables entering through the divider
 tubeP([[BX-1.5,33,BZ0+24.2],[BX-2.8,33,BZ0+25.4],[BX-1.4,32,BZ0+27],[BX+.2,31,BZ0+28]],.85,braid,MB);
-tubeP([[gx-2,gy+4.1,gz+4],[gx-1,gy+6.5,gz+6],[BX-2,gy+5,BZ0+27],[BX+.2,gy+3,BZ0+28]],.62,braid,MB);
+// the graphics card's own native cable: stock black whatever the other cables are, straight out of the connector before it bends
+tubeP([[gx-2,gy+4.1,gz+4],[gx-2,gy+7.7,gz+4],[gx-1,gy+8.6,gz+6.5],[BX-2,gy+5,BZ0+27],[BX+.2,gy+3,BZ0+28]],.62,new THREE.MeshStandardMaterial({color:0x0b0b0b,roughness:.92,metalness:0,envMapIntensity:.2}),MB);
 PARENT=C;
 box(8.6,15,16,W/2-5.6,8.7,-D/2+9.2,new THREE.MeshStandardMaterial({map:gunDark.map,color:0x8a8a90,metalness:.8,roughness:.4})); // PSU, fan facing down
 box(.1,7,7,W/2-1.25,9,-D/2+9.2,psuMat);
