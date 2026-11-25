@@ -47,4 +47,5 @@ Open the HTML files in a browser; the 3D models need an internet connection to l
 - Prices and parts are from November 2026 and change daily.
 - Confirm the case's top radiator support before buying a 360 mm cooler.
 - Apply reeded film with the glass off the case, never inside the assembled PC.
+- The renders still show the graphics card's power cable in amber. The book now uses the power supply's own stock cable for it, for safety; the 3D model shows it black.
 - Product names belong to their makers; nothing here is sponsored.
