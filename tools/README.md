@@ -33,6 +33,14 @@ node make-pdf.js sand-build-guide.html sand-build-guide.pdf
 - `build_sand_guide.py` and `build_desk.py` write the build guide and the desk test. The desk test goes straight into `builds/the-sand-table/`.
 - `test_meter.py` checks the meter in `builds/the-sand-table/software/` against a fake model server.
 
+## The Float
+
+The build book (`builds/the-float/the-float-build-book.html`) holds the interactive model and is edited directly. Its PDF is printed from a print version with renders in place of the model, so make the same text change in `float/the-float-build-book-print.html`, then:
+
+```bash
+node float/make-book-pdf.js
+```
+
 ## Reel and teaser
 
 These need the Lantern and Sand Table steps above to have run first. They render on the CPU, which is slow: about 2 to 5 seconds per frame at 1080p.
